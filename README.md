@@ -1,6 +1,6 @@
-##  This is a chat room application implemented using react+redux+socket.io+koa.
+##  This is a deliveryFood 在线订餐系统.
 
- ![](./dist/resource/preview.png)
+ <!-- ![](./dist/resource/preview.png) -->
 
 ### An online demo is here: [online demo](https://desolate-fortress-76848.herokuapp.com/)
 
