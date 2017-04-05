@@ -1,0 +1,59 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+html{
+  height: 100%;
+}
+body{
+  height: 100%;
+  color: #1F5EA9;
+  // background-image: url(./resource/background.jpeg);
+  // background-repeat: no-repeat;
+  // background-size: cover;
+}
+@font-face {
+  font-family: 'iconfont';
+  src: url('./resource/fonts/iconfont.eot');
+  src: url('./resource/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+  url('./resource/fonts/iconfont.woff?t=1490092138912') format('woff'),
+  url('./resource/fonts/iconfont.ttf?t=1490092138912') format('truetype'),
+  url('./resource/fonts/iconfont.svg#iconfont') format('svg');
+}
+
+.iconfont{
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+}
+input,button{
+  outline: none;
+}
+ul,li {
+  list-style: none;
+}
+.bg{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background: inherit;
+  filter: blur(10px);
+}
+#test {
+  height: 100%;
+  overflow: hidden;
+  min-height: 500px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
