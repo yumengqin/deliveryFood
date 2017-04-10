@@ -11,7 +11,7 @@ const card = ([
 
 require('./index.less');
 
-class Login extends React.Component {
+class Home extends React.Component {
   constructor(props, context) {
     super(props, context);
   }
@@ -38,7 +38,6 @@ class Login extends React.Component {
     console.log(str);
   }
   render() {
-    var handleClick = this.props.handleClick.bind(this);
     if (this.props.nickName !== '') {
       return null;
     } else {
@@ -69,4 +68,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login
+export default Home

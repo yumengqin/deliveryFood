@@ -6,6 +6,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import Home from './pages/home/index.js'
 import LoginContainer from './pages/auth/index.js'
+import IndexContainer from './pages/index/index.js'
 import createSocketMiddleware from './redux_middleware'
 import io from 'socket.io-client'
 import reducers from './reducer'
@@ -21,6 +22,7 @@ render(
     <Router history={hashHistory} >
       <Route path='/' component={Home}/>
       <Route path='/login' component={LoginContainer}/>
+      <Route path='/index' component={IndexContainer}/>
     </Router>
   </Provider>
   ,

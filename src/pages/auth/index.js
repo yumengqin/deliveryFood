@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
+import Login from '../../components/login';
 import { message_update, guest_update, nickname_get } from '../../action'
 import { hashHistory } from 'react-router'
 
@@ -23,35 +24,10 @@ function mapDispatchToProps(dispatch, ownProps) {
           hashHistory.push('/');
         }
       })
-    },
-    handleClick: function(e) {
-      var nickname = this.refs.nick.value;
-      fetch('/api/nickname', {
-        method: 'POST',
-        body: nickname,
-        credentials: 'include'
-      }).then(function(res) {
-        return res.json();
-      }).then(function(data) {
-        if (data.legal == 'yes') {
-          dispatch(nickname_get(nickname));
-          hashHistory.push('/');
-        } else if (data.legal == 'repeat') {
-          alert('昵称已被占用,请重新选择昵称！');
-        } else if (data.legal == 'self login') {
-          alert('您已进入聊天室,请勿重复进入');
-        }
-      })
     }
   }
 }
 
-class LoginPage extends React.Component {
-  render() {
-    return (
-      <div>登录页面</div>
-    );
-  }
-}
+var LoginPage = connect(mapStateToProps, mapDispatchToProps)(Login);
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default LoginPage
