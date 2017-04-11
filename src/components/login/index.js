@@ -14,26 +14,48 @@ class LoginPage extends React.Component {
       if (err) {
         console.log(err);
       }
-      console.log(1);
+      this.login(data);
     });
+  }
+  login (data) {
+    fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        username : data.userName,
+        password: data.password,
+        remember: data.remember,
+      }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      console.log(data);
+    })
   }
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="login">
         <Form onSubmit={e => this.handleSubmit(e)} className="login-form">
+            <h1>登录DeliveryFood</h1>
             <FormItem>
               {getFieldDecorator('userName', {
-                rules: [{ required: true, message: 'Please input your username!' }],
+                rules: [
+                  { required: true, message: '请输入用户名/手机号' },
+                  { pattern: /^1(3|4|5|7|8)\d{9}$/, message: '请输入正确的手机号码'}
+                ],
               })(
-                <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username" />
+                <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="手机号" />
               )}
             </FormItem>
             <FormItem>
               {getFieldDecorator('password', {
-                rules: [{ required: true, message: 'Please input your Password!' }],
+                rules: [
+                  { required: true, message: '请输入密码' },
+                  { pattern: /[0-9a-zA-Z]{6,20}/, message: '密码为6-20位数字或字母' },
+                ],
               })(
-                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="Password" />
+                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="密码" />
               )}
             </FormItem>
             <FormItem>
@@ -41,13 +63,13 @@ class LoginPage extends React.Component {
                 valuePropName: 'checked',
                 initialValue: true,
               })(
-                <Checkbox>Remember me</Checkbox>
+                <Checkbox>记住密码</Checkbox>
               )}
-              <a className="login-form-forgot" href="">Forgot password</a>
+              <a className="login-form-forgot" href="">忘记密码</a>
               <Button type="primary" htmlType="submit" className="login-form-button">
-                Log in
+                登录
               </Button>
-              Or <a href="">register now!</a>
+              <a href="">去注册</a>
             </FormItem>
         </Form>
       </div>

@@ -1,6 +1,38 @@
 .login {
   width: 100%;
   height: 100%;
-  background: url('../../resource/login_bg.jpg') no-repeat;
+  background: url('../../resource/login_bg.jpg') no-repeat center center;
   background-size: cover;
+  .login-form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    padding: 0px 30px 20px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.07);
+    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.04);
+    animation: loginMove .8s linear;
+    h1 {
+      line-height: 100px;
+      text-align: center;
+    }
+    .ant-input {
+      height: 40px;
+      line-height: 40px;
+    }
+    .ant-btn {
+      display: block;
+      width: 100%;
+      line-height: 30px;
+    }
+    .login-form-forgot {
+      float: right;
+    }
+  }
+  @keyframes loginMove {
+    from { top: -500px }
+    to { top: 50% }
+  }
 }
