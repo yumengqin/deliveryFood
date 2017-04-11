@@ -6,7 +6,23 @@
   "scripts": {
     "start": "node server.js"
   },
-  "author": "Ma Lingyang",
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-2",
+      "react"
+    ],
+    "plugins": [
+      [
+        "import",
+        {
+          "libraryName": "antd",
+          "style": false
+        }
+      ]
+    ]
+  },
+  "author": "Qin yumeng",
   "license": "ISC",
   "devDependencies": {
     "any-promise": "^1.3.0",

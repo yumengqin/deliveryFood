@@ -8,11 +8,20 @@ const FormItem = Form.Item;
 const createForm = Form.create;
 
 class LoginPage extends React.Component {
+  handleSubmit(e) {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, data) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(1);
+    });
+  }
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="login">
-        <Form onSubmit={this.handleSubmit} className="login-form">
+        <Form onSubmit={e => this.handleSubmit(e)} className="login-form">
             <FormItem>
               {getFieldDecorator('userName', {
                 rules: [{ required: true, message: 'Please input your username!' }],
