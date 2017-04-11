@@ -9,6 +9,8 @@ var webpackDev = require('koa-webpack-dev-middleware');
 var webpackConf = require('./webpack.config.js');
 var compiler = webpack(webpackConf);
 var serve = require('koa-static');
+var http = require('http');
+var ccap = require('ccap')();
 var app = new koa();
 
 var login = require('./db/login').login;
@@ -29,6 +31,8 @@ var render = views('./src', {
 var server = require('http').Server(app.callback());
 var io = require('socket.io')(server);
 
+var code = '';
+
 var cache = {
   nameList: {},
   nameListActive: new Set([]),
@@ -44,46 +48,46 @@ var sessionFresh = setInterval(function() {
   }
 }, 10000);
 
-io.on('connection', function(socket) {
-  socket.on('msg from client', function(data) {
-    if (!cache.nameListActive.has(data.nickName)) {
-      socket.emit('self logout');
-    } else {
-      socket.broadcast.emit('msg from server', data);
-      cache.msgList.push(data);
-      if (cache.msgList.length >= 100) {
-        cache.msgList.shift();
-      }
-    }
-  });
-  socket.on('disconnect', function() {
-    cache.nameListActive.delete(socket.nickname);
-    io.emit('guest update',
-      [...cache.nameListActive]
-    );
-  });
-  socket.on('guest come', function(data) {
-    cache.nameListActive.add(data);
-    cache.nameList[data] = 7200000;
-    socket.nickname = data;
-    io.emit('guest update',
-      [...cache.nameListActive]
-    );
-  });
-  socket.on('guest leave', function(data) {
-    cache.nameListActive.delete(data);
-    delete cache.nameList[data];
-    socket.nickname = undefined;
-    io.emit('guest update',
-      [...cache.nameListActive]
-    );
-  });
-  socket.on('heart beat', function() {
-    if (socket.nickname != undefined) {
-      cache.nameList[socket.nickname] = 7200000;
-    }
-  });
-});
+// io.on('connection', function(socket) {
+//   socket.on('msg from client', function(data) {
+//     if (!cache.nameListActive.has(data.nickName)) {
+//       socket.emit('self logout');
+//     } else {
+//       socket.broadcast.emit('msg from server', data);
+//       cache.msgList.push(data);
+//       if (cache.msgList.length >= 100) {
+//         cache.msgList.shift();
+//       }
+//     }
+//   });
+//   socket.on('disconnect', function() {
+//     cache.nameListActive.delete(socket.nickname);
+//     io.emit('guest update',
+//       [...cache.nameListActive]
+//     );
+//   });
+//   socket.on('guest come', function(data) {
+//     cache.nameListActive.add(data);
+//     cache.nameList[data] = 7200000;
+//     socket.nickname = data;
+//     io.emit('guest update',
+//       [...cache.nameListActive]
+//     );
+//   });
+//   socket.on('guest leave', function(data) {
+//     cache.nameListActive.delete(data);
+//     delete cache.nameList[data];
+//     socket.nickname = undefined;
+//     io.emit('guest update',
+//       [...cache.nameListActive]
+//     );
+//   });
+//   socket.on('heart beat', function() {
+//     if (socket.nickname != undefined) {
+//       cache.nameList[socket.nickname] = 7200000;
+//     }
+//   });
+// });
 
 app.use(webpackDev(compiler, {
   contentBase: webpackConf.output.path,
@@ -137,7 +141,9 @@ app.use(route.post('/api/nickname', function*() {
 }));
 
 router.post('/api/login', koaBody, function*() {
+  var checkCode = this.cookies.get('checkCode');
   console.log(this.request.body);
+  console.log(code);
   // db.createCollection('user',{safe:true},function(err,collection){
 	// 	//返回所有数据
 	// 	collection.find().toArray(function(err,docs){
@@ -147,7 +153,7 @@ router.post('/api/login', koaBody, function*() {
 	// 		console.log(str);
 	// 	});
 	// });
-	login()
+	// login()
   this.body = JSON.stringify({
     lalal: '111',
     nickname: 'qin'
@@ -163,6 +169,14 @@ router.post('/api/logout', koaBody, function*() {
     delete cache.nameList[nick];
   }
   this.body = '';
+});
+
+router.get('/api/code', koaBody, function*() {
+  var ary = ccap.get();
+  var txt = ary[0];
+  var buf = ary[1];
+  code = txt;
+  this.body = buf;
 });
 
 app.use(router.routes());

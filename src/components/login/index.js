@@ -8,6 +8,12 @@ const FormItem = Form.Item;
 const createForm = Form.create;
 
 class LoginPage extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state={
+      url: `http://127.0.0.1:5000/api/code?${new Date().getTime()}`,
+    }
+  }
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, data) => {
@@ -17,11 +23,24 @@ class LoginPage extends React.Component {
       this.login(data);
     });
   }
+  url() {
+    this.setState({ url: `http://127.0.0.1:5000/api/code?${new Date().getTime()}` });
+  }
+  getCode() {
+    fetch('/api/code', {
+      method: 'GET',
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      console.log(data);
+    })
+  }
   login (data) {
     fetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({
-        username : data.userName,
+        userName : data.userName,
         password: data.password,
         remember: data.remember,
       }),
@@ -57,6 +76,14 @@ class LoginPage extends React.Component {
               })(
                 <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="密码" />
               )}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('checkCode', {
+                rules: [{ required: true, message: '请输入验证码' }],
+              })(
+                <Input type="text" className="code-input" placeholder="验证码"/>
+              )}
+              <img src={this.state.url} className="code-img"/>
             </FormItem>
             <FormItem>
               {getFieldDecorator('remember', {
