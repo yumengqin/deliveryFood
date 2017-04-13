@@ -15,15 +15,6 @@ var app = new koa();
 
 var login = require('./db/login').login;
 
-// //引入数据库模块
-// var mongodb=require('mongodb');
-// //配置连接
-// var mongodbserver=new mongodb.Server('127.0.0.1',27017,{auto_reconnect:true});
-// //连接数据库
-// var db=new mongodb.Db('test',mongodbserver,{safe:true});
-// //打开数据库
-// db.open();
-
 var render = views('./src', {
   ext: 'ejs'
 });
@@ -141,9 +132,18 @@ app.use(route.post('/api/nickname', function*() {
 }));
 
 router.post('/api/login', koaBody, function*() {
-  var checkCode = this.cookies.get('checkCode');
-  console.log(this.request.body);
-  console.log(code);
+  var data = JSON.parse(this.request.body);
+  if (data.checkCode.toLowerCase() === code.toLowerCase()) {
+    login(this.request.body, this);
+  } else {
+    this.body = JSON.stringify({
+      success: false,
+      data: {
+        errKey: 'code',
+        errMsg: '验证码输入错误',
+      }
+    });
+  }
   // db.createCollection('user',{safe:true},function(err,collection){
 	// 	//返回所有数据
 	// 	collection.find().toArray(function(err,docs){
@@ -154,10 +154,6 @@ router.post('/api/login', koaBody, function*() {
 	// 	});
 	// });
 	// login()
-  this.body = JSON.stringify({
-    lalal: '111',
-    nickname: 'qin'
-  });
 });
 
 router.post('/api/logout', koaBody, function*() {
@@ -176,6 +172,7 @@ router.get('/api/code', koaBody, function*() {
   var txt = ary[0];
   var buf = ary[1];
   code = txt;
+  console.log(code);
   this.body = buf;
 });
 

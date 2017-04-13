@@ -12,6 +12,9 @@ class LoginPage extends React.Component {
     super(props, context);
     this.state={
       url: `http://127.0.0.1:5000/api/code?${new Date().getTime()}`,
+      codeExtra: '',
+      userExtra: '',
+      passExtra: '',
     }
   }
   handleSubmit(e) {
@@ -20,35 +23,37 @@ class LoginPage extends React.Component {
       if (err) {
         console.log(err);
       }
-      this.login(data);
+      this.login(data, this);
     });
   }
   url() {
     this.setState({ url: `http://127.0.0.1:5000/api/code?${new Date().getTime()}` });
   }
-  getCode() {
-    fetch('/api/code', {
-      method: 'GET',
-      credentials: 'include'
-    }).then(function(res) {
-      return res.json();
-    }).then(function(data) {
-      console.log(data);
-    })
-  }
-  login (data) {
+  login (data, app) {
     fetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({
         userName : data.userName,
         password: data.password,
         remember: data.remember,
+        checkCode: data.checkCode,
       }),
       credentials: 'include'
     }).then(function(res) {
       return res.json();
-    }).then(function(data) {
-      console.log(data);
+    }).then(function(res) {
+      if (!res.success) {
+        console.log(res);
+        if (res.data.errKey === 'code') {
+          app.setState({ codeExtra: res.data.errMsg });
+        } else if (res.data.errKey === 'user') {
+          app.setState({ userExtra: res.data.errMsg });
+        } else if (res.data.errKey === 'pass') {
+          app.setState({ passExtra: res.data.errMsg });
+        }
+      } else {
+        console.log(res);
+      }
     })
   }
   render() {
@@ -57,7 +62,7 @@ class LoginPage extends React.Component {
       <div className="login">
         <Form onSubmit={e => this.handleSubmit(e)} className="login-form">
             <h1>登录DeliveryFood</h1>
-            <FormItem>
+            <FormItem extra={this.state.userExtra}>
               {getFieldDecorator('userName', {
                 rules: [
                   { required: true, message: '请输入用户名/手机号' },
@@ -67,7 +72,7 @@ class LoginPage extends React.Component {
                 <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="手机号" />
               )}
             </FormItem>
-            <FormItem>
+            <FormItem extra={this.state.passExtra}>
               {getFieldDecorator('password', {
                 rules: [
                   { required: true, message: '请输入密码' },
@@ -77,11 +82,11 @@ class LoginPage extends React.Component {
                 <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="密码" />
               )}
             </FormItem>
-            <FormItem>
+            <FormItem extra={this.state.codeExtra}>
               {getFieldDecorator('checkCode', {
                 rules: [{ required: true, message: '请输入验证码' }],
               })(
-                <Input type="text" className="code-input" placeholder="验证码"/>
+                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="text" className="code-input" placeholder="验证码"/>
               )}
               <img src={this.state.url} className="code-img"/>
             </FormItem>
