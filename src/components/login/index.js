@@ -30,6 +30,7 @@ class LoginPage extends React.Component {
     this.setState({ url: `http://127.0.0.1:5000/api/code?${new Date().getTime()}` });
   }
   login (data, app) {
+    app.setState({ codeExtra: '', userExtra: '', passExtra: '' });
     fetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({
@@ -43,7 +44,6 @@ class LoginPage extends React.Component {
       return res.json();
     }).then(function(res) {
       if (!res.success) {
-        console.log(res);
         if (res.data.errKey === 'code') {
           app.setState({ codeExtra: res.data.errMsg });
         } else if (res.data.errKey === 'user') {
@@ -51,6 +51,7 @@ class LoginPage extends React.Component {
         } else if (res.data.errKey === 'pass') {
           app.setState({ passExtra: res.data.errMsg });
         }
+        app.url();
       } else {
         console.log(res);
       }

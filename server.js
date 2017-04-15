@@ -13,7 +13,22 @@ var http = require('http');
 var ccap = require('ccap')();
 var app = new koa();
 
-var login = require('./db/login').login;
+
+var db = require('./db/db').db;
+
+var PersonSchema = require('./model/user');
+
+db.on('error', function(error) {
+    console.log('连接失败', error);
+});
+
+db.on('open', function () {
+  console.log('连接成功');
+});
+
+var PersonModel = db.model('user',PersonSchema);
+
+// var login = require('./db/login').login;
 
 var render = views('./src', {
   ext: 'ejs'
@@ -89,6 +104,9 @@ app.use(webpackDev(compiler, {
 // app.use(serve('./dist'));
 
 app.use(route.get('/', function*() {
+  // var tank = {name: 'something'};
+  // PersonModel.create(tank);
+  // console.log(personEntity.name); //Krouky
   this.body = yield render('index', {});
 }));
 
@@ -134,7 +152,29 @@ app.use(route.post('/api/nickname', function*() {
 router.post('/api/login', koaBody, function*() {
   var data = JSON.parse(this.request.body);
   if (data.checkCode.toLowerCase() === code.toLowerCase()) {
-    login(this.request.body, this);
+    const result = yield PersonModel.find({ userName: data.userName });
+    if (result.length !== 0) {
+      const pass = JSON.parse(JSON.stringify(result[0])).password;
+      if (pass == data.password) {
+        this.body = JSON.stringify({ success: true, data: result });
+      } else {
+        this.body = JSON.stringify({
+          success: false,
+          data: {
+            errKey: 'pass',
+            errMsg: '密码输入错误',
+          }
+        });
+      }
+    } else {
+      this.body = JSON.stringify({
+        success: false,
+        data: {
+          errKey: 'user',
+          errMsg: '用户名不存在',
+        }
+      });
+    }
   } else {
     this.body = JSON.stringify({
       success: false,
