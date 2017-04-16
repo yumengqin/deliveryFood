@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
-import { hashHistory, Link } from 'react-router'
+import { hashHistory } from 'react-router'
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import { Link } from 'react-router';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
+require('./index.less');
 
 const FormItem = Form.Item;
 const createForm = Form.create;
@@ -23,18 +25,19 @@ class LoginPage extends React.Component {
       if (err) {
         console.log(err);
       }
-      this.login(data, this);
+      this.signup(data, this);
     });
   }
   url() {
     this.setState({ url: `http://127.0.0.1:5000/api/code?${new Date().getTime()}` });
   }
-  login (data, app) {
+  signup (data, app) {
     app.setState({ codeExtra: '', userExtra: '', passExtra: '' });
-    fetch('/api/login', {
+    fetch('/api/signup', {
       method: 'POST',
       body: JSON.stringify({
         userName : data.userName,
+        name: data.name,
         password: data.password,
         remember: data.remember,
         checkCode: data.checkCode,
@@ -53,16 +56,15 @@ class LoginPage extends React.Component {
         }
         app.url();
       } else {
-        if (res.remember) {
+        if (res.data.remember) {
           localStorage.setItem('name', res.data.name);
           localStorage.setItem('userName', res.data.userName);
           localStorage.setItem('role', res.data.role);
         }
         if (res.data.role == 'buyer') {
           hashHistory.push('/indexBuyer');
-          // app.props.buyer();
         } else {
-          app.props.seller();
+          hashHistory.push('/indexSeller');
         }
       }
     })
@@ -70,9 +72,9 @@ class LoginPage extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <div className="login">
+      <div className="login signup">
         <Form onSubmit={e => this.handleSubmit(e)} className="login-form">
-            <h1>登录DeliveryFood</h1>
+            <h1>注册DeliveryFood</h1>
             <FormItem extra={this.state.userExtra}>
               {getFieldDecorator('userName', {
                 rules: [
@@ -81,6 +83,14 @@ class LoginPage extends React.Component {
                 ],
               })(
                 <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="手机号" />
+              )}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('name', {
+                rules: [
+                  { required: true, message: '请输入姓名' },                ],
+              })(
+                <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="姓名" />
               )}
             </FormItem>
             <FormItem extra={this.state.passExtra}>
@@ -108,11 +118,10 @@ class LoginPage extends React.Component {
               })(
                 <Checkbox>记住密码</Checkbox>
               )}
-              <a className="login-form-forgot" href="">忘记密码</a>
+              <Link className="login-form-forgot" to="/login">去登录</Link>
               <Button type="primary" htmlType="submit" className="login-form-button">
-                登录
+                注册
               </Button>
-              <Link to="/signup">去注册</Link>
             </FormItem>
         </Form>
       </div>

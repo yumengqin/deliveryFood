@@ -15,8 +15,10 @@ var app = new koa();
 
 
 var db = require('./db/db').db;
+var mongoose = require('mongoose');
 
-var PersonSchema = require('./model/user');
+var PersonSchema = require('./model/user').modleUser;
+
 
 db.on('error', function(error) {
     console.log('连接失败', error);
@@ -156,7 +158,7 @@ router.post('/api/login', koaBody, function*() {
     if (result.length !== 0) {
       const pass = JSON.parse(JSON.stringify(result[0])).password;
       if (pass == data.password) {
-        this.body = JSON.stringify({ success: true, data: result });
+        this.body = JSON.stringify({ success: true, data: result[0], remember: data.remember });
       } else {
         this.body = JSON.stringify({
           success: false,
@@ -184,16 +186,42 @@ router.post('/api/login', koaBody, function*() {
       }
     });
   }
-  // db.createCollection('user',{safe:true},function(err,collection){
-	// 	//返回所有数据
-	// 	collection.find().toArray(function(err,docs){
-	// 		var obj={"docs":docs};
-	// 		//console.log(obj);
-	// 		var str=JSON.stringify(obj);
-	// 		console.log(str);
-	// 	});
-	// });
-	// login()
+});
+
+router.post('/api/signup', koaBody, function*() {
+  var data = JSON.parse(this.request.body);
+  if (data.checkCode.toLowerCase() === code.toLowerCase()) {
+    const result = yield PersonModel.find({ userName: data.userName });
+    if (result.length !== 0) {
+      this.body = JSON.stringify({
+        success: false,
+        data: {
+          errKey: 'user',
+          errMsg: '该用户名已存在',
+        }
+      });
+    } else {
+      console.log(data);
+      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'buyer'});
+      this.body = {
+        success: true,
+        data: {
+          name: data.name,
+          userName: data.userName,
+          remember: data.remember,
+          role: 'buyer',
+        }
+      }
+    }
+  } else {
+    this.body = JSON.stringify({
+      success: false,
+      data: {
+        errKey: 'code',
+        errMsg: '验证码输入错误',
+      }
+    });
+  }
 });
 
 router.post('/api/logout', koaBody, function*() {

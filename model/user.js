@@ -7,6 +7,4 @@ var PersonSchema = new mongoose.Schema({
   role: String
 });
 
-exports.modleDB={
-  user: PersonSchema
-};
+exports.modleUser= PersonSchema;
