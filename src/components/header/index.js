@@ -25,7 +25,7 @@ class Header extends React.Component {
             ))
           }
           <li key="login-signup">
-            <Link to="/login">登录／注册</Link>
+            <Link to="/login">{localStorage.getItem('name')}</Link>
           </li>
         </ul>
       </div>
