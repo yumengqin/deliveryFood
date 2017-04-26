@@ -1,4 +1,5 @@
 import React from 'react';
+import LazyLoad from 'react-lazyload';
 import { Input } from 'antd';
 import { connect } from 'react-redux'
 import { message_update, guest_update, nickname_get } from '../../action'
@@ -83,6 +84,11 @@ class IndexPage extends React.Component {
               })
             }
           </ul>
+          <div>
+            <LazyLoad once >
+              <p>123</p>
+            </LazyLoad>
+          </div>
         </div>
       </div>
     );
