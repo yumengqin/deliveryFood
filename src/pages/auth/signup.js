@@ -69,6 +69,15 @@ class LoginPage extends React.Component {
       }
     })
   }
+  onFocus(e, key) {
+    if (key === 'code') {
+      this.setState({ codeExtra: '' });
+    } else if (key === 'user') {
+      this.setState({ userExtra: '' });
+    } else if (key === 'pass') {
+      this.setState({ passExtra: '' });
+    }
+  }
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
@@ -82,7 +91,7 @@ class LoginPage extends React.Component {
                   { pattern: /^1(3|4|5|7|8)\d{9}$/, message: '请输入正确的手机号码'}
                 ],
               })(
-                <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="手机号" />
+                <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="手机号" onFocus={e => this.onFocus(e, 'user')} />
               )}
             </FormItem>
             <FormItem>
@@ -100,14 +109,14 @@ class LoginPage extends React.Component {
                   { pattern: /[0-9a-zA-Z]{6,20}/, message: '密码为6-20位数字或字母' },
                 ],
               })(
-                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="密码" />
+                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="密码" onFocus={e => this.onFocus(e, 'pass')} />
               )}
             </FormItem>
             <FormItem extra={this.state.codeExtra}>
               {getFieldDecorator('checkCode', {
                 rules: [{ required: true, message: '请输入验证码' }],
               })(
-                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="text" className="code-input" placeholder="验证码"/>
+                <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="text" className="code-input" placeholder="验证码" onFocus={e => this.onFocus(e, 'code')}/>
               )}
               <img src={this.state.url} className="code-img"/>
             </FormItem>

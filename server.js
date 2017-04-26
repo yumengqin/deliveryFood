@@ -224,6 +224,42 @@ router.post('/api/signup', koaBody, function*() {
   }
 });
 
+router.post('/api/open', koaBody, function*() {
+  var data = JSON.parse(this.request.body);
+  if (data.checkCode.toLowerCase() === code.toLowerCase()) {
+    const result = yield PersonModel.find({ userName: data.userName });
+    if (result.length !== 0) {
+      this.body = JSON.stringify({
+        success: false,
+        data: {
+          errKey: 'user',
+          errMsg: '该用户名已存在',
+        }
+      });
+    } else {
+      console.log(data);
+      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller'});
+      this.body = {
+        success: true,
+        data: {
+          name: data.name,
+          userName: data.userName,
+          remember: data.remember,
+          role: 'seller',
+        }
+      }
+    }
+  } else {
+    this.body = JSON.stringify({
+      success: false,
+      data: {
+        errKey: 'code',
+        errMsg: '验证码输入错误',
+      }
+    });
+  }
+});
+
 router.post('/api/logout', koaBody, function*() {
   var nick = this.cookies.get('name');
   this.cookies.set('name', undefined);
