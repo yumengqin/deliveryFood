@@ -6,6 +6,7 @@
   background: #555;
 }
 .avatar-uploader {
+  position: relative;
   display: block;
   width: 80px;
   height: 80px;
@@ -49,4 +50,25 @@
 .ant-menu .ant-menu-item-active, .ant-menu .ant-menu-item:hover {
   font-weight: bold;
   color: #000;
+}
+
+.avatar-uploader .ant-upload-list-picture .ant-upload-list-item {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 80px;
+  height: 80px;
+  margin: 0px;
+  padding: 0px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.avatar-uploader .ant-upload-list-picture .ant-upload-list-item-thumbnail {
+  top: 0px;
+  left: 0px;
+}
+.avatar-uploader .ant-upload-list-picture .ant-upload-list-item-thumbnail img {
+  display: block;
+    width: 80px;
+    height: 80px;
 }
