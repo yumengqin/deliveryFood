@@ -62,7 +62,7 @@ class LoginPage extends React.Component {
           hashHistory.push('/indexBuyer');
           // app.props.buyer();
         } else {
-          hashHistory.push('/indexSeller');
+          hashHistory.push('/setSeller');
         }
       }
     })

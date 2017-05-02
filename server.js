@@ -1,15 +1,20 @@
 var koa = require('koa');
-var parse = require('co-body');
+var path = require('path');
+var formParse = require('co-busboy');
 var route = require('koa-route');
 var views = require('co-views');
 var webpack = require('webpack');
-var koaBody = require('koa-body')();
+var koaBody = require('koa-body')({
+  multipart: true,
+  formidable: { uploadDir: path.join(__dirname) }
+});
 var router  = require('koa-router')();
 var webpackDev = require('koa-webpack-dev-middleware');
 var webpackConf = require('./webpack.config.js');
 var compiler = webpack(webpackConf);
 var serve = require('koa-static');
 var http = require('http');
+var fs = require('fs');
 var ccap = require('ccap')();
 var app = new koa();
 
@@ -103,7 +108,7 @@ app.use(webpackDev(compiler, {
   hot: false
 }));
 
-// app.use(serve('./dist'));
+app.use(serve('./dist'));
 
 app.use(route.get('/', function*() {
   // var tank = {name: 'something'};
@@ -280,6 +285,25 @@ router.get('/api/code', koaBody, function*() {
   this.body = buf;
 });
 
+router.post('/api/sellerImg/upload', koaBody, function*(next) {
+  var part = this.request.body.files.uploadFile;
+  var fileName = part.name;
+  var tmpath = part.path;
+  var newpath = path.join('static/upload', Date.parse(new Date()).toString() + fileName);
+  var stream = fs.createWriteStream(newpath);//创建一个可写流
+  fs.createReadStream(tmpath).pipe(stream);//可读流通过管道写入可写流
+  this.body={
+    imgUrl: 'http://localhost:5000/show?' + newpath,
+  };
+});
+
+
+router.get('/show', function(){
+  var url = this.request.url;
+  var path = url.split('?')[1];
+  var img = fs.createReadStream(path);
+  this.body = img;
+});
 app.use(router.routes());
 
 server.listen(process.env.PORT || 5000, function() {
