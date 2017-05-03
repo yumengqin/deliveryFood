@@ -14,7 +14,7 @@ const upImgProps = app => ({
   name: 'uploadFile',
   action: 'http://localhost:5000/api/sellerImg/upload',
   listType: 'picture',
-  // data: { file: app.state.file },
+  data: { userName: localStorage.getItem('userName') },
   beforeUpload(file) {
     const type = file.type;
     if (type !== 'image/jpeg' && type !== 'image/jpg' && type !== 'image/png') {
@@ -28,7 +28,14 @@ const upImgProps = app => ({
     return true;
   },
   onChange(info) {
-    console.log(info);
+    const status = info.file.status;
+    if (status === 'done') {
+      message.success('上传成功');
+      // app.setState({ selfImg: info.file.response.imgUrl });
+      app.setState({ uploading: false });
+    } else if (status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
   },
 });
 
@@ -36,9 +43,23 @@ class leftBar extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state={
-      imageUrl: '',
+      selfImg: '',
       storeStstus: 'open',
     }
+  }
+  componentWillMount() {
+    const _this = this;
+    fetch('/api/user', {
+      method: 'post',
+      body: JSON.stringify({
+        userName : localStorage.getItem('userName'),
+      }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      _this.setState({ data: res.data });
+    })
   }
   handleStatus(e) {
     if (e.key === 'close') {
@@ -53,8 +74,8 @@ class leftBar extends React.Component {
         <ul>
           <Upload className="avatar-uploader" {...upImgProps(this)}>
               {
-                this.state.imageUrl ?
-                  <img src={this.state.imageUrl} alt="" className="avatar" /> :
+                (this.state.data && this.state.data.selfImg) ?
+                  <img src={this.state.data.selfImg} alt="" className="avatar" /> :
                   <Icon type="plus" className="avatar-uploader-trigger" />
               }
             </Upload>
@@ -71,10 +92,8 @@ class leftBar extends React.Component {
                 <Menu.Item key="close">关店</Menu.Item>
               </SubMenu>
               <SubMenu key="sub4" title={<span><Icon type="setting" /><span>设置</span></span>}>
-                <Menu.Item key="9">Option 9</Menu.Item>
-                <Menu.Item key="10">Option 10</Menu.Item>
-                <Menu.Item key="11">Option 11</Menu.Item>
-                <Menu.Item key="12">Option 12</Menu.Item>
+                <Menu.Item key="store">店铺设置</Menu.Item>
+                <Menu.Item key="order">菜品设置</Menu.Item>
               </SubMenu>
             </Menu>
         </ul>

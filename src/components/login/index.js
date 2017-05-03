@@ -53,11 +53,9 @@ class LoginPage extends React.Component {
         }
         app.url();
       } else {
-        if (res.remember) {
-          localStorage.setItem('name', res.data.name);
-          localStorage.setItem('userName', res.data.userName);
-          localStorage.setItem('role', res.data.role);
-        }
+        localStorage.setItem('name', res.data.name);
+        localStorage.setItem('userName', res.data.userName);
+        localStorage.setItem('role', res.data.role);
         if (res.data.role == 'buyer') {
           hashHistory.push('/indexBuyer');
           // app.props.buyer();

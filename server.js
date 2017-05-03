@@ -207,7 +207,7 @@ router.post('/api/signup', koaBody, function*() {
       });
     } else {
       console.log(data);
-      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'buyer'});
+      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'buyer', selfImg: '' });
       this.body = {
         success: true,
         data: {
@@ -243,7 +243,7 @@ router.post('/api/open', koaBody, function*() {
       });
     } else {
       console.log(data);
-      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller'});
+      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller', selfImg: ''});
       this.body = {
         success: true,
         data: {
@@ -292,6 +292,10 @@ router.post('/api/sellerImg/upload', koaBody, function*(next) {
   var newpath = path.join('static/upload', Date.parse(new Date()).toString() + fileName);
   var stream = fs.createWriteStream(newpath);//创建一个可写流
   fs.createReadStream(tmpath).pipe(stream);//可读流通过管道写入可写流
+  PersonModel.update({ userName: this.request.body.fields.userName}, { selfImg: 'http://localhost:5000/show?' + newpath }, function(error) {
+    console.log(error);
+  });
+  console.log('换图片');
   this.body={
     imgUrl: 'http://localhost:5000/show?' + newpath,
   };
@@ -303,6 +307,15 @@ router.get('/show', function(){
   var path = url.split('?')[1];
   var img = fs.createReadStream(path);
   this.body = img;
+});
+
+router.post('/api/user', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const result = yield PersonModel.findOne({ userName: data.userName });
+  this.body = {
+    success: true,
+    data: result,
+  }
 });
 app.use(router.routes());
 
