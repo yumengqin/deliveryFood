@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Form, Button, message, Spin, Input, Icon } from 'antd';
+import { Form, Button, message, Spin, Input, Icon, Radio } from 'antd';
 import { connect } from 'react-redux'
 import { message_update, guest_update, nickname_get } from '../../action'
 import { hashHistory } from 'react-router'
@@ -9,6 +9,9 @@ require('./sellerSet.less');
 
 const FormItem = Form.Item;
 const createForm = Form.create;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
+
 
 class IndexPage extends React.Component {
   render() {
@@ -24,7 +27,7 @@ class IndexPage extends React.Component {
                 { pattern: /^1(3|4|5|7|8)\d{9}$/, message: '请输入正确的手机号码'}
               ],
             })(
-              <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} readOnly/>
+              <Input prefix={<Icon type="mobile" style={{ fontSize: 13 }} />} readOnly/>
             )}
           </FormItem>
           <FormItem label="姓名">
@@ -44,6 +47,14 @@ class IndexPage extends React.Component {
               ],
             })(
               <Input />
+            )}
+          </FormItem>
+          <FormItem label="性别">
+            {getFieldDecorator('radio-group')(
+              <RadioGroup>
+                <Radio value="man">男</Radio>
+                <Radio value="woman">女</Radio>
+              </RadioGroup>
             )}
           </FormItem>
           <FormItem>
