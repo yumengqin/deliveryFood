@@ -11,6 +11,7 @@ import OpenContainer from './pages/auth/open.js'
 import IndexBuyerContainer from './pages/index/buyer.js'
 import indexSellerContainer from './pages/index/seller.js'
 import setSellerContainer from './pages/set/sellerSet.js'
+import setStoreContainer from './pages/set/storeSet.js'
 import createSocketMiddleware from './redux_middleware'
 import io from 'socket.io-client'
 import reducers from './reducer'
@@ -20,6 +21,7 @@ var socket = io();
 var socketMiddleware = createSocketMiddleware(socket);
 
 var store = createStore(reducers, applyMiddleware(socketMiddleware));
+
 
 render(
   <Provider store={store}>
@@ -31,6 +33,7 @@ render(
       <Route path='/indexBuyer' component={IndexBuyerContainer}/>
       <Route path='/indexSeller' component={indexSellerContainer} />
       <Route path='/setSeller' component={setSellerContainer} />
+      <Route path='/setStore' component={setStoreContainer} />
     </Router>
   </Provider>
   ,

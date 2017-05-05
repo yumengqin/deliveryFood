@@ -3,10 +3,10 @@ import { Link } from 'react-router';
 // import { hashHistory } from 'react-router'
 
 const card = ([
-  { title: '便当快餐', key: 'food', word: '&#xe61f;' },
-  { title: '披萨汉堡', key: 'westfood', word: '&#xe61a;' },
+  { title: '快捷便当', key: 'quick', word: '&#xe61f;' },
+  { title: '小吃夜宵', key: 'supper', word: '&#xe61a;' },
   { title: '鲜花蛋糕', key: 'flower_cake', word: '&#xe621;' },
-  { title: '水果蔬菜', key: 'fruits', word: '&#xe622;' },
+  { title: '水果蔬菜', key: 'fruit', word: '&#xe622;' },
 ]);
 
 require('./index.less');

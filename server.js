@@ -23,7 +23,7 @@ var db = require('./db/db').db;
 var mongoose = require('mongoose');
 
 var PersonSchema = require('./model/user').modleUser;
-
+var StoreSchema = require('./model/store').modleStore;
 
 db.on('error', function(error) {
     console.log('连接失败', error);
@@ -34,7 +34,7 @@ db.on('open', function () {
 });
 
 var PersonModel = db.model('user',PersonSchema);
-
+var StoreModel = db.model('store',StoreSchema)
 // var login = require('./db/login').login;
 
 var render = views('./src', {
@@ -252,6 +252,7 @@ router.post('/api/open', koaBody, function*() {
       console.log(data);
       var openDate = new Date().getTime();
       PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller', selfImg: '', startDate: openDate, lastLogin: openDate});
+      StoreModel.create({ owner: data.userName, phone: data.userName, ownerName: data.name, startDate: openDate, album: [], orderNum: 0, dishNum: 0 });
       this.body = {
         success: true,
         data: {
@@ -320,6 +321,15 @@ router.get('/show', function(){
 router.post('/api/user', koaBody, function*(){
   const data = JSON.parse(this.request.body);
   const result = yield PersonModel.findOne({ userName: data.userName });
+  this.body = {
+    success: true,
+    data: result,
+  }
+});
+
+router.post('/api/store', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const result = yield StoreModel.findOne({ owner: data.userName });
   this.body = {
     success: true,
     data: result,

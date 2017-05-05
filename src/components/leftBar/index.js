@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router';
+import { hashHistory, Link } from 'react-router'
 import { Upload, Icon, Menu, message } from 'antd';
 
 const SubMenu = Menu.SubMenu;
@@ -48,6 +48,9 @@ class leftBar extends React.Component {
     }
   }
   componentWillMount() {
+    if (!localStorage.getItem('userName')) {
+      hashHistory.push('/');
+    }
     const _this = this;
     fetch('/api/user', {
       method: 'post',
@@ -67,6 +70,10 @@ class leftBar extends React.Component {
     } else if (e.key === 'open') {
       this.setState({ storeStstus: 'open' });
     }
+  }
+  logout() {
+    localStorage.clear();
+    hashHistory.push('/');
   }
   render() {
     return (
@@ -92,10 +99,13 @@ class leftBar extends React.Component {
                 <Menu.Item key="close">关店</Menu.Item>
               </SubMenu>
               <SubMenu key="sub4" title={<span><Icon type="setting" /><span>设置</span></span>}>
-                <Menu.Item key="store">店铺设置</Menu.Item>
+                <Menu.Item key="store">
+                  <Link to='/setStore'>店铺设置</Link>
+                </Menu.Item>
                 <Menu.Item key="order">菜品设置</Menu.Item>
               </SubMenu>
             </Menu>
+            <button onClick={() => this.logout()} className="out-btn">退出登录</button>
         </ul>
       </div>
     );
