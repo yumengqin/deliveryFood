@@ -163,7 +163,13 @@ router.post('/api/login', koaBody, function*() {
     if (result.length !== 0) {
       const pass = JSON.parse(JSON.stringify(result[0])).password;
       if (pass == data.password) {
-        this.body = JSON.stringify({ success: true, data: result[0], remember: data.remember });
+        var loginDate = new Date().getTime();
+        var test = JSON.parse(JSON.stringify(result[0]));
+        test.lastLogin = loginDate;
+        PersonModel.update({ userName: data.userName}, { lastLogin: loginDate }, function(error) {
+          console.log(error);
+        });
+        this.body = JSON.stringify({ success: true, data: test, remember: data.remember });
       } else {
         this.body = JSON.stringify({
           success: false,
@@ -207,7 +213,8 @@ router.post('/api/signup', koaBody, function*() {
       });
     } else {
       console.log(data);
-      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'buyer', selfImg: '' });
+      var signDate = new Date().getTime();
+      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'buyer', selfImg: '', startDate: signDate, lastLogin: signDate });
       this.body = {
         success: true,
         data: {
@@ -243,7 +250,8 @@ router.post('/api/open', koaBody, function*() {
       });
     } else {
       console.log(data);
-      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller', selfImg: ''});
+      var openDate = new Date().getTime();
+      PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller', selfImg: '', startDate: openDate, lastLogin: openDate});
       this.body = {
         success: true,
         data: {
@@ -315,6 +323,19 @@ router.post('/api/user', koaBody, function*(){
   this.body = {
     success: true,
     data: result,
+  }
+});
+
+router.post('/api/user/update', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  var birDate = new Date(data.date).getTime();
+  data.date = birDate;
+  PersonModel.update({ userName: data.userName }, data, function(error){
+    console.log(error);
+  });
+  this.body = {
+    success: true,
+    data: data,
   }
 });
 app.use(router.routes());

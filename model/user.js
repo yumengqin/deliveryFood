@@ -6,6 +6,11 @@ var PersonSchema = new mongoose.Schema({
   password: String,
   role: String,
   selfImg: String,
+  startDate: Number,
+  lastLogin: Number,
+  date: Number,
+  like: String,
+  sex: String,
 });
 
 exports.modleUser= PersonSchema;
