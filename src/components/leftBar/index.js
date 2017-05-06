@@ -99,6 +99,9 @@ class leftBar extends React.Component {
                 <Menu.Item key="close">关店</Menu.Item>
               </SubMenu>
               <SubMenu key="sub4" title={<span><Icon type="setting" /><span>设置</span></span>}>
+                <Menu.Item key="seller">
+                  <Link to='/setSeller'>个人信息</Link>
+                </Menu.Item>
                 <Menu.Item key="store">
                   <Link to='/setStore'>店铺设置</Link>
                 </Menu.Item>

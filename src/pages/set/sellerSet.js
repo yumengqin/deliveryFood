@@ -85,7 +85,7 @@ class IndexPage extends React.Component {
                 { pattern: /^1(3|4|5|7|8)\d{9}$/, message: '请输入正确的手机号码'}
               ],
             })(
-              <Input prefix={<Icon type="mobile" style={{ fontSize: 13 }} />} readOnly/>
+              <Input prefix={<Icon type="mobile" style={{ fontSize: 16 }} />} readOnly/>
             )}
           </FormItem>
           <FormItem label="姓名">
@@ -94,7 +94,7 @@ class IndexPage extends React.Component {
                 { required: true, message: '请输入姓名' },
               ],
             })(
-              <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} />
+              <Input prefix={<Icon type="user" style={{ fontSize: 16 }} />} />
             )}
           </FormItem>
           <FormItem label="出生日期">

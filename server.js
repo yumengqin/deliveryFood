@@ -310,6 +310,17 @@ router.post('/api/sellerImg/upload', koaBody, function*(next) {
   };
 });
 
+router.post('/api/storeImg/upload', koaBody, function*(next) {
+  var part = this.request.body.files.uploadFile;
+  var fileName = part.name;
+  var tmpath = part.path;
+  var newpath = path.join('static/upload', Date.parse(new Date()).toString() + fileName);
+  var stream = fs.createWriteStream(newpath);//创建一个可写流
+  fs.createReadStream(tmpath).pipe(stream);//可读流通过管道写入可写流
+  this.body={
+    imgUrl: 'http://localhost:5000/show?' + newpath,
+  };
+});
 
 router.get('/show', function(){
   var url = this.request.url;
@@ -341,6 +352,17 @@ router.post('/api/user/update', koaBody, function*(){
   var birDate = new Date(data.date).getTime();
   data.date = birDate;
   PersonModel.update({ userName: data.userName }, data, function(error){
+    console.log(error);
+  });
+  this.body = {
+    success: true,
+    data: data,
+  }
+});
+
+router.post('/api/store/update', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  StoreModel.update({ owner: data.userName }, data, function(error){
     console.log(error);
   });
   this.body = {
