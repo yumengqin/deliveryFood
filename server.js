@@ -24,6 +24,7 @@ var mongoose = require('mongoose');
 
 var PersonSchema = require('./model/user').modleUser;
 var StoreSchema = require('./model/store').modleStore;
+var MenuSchema = require('./model/storeMenu').modelMenu;
 
 db.on('error', function(error) {
     console.log('连接失败', error);
@@ -34,7 +35,8 @@ db.on('open', function () {
 });
 
 var PersonModel = db.model('user',PersonSchema);
-var StoreModel = db.model('store',StoreSchema)
+var StoreModel = db.model('store',StoreSchema);
+var MenuModel = db.model('menu',MenuSchema);
 // var login = require('./db/login').login;
 
 var render = views('./src', {
@@ -156,6 +158,7 @@ app.use(route.post('/api/nickname', function*() {
   }
 }));
 
+// 登录
 router.post('/api/login', koaBody, function*() {
   var data = JSON.parse(this.request.body);
   if (data.checkCode.toLowerCase() === code.toLowerCase()) {
@@ -199,6 +202,7 @@ router.post('/api/login', koaBody, function*() {
   }
 });
 
+// 普通用户注册
 router.post('/api/signup', koaBody, function*() {
   var data = JSON.parse(this.request.body);
   if (data.checkCode.toLowerCase() === code.toLowerCase()) {
@@ -236,6 +240,7 @@ router.post('/api/signup', koaBody, function*() {
   }
 });
 
+// 店家注册
 router.post('/api/open', koaBody, function*() {
   var data = JSON.parse(this.request.body);
   if (data.checkCode.toLowerCase() === code.toLowerCase()) {
@@ -253,6 +258,7 @@ router.post('/api/open', koaBody, function*() {
       var openDate = new Date().getTime();
       PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller', selfImg: '', startDate: openDate, lastLogin: openDate});
       StoreModel.create({ owner: data.userName, phone: data.userName, ownerName: data.name, startDate: openDate, album: [], orderNum: 0, dishNum: 0 });
+      MenuModel.create({ owner: data.userName, menuType: [], menuArr: [] });
       this.body = {
         success: true,
         data: {
@@ -274,6 +280,7 @@ router.post('/api/open', koaBody, function*() {
   }
 });
 
+// 退出登录
 router.post('/api/logout', koaBody, function*() {
   var nick = this.cookies.get('name');
   this.cookies.set('name', undefined);
@@ -285,6 +292,7 @@ router.post('/api/logout', koaBody, function*() {
   this.body = '';
 });
 
+// 验证码
 router.get('/api/code', koaBody, function*() {
   var ary = ccap.get();
   var txt = ary[0];
@@ -294,6 +302,7 @@ router.get('/api/code', koaBody, function*() {
   this.body = buf;
 });
 
+// 上传店主头像
 router.post('/api/sellerImg/upload', koaBody, function*(next) {
   var part = this.request.body.files.uploadFile;
   var fileName = part.name;
@@ -310,6 +319,7 @@ router.post('/api/sellerImg/upload', koaBody, function*(next) {
   };
 });
 
+// 上传店家广告册
 router.post('/api/storeImg/upload', koaBody, function*(next) {
   var part = this.request.body.files.uploadFile;
   var fileName = part.name;
@@ -322,6 +332,7 @@ router.post('/api/storeImg/upload', koaBody, function*(next) {
   };
 });
 
+// 显示图片
 router.get('/show', function(){
   var url = this.request.url;
   var path = url.split('?')[1];
@@ -329,6 +340,7 @@ router.get('/show', function(){
   this.body = img;
 });
 
+// 查询用户信息
 router.post('/api/user', koaBody, function*(){
   const data = JSON.parse(this.request.body);
   const result = yield PersonModel.findOne({ userName: data.userName });
@@ -338,6 +350,7 @@ router.post('/api/user', koaBody, function*(){
   }
 });
 
+// 查询店铺信息
 router.post('/api/store', koaBody, function*(){
   const data = JSON.parse(this.request.body);
   const result = yield StoreModel.findOne({ owner: data.userName });
@@ -347,6 +360,7 @@ router.post('/api/store', koaBody, function*(){
   }
 });
 
+// 更改用户信息
 router.post('/api/user/update', koaBody, function*(){
   const data = JSON.parse(this.request.body);
   var birDate = new Date(data.date).getTime();
@@ -360,6 +374,7 @@ router.post('/api/user/update', koaBody, function*(){
   }
 });
 
+// 更改店铺信息
 router.post('/api/store/update', koaBody, function*(){
   const data = JSON.parse(this.request.body);
   StoreModel.update({ owner: data.userName }, data, function(error){
@@ -370,6 +385,8 @@ router.post('/api/store/update', koaBody, function*(){
     data: data,
   }
 });
+
+
 app.use(router.routes());
 
 server.listen(process.env.PORT || 5000, function() {

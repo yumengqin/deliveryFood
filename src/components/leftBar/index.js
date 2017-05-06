@@ -105,7 +105,9 @@ class leftBar extends React.Component {
                 <Menu.Item key="store">
                   <Link to='/setStore'>店铺设置</Link>
                 </Menu.Item>
-                <Menu.Item key="order">菜品设置</Menu.Item>
+                <Menu.Item key="order">
+                  <Link to='/setMenu'>菜品设置</Link>
+                </Menu.Item>
               </SubMenu>
             </Menu>
             <button onClick={() => this.logout()} className="out-btn">退出登录</button>

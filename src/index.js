@@ -12,6 +12,7 @@ import IndexBuyerContainer from './pages/index/buyer.js'
 import indexSellerContainer from './pages/index/seller.js'
 import setSellerContainer from './pages/set/sellerSet.js'
 import setStoreContainer from './pages/set/storeSet.js'
+import setMenuContainer from './pages/set/menuSet.js'
 import createSocketMiddleware from './redux_middleware'
 import io from 'socket.io-client'
 import reducers from './reducer'
@@ -34,6 +35,7 @@ render(
       <Route path='/indexSeller' component={indexSellerContainer} />
       <Route path='/setSeller' component={setSellerContainer} />
       <Route path='/setStore' component={setStoreContainer} />
+      <Route path='/setMenu' component={setMenuContainer} />
     </Router>
   </Provider>
   ,
