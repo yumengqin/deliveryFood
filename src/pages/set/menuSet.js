@@ -39,7 +39,8 @@ class IndexPage extends React.Component {
       add: false,
       menuHeight: 400,
       visible: false,
-      typeError: ''
+      typeError: '',
+      activeIndex: -1,
     };
   }
   componentWillMount() {
@@ -112,6 +113,7 @@ class IndexPage extends React.Component {
         return 0;
       }
       const test = this.state.data;
+      test.userName = this.state.data.owner;
       test.typeMenu.push(data.typeName);
       fetch('/api/store/update', {
         method: 'post',
@@ -129,6 +131,21 @@ class IndexPage extends React.Component {
       })
     });
   }
+  changeType(e, item, index) {
+    const _this = this;
+    const test = { owner: this.state.data.owner, type: item };
+    fetch('/api/menu/filter', {
+      method: 'post',
+      body: JSON.stringify(test),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      if(res.success) {
+        _this.setState({ menu: res.data, activeIndex: index });
+      }
+    })
+  }
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
@@ -141,10 +158,10 @@ class IndexPage extends React.Component {
           </Carousel>
           <div className="menu">
             <ul className="menuType" ref="menuType" style={{ height: this.state.menuHeight}}>
-              <li key="all">全部菜品</li>
+              <li key="all" onClick={e => this.changeType(e, '全部', -1)} className={this.state.activeIndex == -1 ? 'active' : ''}>全部菜品</li>
               {
                 (this.state.data.typeMenu || []).map((item, index) =>{
-                  return <li key={index} onClick={e => changeType(e, item)}>{item}</li>
+                  return <li key={index} onClick={e => this.changeType(e, item, index)} className={this.state.activeIndex === index ? 'active' : ''}>{item}</li>
                 })
               }
             </ul>

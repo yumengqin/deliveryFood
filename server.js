@@ -378,8 +378,8 @@ router.post('/api/store', koaBody, function*(){
 // 更改店铺信息
 router.post('/api/store/update', koaBody, function*(){
   const data = JSON.parse(this.request.body);
-  StoreModel.update({ owner: data.userName }, { $typeMenu: [123]}, function(error){
-    console.log(data, error);
+  StoreModel.update({ owner: data.userName }, data, {new: true}, function(error, res){
+    console.log(data, error, res);
   });
   this.body = {
     success: true,
@@ -433,7 +433,8 @@ router.post('/api/menu/show', koaBody, function*(next) {
 // 根据类型选取菜品
 router.post('/api/menu/filter', koaBody, function*(next) {
   const data = JSON.parse(this.request.body);
-  const result = yield AllMenuModel.find({ owner: data.owner, type: data.type });
+  const obj = data.type === '全部' ? { owner: data.owner } : { owner: data.owner, type: data.type };
+  const result = yield AllMenuModel.find(obj);
   this.body = {
     success: true,
     data: result,

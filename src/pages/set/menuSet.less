@@ -31,6 +31,18 @@
   color: #999;
   cursor: pointer;
 }
+.menu .menuType .active {
+  background: #f2f2f2;
+  color: #1F5EA9;
+}
+.menu .menuType .active:after {
+  content: '';
+  display: block;
+  float: left;
+  width: 3px;
+  height: 40px;
+  background: #1F5EA9;
+}
 .menu .menuList {
   flex: 1;
   height: 100%;
@@ -132,6 +144,7 @@
   transform: translate(0px, 7px);
 }
 .noMenu {
+  width: 100%;
   line-height: 400px;
   text-align: center;
   font-size: 30px;
