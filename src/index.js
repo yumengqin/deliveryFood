@@ -13,6 +13,8 @@ import indexSellerContainer from './pages/index/seller.js'
 import setSellerContainer from './pages/set/sellerSet.js'
 import setStoreContainer from './pages/set/storeSet.js'
 import setMenuContainer from './pages/set/menuSet.js'
+import addMenuContainer from './pages/set/addMenu.js'
+import MenuInfoContainer from './pages/set/editMenu.js'
 import createSocketMiddleware from './redux_middleware'
 import io from 'socket.io-client'
 import reducers from './reducer'
@@ -36,6 +38,8 @@ render(
       <Route path='/setSeller' component={setSellerContainer} />
       <Route path='/setStore' component={setStoreContainer} />
       <Route path='/setMenu' component={setMenuContainer} />
+      <Route path='/setMenu/addMenu' component={addMenuContainer} />
+      <Route path='/setMenu/:id' component={MenuInfoContainer} />
     </Router>
   </Provider>
   ,

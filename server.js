@@ -24,7 +24,7 @@ var mongoose = require('mongoose');
 
 var PersonSchema = require('./model/user').modleUser;
 var StoreSchema = require('./model/store').modleStore;
-var MenuSchema = require('./model/storeMenu').modelMenu;
+var AllMenuSchema = require('./model/allMenu').modelAllMenu;
 
 db.on('error', function(error) {
     console.log('连接失败', error);
@@ -36,7 +36,7 @@ db.on('open', function () {
 
 var PersonModel = db.model('user',PersonSchema);
 var StoreModel = db.model('store',StoreSchema);
-var MenuModel = db.model('menu',MenuSchema);
+var AllMenuModel = db.model('food', AllMenuSchema)
 // var login = require('./db/login').login;
 
 var render = views('./src', {
@@ -258,7 +258,6 @@ router.post('/api/open', koaBody, function*() {
       var openDate = new Date().getTime();
       PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller', selfImg: '', startDate: openDate, lastLogin: openDate});
       StoreModel.create({ owner: data.userName, phone: data.userName, ownerName: data.name, startDate: openDate, album: [], orderNum: 0, dishNum: 0 });
-      MenuModel.create({ owner: data.userName, menuType: [], menuArr: [] });
       this.body = {
         success: true,
         data: {
@@ -354,9 +353,11 @@ router.post('/api/user', koaBody, function*(){
 router.post('/api/store', koaBody, function*(){
   const data = JSON.parse(this.request.body);
   const result = yield StoreModel.findOne({ owner: data.userName });
+  const food = yield AllMenuModel.find({ owner: data.userName })
   this.body = {
     success: true,
     data: result,
+    menu: food,
   }
 });
 
@@ -377,6 +378,7 @@ router.post('/api/user/update', koaBody, function*(){
 // 更改店铺信息
 router.post('/api/store/update', koaBody, function*(){
   const data = JSON.parse(this.request.body);
+  console.log(data);
   StoreModel.update({ owner: data.userName }, data, function(error){
     console.log(error);
   });
@@ -386,7 +388,33 @@ router.post('/api/store/update', koaBody, function*(){
   }
 });
 
+router.post('/api/menu/create', koaBody, function*(next) {
+  const data = JSON.parse(this.request.body);
+  console.log('11', this.request.body);
+  AllMenuModel.create(data);
+  this.body = {
+    success: true,
+    data: data,
+  }
+});
+// 上传菜品图片
+router.post('/api/menuImg/upload', koaBody, function*(next) {
+  var part = this.request.body.files.uploadFile;
+  var fileName = part.name;
+  var tmpath = part.path;
+  var newpath = path.join('static/upload', Date.parse(new Date()).toString() + fileName);
+  var stream = fs.createWriteStream(newpath);//创建一个可写流
+  fs.createReadStream(tmpath).pipe(stream);//可读流通过管道写入可写流
+  this.body={
+    imgUrl: 'http://localhost:5000/show?' + newpath,
+  };
+});
 
+// 获取菜品信息
+router.post('/api/store/menu/show', koaBody, function*(next) {
+  const data = JSON.parse(this.request.body);
+  const storeResult = yield StoreModel.findOne({ owner: data.userName });
+});
 app.use(router.routes());
 
 server.listen(process.env.PORT || 5000, function() {

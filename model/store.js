@@ -10,6 +10,7 @@ var StoreSchema = new mongoose.Schema({
   introduction: String,
   adress: String,
   album: Array,
+  menuType: Array,
   srartDate: Number,
   star: Number,
   orderNum: Number,
