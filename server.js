@@ -257,7 +257,7 @@ router.post('/api/open', koaBody, function*() {
       console.log(data);
       var openDate = new Date().getTime();
       PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller', selfImg: '', startDate: openDate, lastLogin: openDate});
-      StoreModel.create({ owner: data.userName, phone: data.userName, ownerName: data.name, startDate: openDate, album: [], orderNum: 0, dishNum: 0 });
+      StoreModel.create({ owner: data.userName, phone: data.userName, ownerName: data.name, startDate: openDate, album: [], typeMenu:[], orderNum: 0, dishNum: 0 });
       this.body = {
         success: true,
         data: {
@@ -349,18 +349,6 @@ router.post('/api/user', koaBody, function*(){
   }
 });
 
-// 查询店铺信息
-router.post('/api/store', koaBody, function*(){
-  const data = JSON.parse(this.request.body);
-  const result = yield StoreModel.findOne({ owner: data.userName });
-  const food = yield AllMenuModel.find({ owner: data.userName })
-  this.body = {
-    success: true,
-    data: result,
-    menu: food,
-  }
-});
-
 // 更改用户信息
 router.post('/api/user/update', koaBody, function*(){
   const data = JSON.parse(this.request.body);
@@ -375,12 +363,23 @@ router.post('/api/user/update', koaBody, function*(){
   }
 });
 
+// 查询店铺信息
+router.post('/api/store', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const result = yield StoreModel.findOne({ owner: data.userName });
+  const food = yield AllMenuModel.find({ owner: data.userName })
+  this.body = {
+    success: true,
+    data: result,
+    menu: food,
+  }
+});
+
 // 更改店铺信息
 router.post('/api/store/update', koaBody, function*(){
   const data = JSON.parse(this.request.body);
-  console.log(data);
-  StoreModel.update({ owner: data.userName }, data, function(error){
-    console.log(error);
+  StoreModel.update({ owner: data.userName }, { $typeMenu: [123]}, function(error){
+    console.log(data, error);
   });
   this.body = {
     success: true,
@@ -390,13 +389,24 @@ router.post('/api/store/update', koaBody, function*(){
 
 router.post('/api/menu/create', koaBody, function*(next) {
   const data = JSON.parse(this.request.body);
-  console.log('11', this.request.body);
   AllMenuModel.create(data);
   this.body = {
     success: true,
     data: data,
   }
 });
+
+router.post('/api/menu/update', koaBody, function*(next) {
+  const data = JSON.parse(this.request.body);
+  AllMenuModel.update({ id: data.id }, data, function(error){
+    console.log(error);
+  });
+  this.body = {
+    success: true,
+    data: data,
+  }
+});
+
 // 上传菜品图片
 router.post('/api/menuImg/upload', koaBody, function*(next) {
   var part = this.request.body.files.uploadFile;
@@ -411,9 +421,34 @@ router.post('/api/menuImg/upload', koaBody, function*(next) {
 });
 
 // 获取菜品信息
-router.post('/api/store/menu/show', koaBody, function*(next) {
+router.post('/api/menu/show', koaBody, function*(next) {
   const data = JSON.parse(this.request.body);
-  const storeResult = yield StoreModel.findOne({ owner: data.userName });
+  const result = yield AllMenuModel.findOne({ id: data.id });
+  this.body = {
+    success: true,
+    data: result,
+  }
+});
+
+// 根据类型选取菜品
+router.post('/api/menu/filter', koaBody, function*(next) {
+  const data = JSON.parse(this.request.body);
+  const result = yield AllMenuModel.find({ owner: data.owner, type: data.type });
+  this.body = {
+    success: true,
+    data: result,
+  }
+});
+
+router.post('/api/menu/delete', koaBody, function*(next) {
+  const data = JSON.parse(this.request.body);
+  const result = yield AllMenuModel.remove({ id: data.id }, function(err, result) {
+    console.log(err, result);
+  });
+  this.body = {
+    success: true,
+    data: result,
+  }
 });
 app.use(router.routes());
 

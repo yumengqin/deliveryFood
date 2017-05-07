@@ -77,7 +77,7 @@ class IndexPage extends React.Component {
       }).then(function(res) {
         return res.json();
       }).then(function(res) {
-        // hashHistory.push('/setMenu');
+        hashHistory.push('/setMenu');
       })
     });
   }
@@ -97,6 +97,9 @@ class IndexPage extends React.Component {
     // (this.state.data && this.state.data.menuType ? this.state.data.menuType : []).map((item, index) => {
     //   <Option value={item} key={index}>{item}</Option>
     // })
+  }
+  returnPage() {
+    hashHistory.push('/setMenu');
   }
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -170,7 +173,7 @@ class IndexPage extends React.Component {
             </FormItem>
             <FormItem className="allRow btnItem">
               <Button type="primary" htmlType="submit">保存</Button>
-              <Button type="primary">取消</Button>
+              <Button type="primary" onClick={() => this.returnPage()}>返回</Button>
             </FormItem>
           </Form>
         </div>

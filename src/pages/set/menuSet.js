@@ -53,7 +53,7 @@ class IndexPage extends React.Component {
     }).then(function(res) {
       return res.json();
     }).then(function(res) {
-      _this.setState({ data: res.data, menu: res.food });
+      _this.setState({ data: res.data, menu: res.menu });
     })
   }
   componentDidMount() {
@@ -71,8 +71,9 @@ class IndexPage extends React.Component {
     return <div className="default"></div>
   }
   renderMenu() {
+    console.log(this);
     if(this.state.menu && this.state.menu.length !== 0) {
-      return this.state.data.menuArr.map((item, index) => {
+      return this.state.menu.map((item, index) => {
         return (
           <div key={index} className="menuItem">
             <div className="info">
@@ -111,7 +112,7 @@ class IndexPage extends React.Component {
         return 0;
       }
       const test = this.state.data;
-      test.menuType.push(data.typeName);
+      test.typeMenu.push(data.typeName);
       fetch('/api/store/update', {
         method: 'post',
         body: JSON.stringify(test),
@@ -142,7 +143,7 @@ class IndexPage extends React.Component {
             <ul className="menuType" ref="menuType" style={{ height: this.state.menuHeight}}>
               <li key="all">全部菜品</li>
               {
-                (this.state.data.menuType || []).map((item, index) =>{
+                (this.state.data.typeMenu || []).map((item, index) =>{
                   return <li key={index} onClick={e => changeType(e, item)}>{item}</li>
                 })
               }

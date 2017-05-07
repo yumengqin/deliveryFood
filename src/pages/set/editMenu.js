@@ -38,19 +38,23 @@ class IndexPage extends React.Component {
   }
   componentWillMount() {
     var _this = this;
-    fetch('/api/store', {
+    fetch('/api/menu/show', {
       method: 'post',
       body: JSON.stringify({
-        userName : localStorage.getItem('userName'),
+        id : this.props.params.id,
       }),
       credentials: 'include'
     }).then(function(res) {
       return res.json();
     }).then(function(res) {
-      _this.setState({ data: res.data, store: res.store });
+      _this.props.form.setFieldsValue({
+        ...res.data,
+      });
+      _this.setState({ data: res.data, img: res.data.img });
     })
   }
   handleSubmit(e) {
+    console.log('111')
     e.preventDefault();
     const _this = this;
     this.props.form.validateFieldsAndScroll((err, data) => {
@@ -58,33 +62,37 @@ class IndexPage extends React.Component {
         console.log(err);
         return 0;
       }
-      const item = this.state.data;
-      const _id = new Date().getTime() + this.state.data.owner;
-      item.menuArr.push({
-          id: _id,
+      const menu = {
+          id: this.state.data.id,
+          owner: this.state.data.owner,
           menuName: data.menuName,
           type: data.type,
           intro: data.intro,
           price: data.price,
           boxPrice: data.boxPrice,
           img: this.state.img,
-      });
-      // fetch('/api/store/menu/update', {
-      //   method: 'post',
-      //   body: JSON.stringify(item),
-      //   credentials: 'include'
-      // }).then(function(res) {
-      //   return res.json();
-      // }).then(function(res) {
-      //   if(res.success) {
-      //     message.success('保存成功');
-      //     _this.setState({ data: res.data, visible: false });
-      //     hashHistory.push('/setMenu');
-      //   } else {
-      //     message.error('保存失败');
-      //   }
-      // });
+      };
+      fetch('/api/menu/update', {
+        method: 'post',
+        body: JSON.stringify(menu),
+        credentials: 'include'
+      }).then(function(res) {
+        return res.json();
+      }).then(function(res) {
+        hashHistory.push('/setMenu');
+      })
     });
+  }
+  delete() {
+    fetch('/api/menu/delete', {
+      method: 'post',
+      body: JSON.stringify({ id: this.props.params.id }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      hashHistory.push('/setMenu');
+    })
   }
   uploadMenuImg({ file }) {
     if (file.status === 'done') {
@@ -103,13 +111,16 @@ class IndexPage extends React.Component {
     //   <Option value={item} key={index}>{item}</Option>
     // })
   }
+  returnPage() {
+    hashHistory.push('/setMenu');
+  }
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="setSeller setMenu">
         <LeftBar />
         <div className="rightMenu newMenu">
-          <h1>添加新的菜品</h1>
+          <h1>编辑菜品</h1>
           <Form onSubmit={e => this.handleSubmit(e)}>
             <FormItem label="菜品名称">
               {getFieldDecorator('menuName', {
@@ -175,7 +186,8 @@ class IndexPage extends React.Component {
             </FormItem>
             <FormItem className="allRow btnItem">
               <Button type="primary" htmlType="submit">保存</Button>
-              <Button type="primary">取消</Button>
+              <Button type="danger" onClick={() => this.delete()}>删除</Button>
+              <Button type="primary" onClick={() => this.returnPage()}>取消</Button>
             </FormItem>
           </Form>
         </div>
@@ -185,7 +197,8 @@ class IndexPage extends React.Component {
 }
 
 IndexPage.propTypes = {
-  form: PropTypes.shape()
+  form: PropTypes.shape(),
+  params: PropTypes.shape(),
 };
 
 export default connect()(createForm()(IndexPage));
