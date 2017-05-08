@@ -11,7 +11,7 @@ require('./index.less');
 const Search = Input.Search;
 
 const benchmark = [
-  { title: '全部商家', key: 'all' },
+  { title: '全部商家', key: '' },
   { title: '快捷便当', key: 'quick' },
   { title: '特色菜系', key: 'feature' },
   { title: '小吃夜宵', key: 'supper' },
@@ -27,6 +27,7 @@ class IndexPage extends React.Component {
     this.state = {
       adress: '',
       benchmark: benchmark[0].key,
+      activeIndex: 0,
     };
   }
   componentWillMount() {
@@ -60,11 +61,9 @@ class IndexPage extends React.Component {
        console.log(data);
     }
   }
-  handleBench(e, type) {
-    this.getData(type);
-  }
   getData(type) {
     // 查询店铺
+    console.log(type);
     const _this = this;
     fetch('/api/store/filter', {
       method: 'post',
@@ -77,11 +76,16 @@ class IndexPage extends React.Component {
       console.log(res);
     })
   }
-  handleBench(e, key) {
-    this.setState({ benchmark: key });
+  handleBench(e, index, type) {
+    this.setState({ activeIndex: index });
+    this.getData(type);
   }
   toStore(e, owner) {
     hashHistory.push(`/store/${owner}`);
+  }
+  getTime(e, latAndLon) {
+    console.log(latAndLon);
+    return '分钟';
   }
   render() {
     return (
@@ -100,15 +104,15 @@ class IndexPage extends React.Component {
           <ul className="classify">
             <h4>全部分类：</h4>
             {
-              benchmark.map(item => {
-                return <li key={item.key} onClick={e => this.handleBench(e, item.key)} className={this.state.benchmark === item.key ? 'active' : ''}>{item.title}</li>
+              benchmark.map((item, index) => {
+                return <li key={item.key} onClick={e => this.handleBench(e, index, item.key)} className={this.state.activeIndex === index ? 'active' : ''}>{item.title}</li>
               })
             }
           </ul>
           <div className="store clear">
             {
-              (this.state.data || []).map((item, index) => {
-                console.log(item);
+              (this.state.data && this.state.data.length !== 0) ?
+              (this.state.data).map((item, index) => {
                 return (
                   <LazyLoad once key={index}>
                     <div className="storeItem" onClick={e => this.toStore(e, item.owner)}>
@@ -123,10 +127,21 @@ class IndexPage extends React.Component {
                           { item.option && item.option.indexOf('invoice') ? <span>票</span> : '' }
                         </div>
                       </div>
+                      <div className="positionItem">
+                        <div className="popover-arrow"></div>
+                        <h1>{item.storeName}</h1>
+                        <ul>
+                          { item.option && item.option.indexOf('onTime') ? <p className="pospover-activitys"><span>准</span> 准时必达，超时秒赔</p> : '' }
+                          { item.option && item.option.indexOf('safe') ? <p className="pospover-activitys"><span>保</span> 已加入“外卖保”计划，食品安全有保障</p> : '' }
+                          { item.option && item.option.indexOf('invoice') ? <p className="pospover-activitys"><span>票</span> 该商家支持开发票，请在下单时填写好发票抬头</p> : '' }
+                        </ul>
+                        <p className="price">配送费：{item.sendPrice} | 平均到达时间：{e => this.getTime(e, item.latAndLon)}</p>
+                        { item.introduction ? <p>item.introduction</p> : ''}
+                      </div>
                     </div>
                   </LazyLoad>
                 );
-              })
+              }) : <p style={{ textAlign: 'center' }}>暂无匹配的店铺</p>
             }
           </div>
         </div>

@@ -62,6 +62,8 @@
 }
 .store {
   margin-top: 10px;
+  border: 1px solid #ddd;
+  padding: 20px;
 }
 .banner strong{
   position: absolute;
@@ -73,6 +75,7 @@
   background-size: cover;
 }
 .store .storeItem{
+  position: relative;
   float: left;
   width: 33%;
   padding: 20px;
@@ -81,7 +84,11 @@
   cursor: pointer;
 }
 .store .storeItem:hover {
+  // background: #f5f5f5;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+.store .storeItem:hover .positionItem {
+  display: block;
 }
 .store .storeItem .storeImg {
   margin-right: 10px;
@@ -112,7 +119,7 @@
   display: flex;
   margin-top: 5px;
 }
-.store .storeItem .storeOption span {
+.store .storeItem .storeOption span,.store .positionItem .pospover-activitys span {
   display: block;
   vertical-align: middle;
   color: #fff;
@@ -128,12 +135,72 @@
   background-color: #f63;
   white-space: nowrap
 }
-.store .storeItem .storeOption span:nth-child(1) {
+.store .storeItem .storeOption span:nth-child(1),.store .positionItem .pospover-activitys:nth-child(1) span {
   background: #57A9FF;
 }
-.store .storeItem .storeOption span:nth-child(2), .store .storeItem .storeOption span:nth-child(3) {
+.store .storeItem .storeOption span:nth-child(2),
+.store .storeItem .storeOption span:nth-child(3),
+.store .positionItem .pospover-activitys:nth-child(2) span,
+.store .positionItem .pospover-activitys:nth-child(3) span {
   background: #fff;
   color: #999999;
   border: 1px solid;
   margin-left: 5px;
+}
+
+.store .positionItem {
+  display: none;
+  width: 295px;
+  position: absolute;
+  left: 302.5px;
+  top: 0px;
+  padding: 16px 14px;
+  background: #fff;
+  border: 2px solid #ddd;
+}
+.store .positionItem .popover-arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #ddd;
+  border-top: 0;
+  border-right: 0;
+  background: #fff;
+  left: -7px;
+  top: 15px;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.store .positionItem h1 {
+  padding-bottom: 18px;
+  color: #333;
+  font-size: 16px;
+  font-weight: 700;
+  border-bottom: 1px solid #999;
+}
+.store .positionItem p {
+  font-size: 12px;
+  line-height: 20px;
+  color: #666;
+}
+.store .positionItem .price {
+  display: table;
+  width: 100%;
+  background-color: #f2f2f2;
+  padding: 8px 0;
+  line-height: 14px;
+  text-align: center;
+  margin-bottom: 20px;
+  white-space: nowrap
+}
+.store .positionItem .pospover-activitys {
+  margin: 10px 0px;
+}
+.store .positionItem .pospover-activitys span {
+  float: left;
+}
+.store .positionItem .pospover-activitys:nth-child(2) span,
+.store .positionItem .pospover-activitys:nth-child(3) span {
+  margin-left: 0px;
 }
