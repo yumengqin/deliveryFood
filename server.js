@@ -245,6 +245,7 @@ router.post('/api/open', koaBody, function*() {
   var data = JSON.parse(this.request.body);
   if (data.checkCode.toLowerCase() === code.toLowerCase()) {
     const result = yield PersonModel.find({ userName: data.userName });
+    console.log(result);
     if (result.length !== 0) {
       this.body = JSON.stringify({
         success: false,
@@ -387,6 +388,18 @@ router.post('/api/store/update', koaBody, function*(){
   }
 });
 
+// 按类型查询店铺
+router.post('/api/store/filter', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const filter = data.type ? {type: data.type} : {} ;
+  const result = yield StoreModel.find({ filter });
+  this.body = {
+    success: true,
+    data: result,
+  }
+});
+
+// 创建菜品
 router.post('/api/menu/create', koaBody, function*(next) {
   const data = JSON.parse(this.request.body);
   AllMenuModel.create(data);

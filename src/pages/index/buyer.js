@@ -32,6 +32,7 @@ class IndexPage extends React.Component {
   }
   componentWillMount() {
     var app = this;
+    this.getData();
     var map, geolocation;
     //加载地图，调用浏览器定位服务
     map = new AMap.Map('container', {
@@ -59,6 +60,18 @@ class IndexPage extends React.Component {
        console.log(data);
     }
   }
+  getData(type) {
+    // 查询店铺
+    fetch('/api/store/filter', {
+      method: 'post',
+      body: JSON.stringify({ type: type }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json()
+    }).then(function(data) {
+      console.log(data);
+    })
+  }
   handleBench(e, key) {
     this.setState({ benchmark: key });
   }
@@ -85,9 +98,17 @@ class IndexPage extends React.Component {
             }
           </ul>
           <div>
-            <LazyLoad once >
-              <p>123</p>
-            </LazyLoad>
+            {
+              (this.state.data || []).map((item, index) => {
+                return (
+                  <LazyLoad once key={index}>
+                    <h2>{item.storeName}</h2>
+                    <p>{item.adress}</p>
+                    <p>配送费：¥{item.sendPrice || 0.00}</p>
+                  </LazyLoad>
+                );
+              })
+            }
           </div>
         </div>
       </div>

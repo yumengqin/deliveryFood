@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Form, Button, Select, message, Spin, Input, Icon, Radio } from 'antd';
+import { Form, Button, Select, message, Spin, Input, Icon, Radio, Checkbox } from 'antd';
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { message_update, guest_update, nickname_get } from '../../action'
@@ -14,8 +14,13 @@ require('./storeSet.less');
 const FormItem = Form.Item;
 const createForm = Form.create;
 const Option = Select.Option;
+const CheckboxGroup = Checkbox.Group;
 
-
+const plainOptions = [
+  { label: '准时达', value: 'onTime' },
+  { label: '外卖保', value: 'safe' },
+  { label: '可开发票', value: 'invoice' },
+];
 class IndexPage extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -78,7 +83,7 @@ class IndexPage extends React.Component {
       _this.props.form.setFieldsValue({
         ...res.data,
       });
-      _this.setState({ data: res.data, fileList: res.data.album });
+      _this.setState({ data: res.data, fileList: res.data.album, option: res.data.option || []});
     })
   }
   handleSubmit(e){
@@ -95,6 +100,7 @@ class IndexPage extends React.Component {
       data.userName = this.state.data.owner;
       data.album = this.getAlbum(this.state.fileList);
       data.adress = this.state.data.adress;
+      data.option = this.state.option,
       fetch('/api/store/update', {
         method: 'post',
         body: JSON.stringify(data),
@@ -113,6 +119,9 @@ class IndexPage extends React.Component {
         }
       })
     });
+  }
+  onChange(e) {
+    this.setState({ option: e });
   }
   getAlbum(arr) {
     console.log(arr);
@@ -135,6 +144,7 @@ class IndexPage extends React.Component {
     return (
       <div className="setSeller storeSet">
         <LeftBar />
+        <div className="rightMenu">
         <h1>设置店铺信息 { this.state.data && this.state.data.storeName ? `（${this.state.data.storeName}）`: ''}</h1>
           <Form onSubmit={e => this.handleSubmit(e)}>
             <FormItem label="注册时间" className="justShow allRow">
@@ -194,6 +204,22 @@ class IndexPage extends React.Component {
                 <Input />
               )}
             </FormItem>
+            <FormItem label="配送费">
+              {getFieldDecorator('sendPrice', {
+                rules: [
+                  { required: true, message: '请输入配送费' },
+                ],
+              })(
+                <Input prefix={<Icon type="pay-circle" />} />
+              )}
+            </FormItem>
+            <FormItem label="选项（多选）">
+              {getFieldDecorator('option', {
+                rules: [],
+              })(
+                <CheckboxGroup options={plainOptions} defaultValue={this.state.option ? this.state.option : ''} onChange={e => this.onChange(e)} />
+              )}
+            </FormItem>
             <FormItem label="店铺简介">
               {getFieldDecorator('introduction', {
                 rules: [],
@@ -208,6 +234,7 @@ class IndexPage extends React.Component {
               <Button type="primary" htmlType="submit">保存</Button>
             </FormItem>
           </Form>
+          </div>
       </div>
     );
   }

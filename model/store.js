@@ -15,6 +15,8 @@ var StoreSchema = new mongoose.Schema({
   star: Number,
   orderNum: Number,
   dishNum: Number,
+  sendPrice: Number,
+  option: Array,
 });
 
 exports.modleStore= StoreSchema;
