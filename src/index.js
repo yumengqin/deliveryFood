@@ -9,12 +9,13 @@ import LoginContainer from './pages/auth/index.js'
 import SignupContainer from './pages/auth/signup.js'
 import OpenContainer from './pages/auth/open.js'
 import IndexBuyerContainer from './pages/index/buyer.js'
-import indexSellerContainer from './pages/index/seller.js'
-import setSellerContainer from './pages/set/sellerSet.js'
-import setStoreContainer from './pages/set/storeSet.js'
-import setMenuContainer from './pages/set/menuSet.js'
-import addMenuContainer from './pages/set/addMenu.js'
-import MenuInfoContainer from './pages/set/editMenu.js'
+import setSellerContainer from './pages/seller/sellerSet.js'
+import setStoreContainer from './pages/seller/storeSet.js'
+import setMenuContainer from './pages/seller/menuSet.js'
+import addMenuContainer from './pages/seller/addMenu.js'
+import MenuInfoContainer from './pages/seller/editMenu.js'
+import setBuyerContainer from './pages/buyer/buyerSet.js'
+import storeContainer from './pages/store/index.js'
 import createSocketMiddleware from './redux_middleware'
 import io from 'socket.io-client'
 import reducers from './reducer'
@@ -34,12 +35,13 @@ render(
       <Route path='/signup' component={SignupContainer}/>
       <Route path='/open' component={OpenContainer} />
       <Route path='/indexBuyer' component={IndexBuyerContainer}/>
-      <Route path='/indexSeller' component={indexSellerContainer} />
       <Route path='/setSeller' component={setSellerContainer} />
       <Route path='/setStore' component={setStoreContainer} />
       <Route path='/setMenu' component={setMenuContainer} />
       <Route path='/setMenu/addMenu' component={addMenuContainer} />
       <Route path='/setMenu/:id' component={MenuInfoContainer} />
+      <Route path='/setBuyer' component={setBuyerContainer} />
+      <Route path='/store/:id' component={storeContainer} />
     </Router>
   </Provider>
   ,

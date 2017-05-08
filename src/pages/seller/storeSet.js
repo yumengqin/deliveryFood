@@ -57,6 +57,7 @@ class IndexPage extends React.Component {
     function onComplete(data) {
       const test = _this.state.data;
       test.adress = data.formattedAddress;
+      test.latAndLon = [data.position.getLng(), data.position.getLat()];
        _this.setState({ data: test });
     }
     //解析定位错误信息
@@ -67,6 +68,7 @@ class IndexPage extends React.Component {
   changeAdress(e) {
     const test = this.state.data;
     test.adress = e.target.value;
+    test.latAndLon = [data.position.getLng(), data.position.getLat()];
     this.setState({ data: test });
   }
   getData() {
@@ -100,6 +102,7 @@ class IndexPage extends React.Component {
       data.userName = this.state.data.owner;
       data.album = this.getAlbum(this.state.fileList);
       data.adress = this.state.data.adress;
+      data.latAndLon = this.state.data.latAndLon;
       data.option = this.state.option,
       fetch('/api/store/update', {
         method: 'post',

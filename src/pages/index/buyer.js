@@ -6,7 +6,6 @@ import { message_update, guest_update, nickname_get } from '../../action'
 import { hashHistory } from 'react-router'
 import Home from '../../components/header'
 
-
 require('./index.less');
 
 const Search = Input.Search;
@@ -53,6 +52,7 @@ class IndexPage extends React.Component {
     });
     //解析定位结果
     function onComplete(data) {
+      console.log('经度：' + data.position.getLng(), '纬度：' + data.position.getLat());
        app.setState({ adress: data.formattedAddress });
     }
     //解析定位错误信息
@@ -60,20 +60,28 @@ class IndexPage extends React.Component {
        console.log(data);
     }
   }
+  handleBench(e, type) {
+    this.getData(type);
+  }
   getData(type) {
     // 查询店铺
+    const _this = this;
     fetch('/api/store/filter', {
       method: 'post',
       body: JSON.stringify({ type: type }),
       credentials: 'include'
     }).then(function(res) {
       return res.json()
-    }).then(function(data) {
-      console.log(data);
+    }).then(function(res) {
+      _this.setState({ data: res.data });
+      console.log(res);
     })
   }
   handleBench(e, key) {
     this.setState({ benchmark: key });
+  }
+  toStore(e, owner) {
+    hashHistory.push(`/store/${owner}`);
   }
   render() {
     return (
@@ -97,14 +105,25 @@ class IndexPage extends React.Component {
               })
             }
           </ul>
-          <div>
+          <div className="store clear">
             {
               (this.state.data || []).map((item, index) => {
+                console.log(item);
                 return (
                   <LazyLoad once key={index}>
-                    <h2>{item.storeName}</h2>
-                    <p>{item.adress}</p>
-                    <p>配送费：¥{item.sendPrice || 0.00}</p>
+                    <div className="storeItem" onClick={e => this.toStore(e, item.owner)}>
+                      <p className="storeImg"><img src={item.album && item.album.length !== 0 ? item.album[0] : ''} /></p>
+                      <div className="storeInfo">
+                        <h2>{item.storeName}</h2>
+                        <p>{item.adress}</p>
+                        <p>配送费：¥{item.sendPrice || 0.00}</p>
+                        <div className="storeOption">
+                          { item.option && item.option.indexOf('onTime') ? <span>准</span> : '' }
+                          { item.option && item.option.indexOf('safe') ? <span>保</span> : '' }
+                          { item.option && item.option.indexOf('invoice') ? <span>票</span> : '' }
+                        </div>
+                      </div>
+                    </div>
                   </LazyLoad>
                 );
               })

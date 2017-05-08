@@ -392,7 +392,7 @@ router.post('/api/store/update', koaBody, function*(){
 router.post('/api/store/filter', koaBody, function*(){
   const data = JSON.parse(this.request.body);
   const filter = data.type ? {type: data.type} : {} ;
-  const result = yield StoreModel.find({ filter });
+  const result = yield StoreModel.find(filter);
   this.body = {
     success: true,
     data: result,
