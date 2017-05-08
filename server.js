@@ -258,7 +258,7 @@ router.post('/api/open', koaBody, function*() {
       console.log(data);
       var openDate = new Date().getTime();
       PersonModel.create({name: data.name, userName: data.userName, password: data.password, role: 'seller', selfImg: '', startDate: openDate, lastLogin: openDate});
-      StoreModel.create({ owner: data.userName, phone: data.userName, ownerName: data.name, startDate: openDate, album: [], typeMenu:[], orderNum: 0, dishNum: 0 });
+      StoreModel.create({ owner: data.userName, phone: data.userName, ownerName: data.name, startDate: openDate, album: [], typeMenu:[], orderNum: 0, dishNum: 0, status: true });
       this.body = {
         success: true,
         data: {
@@ -302,18 +302,20 @@ router.get('/api/code', koaBody, function*() {
   this.body = buf;
 });
 
-// 上传店主头像
-router.post('/api/sellerImg/upload', koaBody, function*(next) {
+// 上传店铺头像
+router.post('/api/storeImg/upload', koaBody, function*(next) {
   var part = this.request.body.files.uploadFile;
   var fileName = part.name;
   var tmpath = part.path;
   var newpath = path.join('static/upload', Date.parse(new Date()).toString() + fileName);
   var stream = fs.createWriteStream(newpath);//创建一个可写流
   fs.createReadStream(tmpath).pipe(stream);//可读流通过管道写入可写流
-  PersonModel.update({ userName: this.request.body.fields.userName}, { selfImg: 'http://localhost:5000/show?' + newpath }, function(error) {
+  StoreModel.update({ owner: this.request.body.fields.owner }, { selfImg: 'http://localhost:5000/show?' + newpath }, function(error) {
     console.log(error);
   });
-  console.log('换图片');
+  PersonModel.update({ userName: this.request.body.fields.owner }, { selfImg: 'http://localhost:5000/show?' + newpath }, function(error) {
+    console.log(error);
+  });
   this.body={
     imgUrl: 'http://localhost:5000/show?' + newpath,
   };
@@ -387,11 +389,21 @@ router.post('/api/store/update', koaBody, function*(){
     data: data,
   }
 });
-
+// 设置店铺是否开启
+router.post('/api/store/status', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  StoreModel.update({ owner: data.userName }, data, function(error, res){
+    console.log(data, error, res);
+  });
+  this.body = {
+    success: true,
+    data: data,
+  }
+});
 // 按类型查询店铺
 router.post('/api/store/filter', koaBody, function*(){
   const data = JSON.parse(this.request.body);
-  const filter = data.type ? {type: data.type} : {} ;
+  const filter = data.type ? {type: data.type, status: true } : {status: true} ;
   const result = yield StoreModel.find(filter);
   this.body = {
     success: true,

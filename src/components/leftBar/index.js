@@ -12,9 +12,9 @@ const menu = [
 
 const upImgProps = app => ({
   name: 'uploadFile',
-  action: 'http://localhost:5000/api/sellerImg/upload',
+  action: 'http://localhost:5000/api/storeImg/upload',
   listType: 'picture',
-  data: { userName: localStorage.getItem('userName') },
+  data: { owner: localStorage.getItem('userName') },
   beforeUpload(file) {
     const type = file.type;
     if (type !== 'image/jpeg' && type !== 'image/jpg' && type !== 'image/png') {
@@ -52,7 +52,7 @@ class leftBar extends React.Component {
       hashHistory.push('/');
     }
     const _this = this;
-    fetch('/api/user', {
+    fetch('/api/store', {
       method: 'post',
       body: JSON.stringify({
         userName : localStorage.getItem('userName'),
@@ -61,15 +61,31 @@ class leftBar extends React.Component {
     }).then(function(res) {
       return res.json();
     }).then(function(res) {
-      _this.setState({ data: res.data });
+      _this.setState({ data: res.data, storeStstus: res.data.status });
     })
   }
   handleStatus(e) {
     if (e.key === 'close') {
-      this.setState({ storeStstus: 'close' });
+      this.setState({ storeStstus: false });
     } else if (e.key === 'open') {
-      this.setState({ storeStstus: 'open' });
+      this.setState({ storeStstus: true });
     }
+    fetch('/api/store/status', {
+      method: 'post',
+      body: JSON.stringify({
+        userName : localStorage.getItem('userName'),
+        status: e.key === 'open',
+      }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      if(res.success) {
+        message.success('设置成功');
+      } else {
+        message.error('设置失败');
+      }
+    })
   }
   logout() {
     localStorage.clear();
@@ -93,7 +109,7 @@ class leftBar extends React.Component {
             >
               <SubMenu
                 key="status"
-                title={<span><Icon type={this.state.storeStstus === 'open' ? 'unlock' : 'lock'} /><span>{this.state.storeStstus === 'open' ? '开启中' : '已关店'}</span></span>}
+                title={<span><Icon type={this.state.storeStstus ? 'unlock' : 'lock'} /><span>{this.state.storeStstus ? '开启中' : '已关店'}</span></span>}
               >
                 <Menu.Item key="open">开店</Menu.Item>
                 <Menu.Item key="close">关店</Menu.Item>

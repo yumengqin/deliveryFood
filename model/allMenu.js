@@ -8,7 +8,9 @@ var MenuSchema = new mongoose.Schema({
   img: String,
   intro: String,
   price: Number,
-  boxPrice: Number
+  boxPrice: Number,
+  orderNum: Number,
+  score: Number,
 });
 
 exports.modelAllMenu= MenuSchema;

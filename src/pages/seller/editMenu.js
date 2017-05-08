@@ -51,6 +51,17 @@ class IndexPage extends React.Component {
         ...res.data,
       });
       _this.setState({ data: res.data, img: res.data.img });
+    });
+    fetch('/api/store', {
+      method: 'post',
+      body: JSON.stringify({
+        userName : localStorage.getItem('userName'),
+      }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      _this.setState({ store: res.data });
     })
   }
   handleSubmit(e) {
@@ -100,8 +111,8 @@ class IndexPage extends React.Component {
     }
   }
   renderSelect() {
-    if (this.state.data && this.state.data.menuType && this.state.data.menuType.length !== 0) {
-      return (this.state.data.menuType).map((item, index) => {
+    if (this.state.store && this.state.store.typeMenu && this.state.store.typeMenu.length !== 0) {
+      return (this.state.store.typeMenu).map((item, index) => {
         return <Option value={item} key={index}>{item}</Option>;
       });
     } else {

@@ -18,6 +18,8 @@ var StoreSchema = new mongoose.Schema({
   dishNum: Number,
   sendPrice: Number,
   option: Array,
+  selfImg: String,
+  status: Boolean,
 });
 
 exports.modleStore= StoreSchema;

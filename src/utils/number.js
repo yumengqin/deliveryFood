@@ -67,3 +67,16 @@ export function toDateRange(startDate, endDate) {
     endDate && moment(endDate, 'YYYY-MM-DD').format('MM/DD/YYYY'),
   ].join(' - ');
 }
+
+export function getDistance(arr1, arr2) {
+  if (arr1 && arr2) {
+    var lnglat = new AMap.LngLat(arr1[0], arr1[1]);
+    console.log(lnglat.distance(arr2));
+    if (lnglat.distance(arr2) / 1000 < 60) { // 60km/h
+      return parseInt(lnglat.distance(arr2) / 1000) + 20 + '分钟';
+    } else {
+      return parseInt(lnglat.distance(arr2) / 1000 / 60) + '时' + (lnglat.distance(arr2) / 1000) % 60 + '分钟';
+    }
+  }
+  return 0;
+}

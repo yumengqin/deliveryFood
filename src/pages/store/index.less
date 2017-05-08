@@ -1,0 +1,225 @@
+.storeShow h1 {
+  text-align: center;
+  margin: 20px 0px;
+}
+.storeBanner {
+  position: relative;
+}
+.storeBanner .storeInfo {
+  position: absolute;
+  z-index: 2;
+  top: 100px;
+  left: 50%;
+  margin-left: -480px;
+  width: 960px;
+  height: 120px;
+}
+.storeBanner .storeInfo div {
+  float: left;
+}
+.storeBanner .storeInfo div img {
+  float: left;
+  width: 120px;
+  height: 120px;
+  border: 3px solid #ddd;
+  border-radius: 50%;
+}
+.storeBanner .storeInfo div h1 {
+  float: left;
+  margin-left: 20px;
+  text-align: left;
+  color: #fff;
+}
+.storeBanner .storeInfo div h1 span {
+  display: block;
+  margin-top: 15px;
+  font-size: 16px;
+  color: #fff;
+}
+.storeBanner .storeInfo ul {
+  float: right;
+  display: flex;
+  height: 120px;
+}
+.storeBanner .storeInfo ul li {
+  color: #fff;
+  margin-right: 80px;
+  line-height: 60px;
+  font-size: 18px;
+}
+.storeBanner .storeInfo ul li span {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+}
+.storeBanner .storeInfo .collect {
+  position: absolute;
+  top: -100px;
+  right: 0px;
+  padding: 10px 5px;
+  width: 80px;
+  text-align: center;
+  background: #FFF;
+  background: rgba(255,255,255,.1);
+  border-radius: 0 0 5px 5px;
+  color: #eee;
+  cursor: pointer;
+}
+.storeBanner .storeInfo .collect .anticon{
+  font-size: 20px;
+  display: block;
+  margin-bottom: 10px;
+}
+.storeBanner .ant-carousel{
+  position: relative;
+  width: 100%;
+  height: 400px;
+}
+.ant-carousel .slick-dots {
+  z-index: 10;
+}
+.storeBanner .ant-carousel:after {
+  content: '';
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 400px;
+  background: rgba(0, 0, 0, 0.5);
+}
+.topHeader {
+  width: 960px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
+}
+.topHeader .header-left {
+  display: flex;
+  flex: 1;
+}
+.topHeader .header-left li {
+  width: 112px;
+  line-height: 57px;
+  height: 57px;
+  text-align: center;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+}
+.topHeader .header-left span {
+  display: block;
+  height: 15px;
+  border-left: 1px solid #ddd;
+  margin-top: 20px;
+}
+.topHeader .header-left .active {
+  border-bottom: 3px solid #0089dc;
+  color: #0089dc;
+}
+.topHeader .header-right {
+  display: flex;
+  line-height: 57px;
+  font-size: 14px;
+}
+.topHeader .header-right li {
+  color: #333;
+  margin-left: 20px;
+  cursor: pointer;
+}
+.topHeader .header-right li .anticon {
+  margin-left: 5px;
+  color: #333;
+  font-weight: bold;
+}
+.topHeader .header-right .active {
+  color: #0089dc;
+}
+.topHeader .header-right .active .anticon {
+  color: #0089DC;
+}
+
+//主要
+.main {
+  background: #f2f2f2;
+  padding-top: 20px;
+  min-height: 200px;
+}
+.typeMenu {
+  width: 960px;
+  margin: 0px auto 20px;
+  padding: 10px 20px;
+  display: flex;
+  background: #fff;
+}
+
+.typeMenu li {
+  width: 18%;
+  padding: 0px 10px;
+  margin-right: 10px;
+  line-height: 26px;
+  color: #666;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.typeMenu li:hover {
+  background: #f2f2f2;
+}
+.typeMenu .active {
+  background: #0089DC !important;
+  color: #fff !important;
+}
+.listMenu {
+  display: flex;
+  width: 960px;
+  margin: 0 auto;
+}
+.listMenu li {
+  width: 33%;
+  height: 105px;
+  background: #fff;
+  border: 1px solid #ddd;
+  display: flex;
+}
+.listMenu li img {
+  width: 100px;
+  height: 100px;
+}
+.listMenu li .menuInfo {
+  flex: 1;
+  position: relative;
+  padding: 10px 5px;
+}
+.listMenu li .menuInfo h2 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0px;
+  color: #333;
+}
+.listMenu li .menuInfo p {
+  width: 100%;
+  line-height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #999;
+}
+.listMenu li .menuInfo strong {
+  display: block;
+  margin-top: 5px;
+  color: #f74342;
+}
+.listMenu li .menuInfo button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 90px;
+  height: 26px;
+  line-height: 26px;
+  border-radius: 20px;
+  text-align: center;
+  border: 0px;
+  cursor: pointer;
+  background-color: #0089dc;
+  color: #fff;
+}

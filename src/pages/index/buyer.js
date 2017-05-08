@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { message_update, guest_update, nickname_get } from '../../action'
 import { hashHistory } from 'react-router'
 import Home from '../../components/header'
+import { getDistance } from '../../utils/number'
 
 require('./index.less');
 
@@ -28,6 +29,7 @@ class IndexPage extends React.Component {
       adress: '',
       benchmark: benchmark[0].key,
       activeIndex: 0,
+      data: '',
     };
   }
   componentWillMount() {
@@ -54,7 +56,7 @@ class IndexPage extends React.Component {
     //解析定位结果
     function onComplete(data) {
       console.log('经度：' + data.position.getLng(), '纬度：' + data.position.getLat());
-       app.setState({ adress: data.formattedAddress });
+       app.setState({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] });
     }
     //解析定位错误信息
     function onError(data) {
@@ -73,7 +75,6 @@ class IndexPage extends React.Component {
       return res.json()
     }).then(function(res) {
       _this.setState({ data: res.data });
-      console.log(res);
     })
   }
   handleBench(e, index, type) {
@@ -82,10 +83,6 @@ class IndexPage extends React.Component {
   }
   toStore(e, owner) {
     hashHistory.push(`/store/${owner}`);
-  }
-  getTime(e, latAndLon) {
-    console.log(latAndLon);
-    return '分钟';
   }
   render() {
     return (
@@ -116,27 +113,27 @@ class IndexPage extends React.Component {
                 return (
                   <LazyLoad once key={index}>
                     <div className="storeItem" onClick={e => this.toStore(e, item.owner)}>
-                      <p className="storeImg"><img src={item.album && item.album.length !== 0 ? item.album[0] : ''} /></p>
+                      <p className="storeImg"><img src={item.selfImg ? item.selfImg : ''} /></p>
                       <div className="storeInfo">
                         <h2>{item.storeName}</h2>
                         <p>{item.adress}</p>
                         <p>配送费：¥{item.sendPrice || 0.00}</p>
                         <div className="storeOption">
-                          { item.option && item.option.indexOf('onTime') ? <span>准</span> : '' }
-                          { item.option && item.option.indexOf('safe') ? <span>保</span> : '' }
-                          { item.option && item.option.indexOf('invoice') ? <span>票</span> : '' }
+                          { item.option && item.option.indexOf('onTime') !== -1 ? <span>准</span> : '' }
+                          { item.option && item.option.indexOf('safe') !== -1 ? <span>保</span> : '' }
+                          { item.option && item.option.indexOf('invoice') !== -1 ? <span>票</span> : '' }
                         </div>
                       </div>
                       <div className="positionItem">
                         <div className="popover-arrow"></div>
                         <h1>{item.storeName}</h1>
                         <ul>
-                          { item.option && item.option.indexOf('onTime') ? <p className="pospover-activitys"><span>准</span> 准时必达，超时秒赔</p> : '' }
-                          { item.option && item.option.indexOf('safe') ? <p className="pospover-activitys"><span>保</span> 已加入“外卖保”计划，食品安全有保障</p> : '' }
-                          { item.option && item.option.indexOf('invoice') ? <p className="pospover-activitys"><span>票</span> 该商家支持开发票，请在下单时填写好发票抬头</p> : '' }
+                          { item.option && item.option.indexOf('onTime') !== -1 ? <p className="pospover-activitys"><span>准</span> 准时必达，超时秒赔</p> : '' }
+                          { item.option && item.option.indexOf('safe') !== -1 ? <p className="pospover-activitys"><span>保</span> 已加入“外卖保”计划，食品安全有保障</p> : '' }
+                          { item.option && item.option.indexOf('invoice') !== -1 ? <p className="pospover-activitys"><span>票</span> 该商家支持开发票，请在下单时填写好发票抬头</p> : '' }
                         </ul>
-                        <p className="price">配送费：{item.sendPrice} | 平均到达时间：{e => this.getTime(e, item.latAndLon)}</p>
-                        { item.introduction ? <p>item.introduction</p> : ''}
+                        <p className="price">配送费：{item.sendPrice} | 平均到达时间：{getDistance(this.state.latAndLon, item.latAndLon)}</p>
+                        { item.introduction ? <p>{item.introduction}</p> : ''}
                       </div>
                     </div>
                   </LazyLoad>

@@ -152,7 +152,7 @@ class IndexPage extends React.Component {
       <div className="setSeller setMenu">
         <LeftBar />
         <div className="rightMenu">
-          <h1>{this.state.store && this.state.store.storeName ? this.state.store.storeName : <span>店铺暂时没有店名，<Link to="/setStore">去设置</Link></span>}</h1>
+          <h1>{this.state.data && this.state.data.storeName ? this.state.data.storeName : <span>店铺暂时没有店名，<Link to="/setStore">去设置</Link></span>}</h1>
           <Carousel>
             { this.renderCarousel() }
           </Carousel>
