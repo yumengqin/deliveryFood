@@ -25,6 +25,7 @@ var mongoose = require('mongoose');
 var PersonSchema = require('./model/user').modleUser;
 var StoreSchema = require('./model/store').modleStore;
 var AllMenuSchema = require('./model/allMenu').modelAllMenu;
+var CollectSchema = require('./model/collect').modelCollect;
 
 db.on('error', function(error) {
     console.log('连接失败', error);
@@ -36,7 +37,8 @@ db.on('open', function () {
 
 var PersonModel = db.model('user',PersonSchema);
 var StoreModel = db.model('store',StoreSchema);
-var AllMenuModel = db.model('food', AllMenuSchema)
+var AllMenuModel = db.model('food', AllMenuSchema);
+var CollectModel = db.model('collect', CollectSchema);
 // var login = require('./db/login').login;
 
 var render = views('./src', {
@@ -352,6 +354,34 @@ router.post('/api/user', koaBody, function*(){
   }
 });
 
+// 查询用户收藏
+router.post('/api/user/collect', koaBody, function*() {
+  const data = JSON.parse(this.request.body);
+  const collect = yield CollectModel.findOne({ userName: data.userName });
+  this.body = {
+    success: true,
+    data: collect,
+  }
+});
+
+// 收藏店铺
+router.post('/api/user/setCollect', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const result = yield CollectModel.find({ userName: data.userName });
+  if (result.length === 0) {
+    CollectModel.create({ userName: data.userName, collectArr: data.collectArr });
+  }
+  else {
+    CollectModel.update({ userName: data.userName }, { collectArr: data.collectArr }, function(error){
+      console.log(error);
+    });
+  }
+  this.body = {
+    success: true,
+    data: data.collectArr,
+  }
+});
+
 // 更改用户信息
 router.post('/api/user/update', koaBody, function*(){
   const data = JSON.parse(this.request.body);
@@ -370,7 +400,7 @@ router.post('/api/user/update', koaBody, function*(){
 router.post('/api/store', koaBody, function*(){
   const data = JSON.parse(this.request.body);
   const result = yield StoreModel.findOne({ owner: data.userName });
-  const food = yield AllMenuModel.find({ owner: data.userName })
+  const food = yield AllMenuModel.find({ owner: data.userName });
   this.body = {
     success: true,
     data: result,
@@ -458,7 +488,7 @@ router.post('/api/menu/show', koaBody, function*(next) {
 // 根据类型选取菜品
 router.post('/api/menu/filter', koaBody, function*(next) {
   const data = JSON.parse(this.request.body);
-  const obj = data.type === '全部' ? { owner: data.owner } : { owner: data.owner, type: data.type };
+  const obj = (data.type === '全部' || !data.type) ? { owner: data.owner } : { owner: data.owner, type: data.type };
   const result = yield AllMenuModel.find(obj);
   this.body = {
     success: true,

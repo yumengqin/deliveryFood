@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
-import { Carousel, Icon } from 'antd'
+import { Carousel, Icon, message, InputNumber, Badge } from 'antd'
+import { without } from 'underscore'
 import { message_update, guest_update, nickname_get } from '../../action'
-import { hashHistory } from 'react-router'
+import { hashHistory, Link } from 'react-router'
 import Home from '../../components/header'
 import { getDistance } from '../../utils/number'
 
@@ -19,13 +20,16 @@ class IndexPage extends React.Component {
     super(props, context);
     this.state = {
       data: '',
+      shop: [],
       showIndex: 0,
       sortIndex: 0,
       typeIndex: 0,
+      shopNum: 0,
     }
   }
   componentWillMount() {
     this.getAdress();
+    this.getCart();
     var _this = this;
     fetch('/api/store', {
       method: 'post',
@@ -37,7 +41,16 @@ class IndexPage extends React.Component {
       return res.json();
     }).then(function(res) {
       _this.setState({ data: res.data, menu: res.menu });
-    })
+    });
+    fetch('/api/user/collect', {
+      method: 'post',
+      body: JSON.stringify({ userName: localStorage.getItem('userName') }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      _this.setState({ collect: res.data.collectArr ? res.data.collectArr.indexOf(_this.props.params.id) !== -1 : false, collectArr: res.data.collectArr || []});
+    });
   }
   renderCarousel() {
     if(this.state.data && this.state.data.album.length !== 0) {
@@ -46,6 +59,14 @@ class IndexPage extends React.Component {
       });
     }
     return <div className="default"></div>
+  }
+  getCart() {
+    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    this.setState({
+      shop: cart,
+      shopNum: cart.length,
+    });
+    console.log(cart, cart.length);
   }
   getAdress() {
       var app = this;
@@ -81,18 +102,89 @@ class IndexPage extends React.Component {
     this.setState({ showIndex: index });
   }
   sort(e, index, key) {
-    console.log(key);
+    const cart = localStorage.
     this.setState({ sortIndex: index });
   }
-  type(e, index) {
+  type(e, index, type) {
+    const _this = this;
     this.setState({ typeIndex: index });
+    const obj = (type === '全部菜品' ? { owner: _this.props.params.id } : { owner: _this.props.params.id, type: type });
+    fetch('/api/menu/filter', {
+      method: 'post',
+      body: JSON.stringify(obj),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      _this.setState({ menu: res.data });
+    });
+  }
+  addCar(e, item) {
+    const test = item;
+    test.number = 1;
+    const userCart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    userCart.push(test);
+    localStorage.setItem('cart'+this.props.params.id, JSON.stringify(userCart));
+    this.getCart();
+  }
+  changeNumber (e, id, type) {
+    let number = this.shopNum(id);
+    const cart = JSON.parse(localStorage.getItem('cart'+this.props.params.id));
+    let res = cart;
+    if (type === 'add') {
+      number ++;
+    } else {
+      number --;
+    }
+    cart.map((item, index) => {
+      if (item.id === id) {
+        if(number !== 0) {
+          res[index].number = number;
+        } else {
+          res.splice(index, 1);
+        }
+        return 0;
+      }
+    });
+    localStorage.setItem('cart'+this.props.params.id, JSON.stringify(res));
+    this.getCart();
+  }
+  shopHave(id) {
+    let res = false;
+    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    cart.map(item => {
+      if(item.id === id && item.number !== 0) {
+        res = true;
+      };
+    });
+    return res;
+  }
+  shopNum(id) {
+    let res = 1;
+    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    cart.map(item => {
+      if(item.id === id) {
+        console.log(item);
+        res = item.number;
+      };
+    });
+    console.log(res);
+    return res;
+  }
+  getAllPrice() {
+    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    let res = 0;
+    cart.map(item => {
+      res += (item.price + item.boxPrice) * item.number;
+    });
+    return '¥' + res;
   }
   renderTypeMenu() {
     if(this.state.data.typeMenu[0] != '全部菜品') {
       this.state.data.typeMenu.splice(0, 0, '全部菜品');
     }
     return (this.state.data.typeMenu).map((item, index) => {
-      return (<li key={index} className={this.state.typeIndex === index ? 'active' : ''} onClick={e => this.type(e, index)}>{item}</li>);
+      return (<li key={index} className={this.state.typeIndex === index ? 'active' : ''} onClick={e => this.type(e, index, item)}>{item}</li>);
     })
   }
   renderList() {
@@ -103,11 +195,39 @@ class IndexPage extends React.Component {
           <h2>{item.menuName}</h2>
           <p>{item.intro || '...'}</p>
           <p>出售{item.orderNum || 0}份</p>
-          <strong>¥{item.price}元</strong>
-          <button>加入购物车</button>
+          <strong>¥{item.price}元 <span>餐盒费：{item.boxPrice || 0}元</span></strong>
+          <button onClick={e => this.addCar(e, item)} className={this.shopHave(item.id) ? 'none' : ''}>加入购物车</button>
+          <div className={this.shopHave(item.id) ? 'inputNumber' : 'none'}>
+            <span onClick={e => this.changeNumber(e, item.id, 'add')}>+</span>
+            <p>{this.shopNum(item.id)}</p>
+            <span onClick={e => this.changeNumber(e, item.id, 'sub')}>-</span>
+          </div>
         </div>
       </li>);
     })
+  }
+  collect() {
+    let arr = [];
+    const _this = this;
+    if (this.state.collect) {
+      arr = without(this.state.collect, _this.props.params.id);
+    } else {
+      arr.push(_this.props.params.id);
+    }
+    fetch('/api/user/setCollect', {
+      method: 'post',
+      body: JSON.stringify({ userName: localStorage.getItem('userName'), collectArr: arr }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      if (_this.state.collect) {
+        message.success('已取消收藏')
+      } else {
+        message.success('收藏成功')
+      }
+      _this.setState({ collectArr: res.data, collect: !_this.state.collect });
+    });
   }
   render() {
     return (
@@ -126,9 +246,9 @@ class IndexPage extends React.Component {
               <li key="0">配送费 <span>¥{this.state.data && this.state.data.sendPrice ? this.state.data.sendPrice : 0}元</span></li>
               <li key="1">送达时间 <span>{this.state.data && this.state.data.latAndLon ? getDistance(this.state.data.latAndLon, this.state.latAndLon) : 0}</span></li>
             </ul>
-            <p className="collect">
-              <Icon type="heart-o" />
-              <span>收藏</span>
+            <p className="collect" onClick={() => this.collect()}>
+              {this.state.collect ? <Icon type="heart" /> : <Icon type="heart-o" />}
+              <span>{this.state.collect ? '已收藏' : '收藏'}</span>
             </p>
           </div>
           <Carousel>
@@ -161,7 +281,15 @@ class IndexPage extends React.Component {
             { this.state.menu ? this.renderList() : '暂无匹配菜品'}
           </ul>
         </div>
-        <div className="shopCar"></div>
+        <div className="shopCar">
+          <div className="carBtn">
+            <Badge count={this.state.shopNum} style={{ backgroundColor: '#87d068' }} className={this.state.shopNum ? '' : 'none'}/>
+            <button><Icon type="shopping-cart" /><span>{this.getAllPrice()}</span>配送费 ¥{this.state.data.sendPrice}元</button>
+            <Link to={this.state.shopNum ? '' : '/settle'} className={this.state.shopNum ? 'btn settle' : 'btn'}>
+              { this.state.shopNum ? '去结算 > ' : '购物车是空的' }
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }

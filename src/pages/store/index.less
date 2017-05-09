@@ -132,6 +132,9 @@
   color: #333;
   font-weight: bold;
 }
+.anticon-heart {
+  color: #f74342;
+}
 .topHeader .header-right .active {
   color: #0089dc;
 }
@@ -142,7 +145,7 @@
 //主要
 .main {
   background: #f2f2f2;
-  padding-top: 20px;
+  padding: 20px 0px;
   min-height: 200px;
 }
 .typeMenu {
@@ -209,10 +212,15 @@
   margin-top: 5px;
   color: #f74342;
 }
+.listMenu li .menuInfo strong span {
+  color: #666;
+  font-size: 12px;
+  font-weight: normal;
+}
 .listMenu li .menuInfo button {
   position: absolute;
   bottom: 10px;
-  right: 10px;
+  right: 5px;
   width: 90px;
   height: 26px;
   line-height: 26px;
@@ -222,4 +230,101 @@
   cursor: pointer;
   background-color: #0089dc;
   color: #fff;
+}
+.listMenu li .menuInfo .inputNumber {
+  position: absolute;
+  bottom: 10px;
+  right: 5px;
+  width: 90px;
+  height: 26px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  background: #eee;
+}
+.listMenu li .menuInfo .inputNumber span{
+  float: left;
+  width: 27px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+.listMenu li .menuInfo .inputNumber p{
+  float: left;
+  width: 34px;
+  line-height: 24px;
+  height: 24px;
+  text-align: center;
+  color: #000;
+  background: #fff;
+}
+.listMenu li .menuInfo button:active {
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+}
+.shopCar {
+  z-index: 102;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 320px;
+  height: 46px;
+  font-size: 14px;
+}
+.move {
+  position: absolute;
+  display: none;
+  opacity: 0;
+  bottom: 0px;
+  right: 150px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  animation:  move 2s;
+}
+@keyframes  move {
+  0% { bottom: 200px; opacity: 1; }
+  100%{ bottom: 0px; opacity: 0; }
+}
+.shopCar .carBtn {
+  display: flex;
+  height: 46px;
+}
+.shopCar .carBtn button {
+  flex: 1;
+  line-height: 46px;
+  background: #2c2c2c;
+  border: 0px;
+  color: #999;
+  text-align: left;
+}
+.shopCar .carBtn button .anticon {
+  float: left;
+  margin: 10px 20px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff
+}
+.shopCar .carBtn button span {
+  margin-right: 10px;
+  font-size: 20px;
+  color: #fff;
+}
+.shopCar .carBtn .btn{
+  width: 120px;
+  line-height: 46px;
+  text-align: center;
+  background: #e4e4e4;
+  color: #333;
+}
+.shopCar .carBtn .settle {
+  background: #51d862;
+  color: #fff;
+}
+.carBtn .ant-badge {
+  position: absolute;
+  top: 2px;
+  left: 38px;
 }
