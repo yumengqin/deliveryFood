@@ -364,6 +364,19 @@ router.post('/api/user/collect', koaBody, function*() {
   }
 });
 
+// 查询用户收藏店铺详情
+router.post('/api/user/collect/show', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const collect = yield CollectModel.findOne({ userName: data.userName });
+  console.log(collect.collectArr);
+  const result = yield StoreModel.find().where('owner', collect.collectArr).exec(function(err, docs){
+    console.log(docs);
+  });
+  this.body = {
+    success: data,
+    data: result,
+  };
+});
 // 收藏店铺
 router.post('/api/user/setCollect', koaBody, function*(){
   const data = JSON.parse(this.request.body);
@@ -408,6 +421,22 @@ router.post('/api/store', koaBody, function*(){
   }
 });
 
+// 查询店铺菜品并排序
+router.post('/api/store/menu', koaBody, function*() {
+  const data = JSON.parse(this.request.body);
+  let obj = {};
+  if (data.sort) {
+    obj[data.sort] = 'desc';
+  }
+  const food = yield AllMenuModel.find({ owner: data.userName }).sort(obj).exec(function(err, docs) {
+    console.log(docs);
+  });
+  this.body = {
+    success: true,
+    menu: food,
+  }
+});
+
 // 更改店铺信息
 router.post('/api/store/update', koaBody, function*(){
   const data = JSON.parse(this.request.body);
@@ -419,6 +448,7 @@ router.post('/api/store/update', koaBody, function*(){
     data: data,
   }
 });
+
 // 设置店铺是否开启
 router.post('/api/store/status', koaBody, function*(){
   const data = JSON.parse(this.request.body);
@@ -430,6 +460,7 @@ router.post('/api/store/status', koaBody, function*(){
     data: data,
   }
 });
+
 // 按类型查询店铺
 router.post('/api/store/filter', koaBody, function*(){
   const data = JSON.parse(this.request.body);
@@ -451,6 +482,7 @@ router.post('/api/menu/create', koaBody, function*(next) {
   }
 });
 
+// 修改菜品
 router.post('/api/menu/update', koaBody, function*(next) {
   const data = JSON.parse(this.request.body);
   AllMenuModel.update({ id: data.id }, data, function(error){
@@ -496,6 +528,7 @@ router.post('/api/menu/filter', koaBody, function*(next) {
   }
 });
 
+// 删除菜品
 router.post('/api/menu/delete', koaBody, function*(next) {
   const data = JSON.parse(this.request.body);
   const result = yield AllMenuModel.remove({ id: data.id }, function(err, result) {

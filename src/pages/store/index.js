@@ -12,13 +12,14 @@ require('./index.less');
 const liItem = [
   { title: '默认排序', icon: false, key: '' },
   { title: '评分', icon: true, key: 'score' },
-  { title: '销量', icon: true, key: 'sellNum' },
+  { title: '销量', icon: true, key: 'orderNum' },
   { title: '价格', icon: true, key: 'price' },
 ];
 class IndexPage extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
+      shopVisible: false,
       data: '',
       shop: [],
       showIndex: 0,
@@ -51,6 +52,17 @@ class IndexPage extends React.Component {
     }).then(function(res) {
       _this.setState({ collect: res.data.collectArr ? res.data.collectArr.indexOf(_this.props.params.id) !== -1 : false, collectArr: res.data.collectArr || []});
     });
+
+    // 查询用户收藏店铺
+    // fetch('/api/user/collect/show', {
+    //   method: 'post',
+    //   body: JSON.stringify({ userName: localStorage.getItem('userName') }),
+    //   credentials: 'include'
+    // }).then(function(res) {
+    //   return res.json();
+    // }).then(function(res) {
+    //   console.log(res);
+    // });
   }
   renderCarousel() {
     if(this.state.data && this.state.data.album.length !== 0) {
@@ -102,8 +114,19 @@ class IndexPage extends React.Component {
     this.setState({ showIndex: index });
   }
   sort(e, index, key) {
-    const cart = localStorage.
-    this.setState({ sortIndex: index });
+    const _this = this;
+    fetch('/api/store/menu', {
+      method: 'post',
+      body: JSON.stringify({
+        userName : _this.props.params.id,
+        sort: key,
+      }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      _this.setState({ menu: res.menu, sortIndex: index });
+    });
   }
   type(e, index, type) {
     const _this = this;
@@ -171,6 +194,9 @@ class IndexPage extends React.Component {
     console.log(res);
     return res;
   }
+  showShop() {
+    this.setState({ shopVisible: !this.state.shopVisible });
+  }
   getAllPrice() {
     const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
     let res = 0;
@@ -204,6 +230,26 @@ class IndexPage extends React.Component {
           </div>
         </div>
       </li>);
+    })
+  }
+  clearShop() {
+    localStorage.removeItem('cart'+this.props.params.id);
+    this.getCart();
+  }
+  rederShopList() {
+    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    return cart.map((item) => {
+      return (
+        <li>
+          <i>{item.menuName}</i>
+          <div className={this.shopHave(item.id) ? 'inputNumber' : 'none'}>
+            <span onClick={e => this.changeNumber(e, item.id, 'add')}>+</span>
+            <p>{this.shopNum(item.id)}</p>
+            <span onClick={e => this.changeNumber(e, item.id, 'sub')}>-</span>
+          </div>
+          <strong>¥{(item.price + item.boxPrice) * item.number}</strong>
+        </li>
+      )
     })
   }
   collect() {
@@ -282,9 +328,15 @@ class IndexPage extends React.Component {
           </ul>
         </div>
         <div className="shopCar">
+          <div className={this.state.shopVisible ? 'shopList' : 'shopList none'}>
+            <h1>购物车<span onClick={() => this.clearShop()}>[清空]</span></h1>
+            <ul>
+              { this.rederShopList() }
+            </ul>
+          </div>
           <div className="carBtn">
             <Badge count={this.state.shopNum} style={{ backgroundColor: '#87d068' }} className={this.state.shopNum ? '' : 'none'}/>
-            <button><Icon type="shopping-cart" /><span>{this.getAllPrice()}</span>配送费 ¥{this.state.data.sendPrice}元</button>
+            <button onClick={() => this.showShop()}><Icon type="shopping-cart" /><span>{this.getAllPrice()}</span>配送费 ¥{this.state.data.sendPrice}元</button>
             <Link to={this.state.shopNum ? '' : '/settle'} className={this.state.shopNum ? 'btn settle' : 'btn'}>
               { this.state.shopNum ? '去结算 > ' : '购物车是空的' }
             </Link>

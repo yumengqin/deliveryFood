@@ -149,7 +149,7 @@
   min-height: 200px;
 }
 .typeMenu {
-  width: 960px;
+  width: 980px;
   margin: 0px auto 20px;
   padding: 10px 20px;
   display: flex;
@@ -174,15 +174,20 @@
 }
 .listMenu {
   display: flex;
-  width: 960px;
+  flex-wrap: wrap;
+  width: 980px;
   margin: 0 auto;
 }
 .listMenu li {
-  width: 33%;
+  width: 32%;
   height: 105px;
+  margin-right: 18px;
   background: #fff;
   border: 1px solid #ddd;
   display: flex;
+}
+.listMenu li:nth-child(3n) {
+  margin-right: 0px;
 }
 .listMenu li img {
   width: 100px;
@@ -231,7 +236,7 @@
   background-color: #0089dc;
   color: #fff;
 }
-.listMenu li .menuInfo .inputNumber {
+.listMenu .menuInfo .inputNumber, .inputNumber {
   position: absolute;
   bottom: 10px;
   right: 5px;
@@ -242,7 +247,7 @@
   cursor: pointer;
   background: #eee;
 }
-.listMenu li .menuInfo .inputNumber span{
+.listMenu .menuInfo .inputNumber span, .inputNumber span{
   float: left;
   width: 27px;
   height: 24px;
@@ -251,7 +256,7 @@
   font-size: 14px;
   color: #333;
 }
-.listMenu li .menuInfo .inputNumber p{
+.inputNumber p,.listMenu .menuInfo .inputNumber p{
   float: left;
   width: 34px;
   line-height: 24px;
@@ -272,21 +277,49 @@
   height: 46px;
   font-size: 14px;
 }
-.move {
+.shopCar .shopList {
   position: absolute;
-  display: none;
-  opacity: 0;
-  bottom: 0px;
-  right: 150px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
-  animation:  move 2s;
+  bottom: 46px;
+  right: 0px;
+  width: 320px;
+  height: auto;
+  background: #fff;
+  box-shadow: 0 1px 15px #ccc;
 }
-@keyframes  move {
-  0% { bottom: 200px; opacity: 1; }
-  100%{ bottom: 0px; opacity: 0; }
+.shopCar .shopList h1 {
+  margin: 0px;
+  padding: 0px 15px;
+  text-align: left;
+  line-height: 34px;
+  font-size: 14px;
+  color: #333;
+  border-top: 2px solid #25a3ff;
+}
+.shopCar .shopList h1 span {
+  margin-left: 10px;
+  color: #25a3ff;
+  cursor: pointer;
+}
+.shopCar .shopList ul {
+  padding: 0px 15px;
+}
+.shopCar .shopList ul li{
+  display: flex;
+  justify-content: space-between;
+  line-height: 40px;
+  width: 100%;
+  border-top: 1px solid #ddd;
+}
+.shopCar .shopList ul li i {
+  font-style: normal;
+  font-size: 16px;
+}
+.shopCar .shopList ul li strong {
+  color: #f17530;
+}
+.shopCar .shopList ul li .inputNumber {
+  position: static;
+  margin-top: 7px;
 }
 .shopCar .carBtn {
   display: flex;

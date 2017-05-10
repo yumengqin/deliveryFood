@@ -87,8 +87,8 @@ class IndexPage extends React.Component {
     }
   }
   renderSelect() {
-    if (this.state.data && this.state.data.menuType && this.state.data.menuType.length !== 0) {
-      return (this.state.data.menuType).map((item, index) => {
+    if (this.state.data && this.state.data.typeMenu && this.state.data.typeMenu.length !== 0) {
+      return (this.state.data.typeMenu).map((item, index) => {
         return <Option value={item} key={index}>{item}</Option>;
       });
     } else {

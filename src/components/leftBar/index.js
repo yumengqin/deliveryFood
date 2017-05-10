@@ -65,27 +65,29 @@ class leftBar extends React.Component {
     })
   }
   handleStatus(e) {
-    if (e.key === 'close') {
-      this.setState({ storeStstus: false });
-    } else if (e.key === 'open') {
-      this.setState({ storeStstus: true });
-    }
-    fetch('/api/store/status', {
-      method: 'post',
-      body: JSON.stringify({
-        userName : localStorage.getItem('userName'),
-        status: e.key === 'open',
-      }),
-      credentials: 'include'
-    }).then(function(res) {
-      return res.json();
-    }).then(function(res) {
-      if(res.success) {
-        message.success('设置成功');
-      } else {
-        message.error('设置失败');
+    if (e.keyPath[1] === 'status') {
+      if (e.key === 'close') {
+        this.setState({ storeStstus: false });
+      } else if (e.key === 'open') {
+        this.setState({ storeStstus: true });
       }
-    })
+      fetch('/api/store/status', {
+        method: 'post',
+        body: JSON.stringify({
+          userName : localStorage.getItem('userName'),
+          status: e.key === 'open',
+        }),
+        credentials: 'include'
+      }).then(function(res) {
+        return res.json();
+      }).then(function(res) {
+        if(res.success) {
+          message.success('设置成功');
+        } else {
+          message.error('设置失败');
+        }
+      })
+    }
   }
   logout() {
     localStorage.clear();
