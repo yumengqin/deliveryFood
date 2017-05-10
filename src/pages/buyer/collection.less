@@ -1,0 +1,128 @@
+.collection .rightMenu {
+  padding: 10px 30px 20px;
+}
+.collection .rightMenu h1{
+  width: 100%;
+  margin: 0px;
+  line-height: 60px;
+  border-bottom: 2px solid #eee;
+}
+.collection .collectList {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 0px;
+}
+.collection .collectList li {
+  position: relative;
+  margin: 0 20px 20px 0;
+  width: 290px;
+  height: 250px;
+  border: 1px solid #eee;
+}
+.collection .collectList li .cover {
+  position: relative;
+  width: 100%;
+  height: 85px;
+  left: 0;
+  top: 0;
+}
+.collection .collectList li .cover img {
+  width: 100%;
+  height: 85px;
+  opacity: .5;
+}
+.collection .collectList li .cover span {
+  position: absolute;
+  display: block;
+  top: 48px;
+  padding-left: 102px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+  line-height: 2em;
+  color: #999;
+}
+.collection .collectList li .selfImg {
+  position: absolute;
+  top: 30px;
+  left: 12px;
+  width: 80px;
+  height: 80px;
+  text-align: center;
+  color: #333;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+.collection .collectList li .content {
+  margin: 40px 0 18px;
+  text-align: center;
+  font-size: 0;
+  height: 30px;
+  line-height: 1em;
+}
+.collection .collectList li .content .content-item {
+  width: 86px;
+  display: inline-block;
+  vertical-align: middle;
+  height: 30px;
+  text-align: center;
+}
+.collection .collectList li .content .content-item:nth-child(1) {
+  border-right: 1px solid #eee;
+}
+.collection .collectList li .content .content-item i {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 30px;
+  color: #999;
+  font-style: normal;
+  font-size: 12px;
+}
+.collection .collectList li .content .content-item span {
+  display: block;
+  font-size: 20px;
+  color: #666;
+}
+.collection .collectList li .activity {
+  position: relative;
+  top: 30px;
+  padding-left: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+.collection .collectList li .activity .activity-icon {
+  display: inline-block;
+  vertical-align: middle;
+  color: rgb(153, 153, 153);
+  border: 1px solid rgb(153, 153, 153);
+  font-style: normal;
+  font-size: 12px;
+  line-height: 18px;
+  height: 20px;
+  overflow: hidden;
+  text-align: center;
+  width: 20px;
+  border-radius: 2px;
+  margin-right: 8px;
+}
+.collection .collectList li .activity .delete {
+  position: absolute;
+  right: 16px;
+  top: 3px;
+  color: #ddd;
+  font-size: 24px;
+  cursor: pointer;
+}
+.noStore {
+  width: 100%;
+  height: 115px;
+  line-height: 310px;
+  margin-top: 30px;
+  display: block;
+  font-size: 20px;
+  text-align: center;
+  background: url('../../resource/noCollect.png') no-repeat center;
+  background-size: 110px 115px;
+  color: #999;
+}

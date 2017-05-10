@@ -92,10 +92,10 @@ class leftBar extends React.Component {
             >
               <SubMenu key="sub4" title={<span><Icon type="setting" /><span>设置</span></span>}>
                 <Menu.Item key="seller">
-                  <Link to='/setSeller'>个人信息</Link>
+                  <Link to='/setBuyer'>个人信息</Link>
                 </Menu.Item>
                 <Menu.Item key="store">
-                  <Link to='/setStore'>我的收藏</Link>
+                  <Link to='/collection'>我的收藏</Link>
                 </Menu.Item>
                 <Menu.Item key="order">
                   <Link to='/setMenu'>我的订单</Link>

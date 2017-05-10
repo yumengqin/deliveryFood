@@ -5,8 +5,8 @@ require('./index.less');
 
 const menu = [
   { title: '首页', url: '/indexBuyer' },
-  { title: '我的订单', url: '/allOrder' },
-  { title: '我的收藏', url: '/allLike' },
+  { title: '我的订单', url: '/collection' },
+  { title: '我的收藏', url: '/collection' },
 ]
 
 class Header extends React.Component {
