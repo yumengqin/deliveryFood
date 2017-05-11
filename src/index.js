@@ -15,6 +15,7 @@ import setMenuContainer from './pages/seller/menuSet.js'
 import addMenuContainer from './pages/seller/addMenu.js'
 import MenuInfoContainer from './pages/seller/editMenu.js'
 import setBuyerContainer from './pages/buyer/buyerSet.js'
+import setAdressContainer from './pages/buyer/adress.js'
 import storeContainer from './pages/store/index.js'
 import collectionContainer from './pages/buyer/collection.js'
 import createSocketMiddleware from './redux_middleware'
@@ -42,6 +43,7 @@ render(
       <Route path='/setMenu/addMenu' component={addMenuContainer} />
       <Route path='/setMenu/:id' component={MenuInfoContainer} />
       <Route path='/setBuyer' component={setBuyerContainer} />
+      <Route path='/setAdress' component={setAdressContainer} />
       <Route path='/collection' component={collectionContainer} />
       <Route path='/store/:id' component={storeContainer} />
     </Router>

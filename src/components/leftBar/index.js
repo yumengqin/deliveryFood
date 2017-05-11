@@ -128,7 +128,7 @@ class leftBar extends React.Component {
                 </Menu.Item>
               </SubMenu>
             </Menu>
-            <button onClick={() => this.logout()} className="out-btn">退出登录</button>
+            <button onClick={() => this.logout()} className="out-btn"><Icon type="logout" />退出登录</button>
         </ul>
       </div>
     );

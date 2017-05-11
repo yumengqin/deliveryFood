@@ -92,17 +92,20 @@ class leftBar extends React.Component {
             >
               <SubMenu key="sub4" title={<span><Icon type="setting" /><span>设置</span></span>}>
                 <Menu.Item key="seller">
-                  <Link to='/setBuyer'>个人信息</Link>
+                  <Link to='/setBuyer'><Icon type="user" />个人信息</Link>
                 </Menu.Item>
                 <Menu.Item key="store">
-                  <Link to='/collection'>我的收藏</Link>
+                  <Link to='/collection'><Icon type="heart-o" />我的收藏</Link>
                 </Menu.Item>
                 <Menu.Item key="order">
-                  <Link to='/setMenu'>我的订单</Link>
+                  <Link to='/setMenu'><Icon type="file-text" />我的订单</Link>
+                </Menu.Item>
+                <Menu.Item key="order">
+                  <Link to='/setAdress'><Icon type="file-text" />我的地址</Link>
                 </Menu.Item>
               </SubMenu>
             </Menu>
-            <button onClick={() => this.logout()} className="out-btn">退出登录</button>
+            <button onClick={() => this.logout()} className="out-btn"><Icon type="logout" />退出登录</button>
         </ul>
       </div>
     );

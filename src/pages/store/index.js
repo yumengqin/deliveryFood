@@ -5,7 +5,7 @@ import { without } from 'underscore'
 import { message_update, guest_update, nickname_get } from '../../action'
 import { hashHistory, Link } from 'react-router'
 import Home from '../../components/header'
-import { getDistance } from '../../utils/number'
+import { getDistance, getPosition } from '../../utils/number'
 
 require('./index.less');
 
@@ -81,34 +81,28 @@ class IndexPage extends React.Component {
     console.log(cart, cart.length);
   }
   getAdress() {
-      var app = this;
-      var map, geolocation;
-      //加载地图，调用浏览器定位服务
-      map = new AMap.Map('container', {
-         resizeEnable: true
+    const _this = this;
+    if (localStorage.getItem('adress')) {
+      const adr = JSON.parse(localStorage.getItem('adress'));
+      this.setState({ adress: adr.adress, latAndLon: adr.latAndLon });
+    } else {
+      fetch('/api/user/adress', {
+        method: 'post',
+        body: JSON.stringify({ userName: localStorage.getItem('userName') }),
+        credentials: 'include'
+      }).then(function(res) {
+        return res.json()
+      }).then(function(res) {
+        _this.setState({ adressArr: res.adress });
+      }).then(() => {
+        if (this.state.adress.length !== 0) {
+          const defaultAdress = findWhere(this.state.adress, { status: true });
+          _this.setState({ adress: defaultAdress.adress, latAndLon: defaultAdress.latAndLon });
+        } else {
+          getPosition(_this);
+        }
       });
-      map.plugin('AMap.Geolocation', function() {
-         geolocation = new AMap.Geolocation({
-             enableHighAccuracy: true,//是否使用高精度定位，默认:true
-             timeout: 10000,          //超过10秒后停止定位，默认：无穷大
-             buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-             zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-             buttonPosition:'RB'
-         });
-         map.addControl(geolocation);
-         geolocation.getCurrentPosition();
-         AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
-         AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
-      });
-      //解析定位结果
-      function onComplete(data) {
-        console.log('经度：' + data.position.getLng(), '纬度：' + data.position.getLat());
-         app.setState({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] });
-      }
-      //解析定位错误信息
-      function onError(data) {
-         console.log(data);
-      }
+    }
   }
   show(e, index) {
     this.setState({ showIndex: index });

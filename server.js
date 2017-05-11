@@ -26,6 +26,7 @@ var PersonSchema = require('./model/user').modleUser;
 var StoreSchema = require('./model/store').modleStore;
 var AllMenuSchema = require('./model/allMenu').modelAllMenu;
 var CollectSchema = require('./model/collect').modelCollect;
+var AdressSchema = require('./model/buyerAdress').modelAdress;
 
 db.on('error', function(error) {
     console.log('连接失败', error);
@@ -39,6 +40,7 @@ var PersonModel = db.model('user',PersonSchema);
 var StoreModel = db.model('store',StoreSchema);
 var AllMenuModel = db.model('food', AllMenuSchema);
 var CollectModel = db.model('collect', CollectSchema);
+var AdressModel = db.model('adr', AdressSchema);
 // var login = require('./db/login').login;
 
 var render = views('./src', {
@@ -354,6 +356,45 @@ router.post('/api/user', koaBody, function*(){
   }
 });
 
+// 查询用户详细信息（个人信息，用户收藏，用户地址）
+router.post('/api/user/info', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const result = yield PersonModel.findOne({ userName: data.userName });
+  const collect = yield CollectModel.findOne({ userName: data.userName });
+  const adress = yield AdressModel.findOne({ userName: data.userName });
+  this.body = {
+    success: true,
+    data: result,
+    collect: collect,
+    adress: adress,
+  }
+});
+
+// 查询用户地址
+router.post('/api/user/adress', koaBody, function*() {
+  const data = JSON.parse(this.request.body);
+  const adress = yield AdressModel.findOne({ userName: data.userName });
+  this.body = {
+    success: true,
+    adress: adress.adressArr,
+  }
+});
+
+// 更改用户地址（包括添加地址，修改地址，更改默认地址）
+router.post('/api/user/adress/update', koaBody, function*() {
+  const data = JSON.parse(this.request.body);
+  const result = AdressModel.find({ userName: data.userName });
+  if (!result || result.length === 0) {
+    AdressModel.create({ userName: data.userName, adressArr: data.adressArr });
+  } else {
+    AdressModel.update({ userName: data.userName }, { adressArr: data.adressArr }, function(error) {
+      console.log(error);
+    });
+  }
+  this.body = {
+    success: true,
+  }
+});
 // 查询用户收藏
 router.post('/api/user/collect', koaBody, function*() {
   const data = JSON.parse(this.request.body);
@@ -364,19 +405,6 @@ router.post('/api/user/collect', koaBody, function*() {
   }
 });
 
-// 查询用户收藏店铺详情
-router.post('/api/user/collect/show', koaBody, function*(){
-  const data = JSON.parse(this.request.body);
-  const collect = yield CollectModel.findOne({ userName: data.userName });
-  console.log(collect.collectArr);
-  const result = yield StoreModel.find().where('owner', collect.collectArr).exec(function(err, docs){
-    console.log(docs);
-  });
-  this.body = {
-    success: data,
-    data: result,
-  };
-});
 // 收藏店铺
 router.post('/api/user/setCollect', koaBody, function*(){
   const data = JSON.parse(this.request.body);
@@ -393,6 +421,21 @@ router.post('/api/user/setCollect', koaBody, function*(){
     success: true,
     data: data.collectArr,
   }
+});
+
+
+// 查询用户收藏店铺详情
+router.post('/api/user/collect/show', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const collect = yield CollectModel.findOne({ userName: data.userName });
+  console.log(collect.collectArr);
+  const result = yield StoreModel.find().where('owner', collect.collectArr).exec(function(err, docs){
+    console.log(docs);
+  });
+  this.body = {
+    success: data,
+    data: result,
+  };
 });
 
 // 更改用户信息

@@ -2,10 +2,11 @@ import React from 'react';
 import LazyLoad from 'react-lazyload';
 import { Input } from 'antd';
 import { connect } from 'react-redux'
+import { findWhere } from 'underscore'
 import { message_update, guest_update, nickname_get } from '../../action'
 import { hashHistory } from 'react-router'
 import Home from '../../components/header'
-import { getDistance } from '../../utils/number'
+import { getDistance, getPosition } from '../../utils/number'
 
 require('./index.less');
 
@@ -30,42 +31,73 @@ class IndexPage extends React.Component {
       benchmark: benchmark[0].key,
       activeIndex: 0,
       data: '',
+      flag: false,
     };
   }
   componentWillMount() {
-    var app = this;
     this.getData();
-    var map, geolocation;
-    //加载地图，调用浏览器定位服务
-    map = new AMap.Map('container', {
-       resizeEnable: true
-    });
-    map.plugin('AMap.Geolocation', function() {
-       geolocation = new AMap.Geolocation({
-           enableHighAccuracy: true,//是否使用高精度定位，默认:true
-           timeout: 10000,          //超过10秒后停止定位，默认：无穷大
-           buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-           zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-           buttonPosition:'RB'
-       });
-       map.addControl(geolocation);
-       geolocation.getCurrentPosition();
-       AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
-       AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
-    });
-    //解析定位结果
-    function onComplete(data) {
-      console.log('经度：' + data.position.getLng(), '纬度：' + data.position.getLat());
-       app.setState({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] });
+    this.getAdress();
+    // var map, geolocation;
+    // //加载地图，调用浏览器定位服务
+    // map = new AMap.Map('container', {
+    //    resizeEnable: true
+    // });
+    // map.plugin('AMap.Geolocation', function() {
+    //    geolocation = new AMap.Geolocation({
+    //        enableHighAccuracy: true,//是否使用高精度定位，默认:true
+    //        timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+    //        buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+    //        zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+    //        buttonPosition:'RB'
+    //    });
+    //    map.addControl(geolocation);
+    //    geolocation.getCurrentPosition();
+    //    AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+    //    AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+    // });
+    // //解析定位结果
+    // function onComplete(data) {
+    //   console.log('经度：' + data.position.getLng(), '纬度：' + data.position.getLat());
+    //    app.setState({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] });
+    // }
+    // //解析定位错误信息
+    // function onError(data) {
+    //    console.log(data);
+    // }
+  }
+  getAdress() {
+    const _this = this;
+    if (localStorage.getItem('adress')) {
+      const adr = JSON.parse(localStorage.getItem('adress'));
+      this.setState({ adress: adr.adress, latAndLon: adr.latAndLon });
+    } else {
+      fetch('/api/user/adress', {
+        method: 'post',
+        body: JSON.stringify({ userName: localStorage.getItem('userName') }),
+        credentials: 'include'
+      }).then(function(res) {
+        return res.json()
+      }).then(function(res) {
+        _this.setState({ adressArr: res.adress });
+      }).then(() => {
+        if (this.state.adressArr.length !== 0) {
+          const defaultAdress = findWhere(this.state.adress, { status: true });
+          _this.setState({ adress: defaultAdress.adress, latAndLon: defaultAdress.latAndLon });
+        } else {
+          getPosition(_this);
+        }
+      });
     }
-    //解析定位错误信息
-    function onError(data) {
-       console.log(data);
-    }
+  }
+  setAdress(item) {
+    this.setState({ adress: item.adress, latAndLon: item.latAndLon });
+    localStorage.setItem('adress', JSON.stringify(item));
+  }
+  showAdressList() {
+    this.setState({ flag: !this.state.flag });
   }
   getData(type) {
     // 查询店铺
-    console.log(type);
     const _this = this;
     fetch('/api/store/filter', {
       method: 'post',
@@ -89,13 +121,26 @@ class IndexPage extends React.Component {
       <div>
         <Home />
         <div className="buyer">
-          <div className="adress">
-            <p title={this.state.adress || ''}><span>当前位置：</span>{this.state.adress || '定位失败'}</p>
-              <Search
-                placeholder="搜索商家，美食..."
-                style={{ width: '100%' }}
-                onSearch={value => console.log(value)}
-              />
+          <div className="adress clear">
+            <div title={this.state.adress || ''}>
+              <span>当前位置：</span>{this.state.adress || '定位失败'}
+            </div>
+            <strong onClick={() => this.showAdressList()}>
+              切换地址
+              <ul className={this.state.flag ? 'adressList' : 'none'}>
+                {
+                  (this.state.adressArr || []).map((item, index) => {
+                    return <li key={index} onClick={this.setAdress(item)}>{item.adress}</li>
+                  })
+                }
+                <li key="position" onClick={getPosition(this)}>定位到当前位置</li>
+              </ul>
+            </strong>
+            <Search
+              placeholder="搜索商家，美食..."
+              style={{ width: '100%' }}
+              onSearch={value => console.log(value)}
+            />
           </div>
           <p className="banner"><strong></strong></p>
           <ul className="classify">
@@ -111,7 +156,7 @@ class IndexPage extends React.Component {
               (this.state.data && this.state.data.length !== 0) ?
               (this.state.data).map((item, index) => {
                 return (
-                  <LazyLoad once key={index}>
+                  <LazyLoad once key={index} className={getDistance(this.state.latAndLon, item.latAndLon) ? '' : 'none'}>
                     <div className="storeItem" onClick={e => this.toStore(e, item.owner)}>
                       <p className="storeImg"><img src={item.selfImg ? item.selfImg : ''} /></p>
                       <div className="storeInfo">
