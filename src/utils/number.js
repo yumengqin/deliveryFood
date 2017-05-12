@@ -113,3 +113,31 @@ export function getPosition(app) {
      console.log(data);
   }
 }
+
+export function getLatAndLon(str, app, callback) {
+  var map = new AMap.Map("container", {resizeEnable: true});
+  var resultStr = [];
+  var geocoder;
+  AMap.service('AMap.Geocoder',function(){//回调函数
+    geocoder = new AMap.Geocoder({
+       city: "010", //城市，默认：“全国”
+       radius: 1000 //范围，默认：500
+    });
+  });
+  //地理编码,返回地理编码结果
+  geocoder.getLocation(str, function(status, result) {
+     if (status === 'complete' && result.info === 'OK') {
+         return geocoder_CallBack(result);
+     }
+  });
+  //地理编码返回结果展示
+  function geocoder_CallBack(data) {
+      //地理编码结果数组
+      var geocode = data.geocodes;
+      for (var i = 0; i < geocode.length; i++) {
+        //拼接输出html
+        resultStr.push(geocode[i].location.getLng(), geocode[i].location.getLat());
+      }
+      app.setState({ latAndLon: resultStr });
+  }
+}

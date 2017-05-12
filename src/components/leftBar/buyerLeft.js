@@ -100,11 +100,12 @@ class leftBar extends React.Component {
                 <Menu.Item key="order">
                   <Link to='/setMenu'><Icon type="file-text" />我的订单</Link>
                 </Menu.Item>
-                <Menu.Item key="order">
-                  <Link to='/setAdress'><Icon type="file-text" />我的地址</Link>
+                <Menu.Item key="adress">
+                  <Link to='/setAdress'><Icon type="environment-o" />我的地址</Link>
                 </Menu.Item>
               </SubMenu>
             </Menu>
+            <Link to="indexBuyer" className="goShop"><Icon type="arrow-right" />逛一逛</Link>
             <button onClick={() => this.logout()} className="out-btn"><Icon type="logout" />退出登录</button>
         </ul>
       </div>

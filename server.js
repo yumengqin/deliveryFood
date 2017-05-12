@@ -376,15 +376,16 @@ router.post('/api/user/adress', koaBody, function*() {
   const adress = yield AdressModel.findOne({ userName: data.userName });
   this.body = {
     success: true,
-    adress: adress.adressArr,
+    adress: adress ? adress.adressArr : [],
   }
 });
 
 // 更改用户地址（包括添加地址，修改地址，更改默认地址）
 router.post('/api/user/adress/update', koaBody, function*() {
   const data = JSON.parse(this.request.body);
-  const result = AdressModel.find({ userName: data.userName });
-  if (!result || result.length === 0) {
+  const result = yield AdressModel.find({ userName: data.userName });
+  console.log(result, result.length);
+  if (!result.length || result.length === 0) {
     AdressModel.create({ userName: data.userName, adressArr: data.adressArr });
   } else {
     AdressModel.update({ userName: data.userName }, { adressArr: data.adressArr }, function(error) {

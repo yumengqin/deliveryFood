@@ -1,0 +1,91 @@
+.adress h1 {
+  width: 884px;
+}
+.adressList {
+  wisth: 884px;
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 20px;
+}
+.adressList li {
+  position: relative;;
+  width: 280px;
+  height: 120px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  padding: 20px;
+  color: #444;
+  border: 1px solid #eee;
+}
+.adressList li:nth-child(3n) {
+  margin-right: 0px;
+}
+.adressList li:nth-last-child(1) {
+  background: #fcfcfc;
+  line-height: 80px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+.adressList li:hover {
+  color: #0089dc;
+  border-color: #0089dc;
+}
+.adressList li .defaultAdress {
+  position: absolute;
+  top: -1px;
+  left: -2px;
+  font-size: 20px;
+  color: #f17530;
+}
+.adressList li .connect {
+  width: 100%;
+  height: 22px;
+  margin-bottom: 5px;
+  line-height: 22px;
+  display: flex;
+  justify-content: space-between;
+}
+.adressList li p {
+  width: 100%;
+  height: 22px;
+  margin-top: 10px;
+  cursor: default;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.adressList li .connect span {
+  display: block;
+  font-size: 14px;
+}
+.adressList li .connect .btnGroup {
+  width: 65px;
+  color: #aaa;
+  margin: 0px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.adressList li .connect .btnGroup i {
+  font-style: normal;
+  margin: 0px 2px;
+}
+.adress-model .ant-modal .ant-modal-content .ant-form .ant-form-item {
+  display: flex;
+  margin-bottom: 40px;
+}
+.adress-model .ant-modal .ant-modal-content .ant-form .ant-form-item .ant-form-item-label {
+  width: 80px;
+  text-align: left;
+}
+.adress-model .ant-modal .ant-modal-content .ant-form .ant-form-item .ant-form-item-control {
+  width: 350px;
+}
+.adress-model .ant-modal .ant-modal-content .ant-form .ant-form-item .ant-input-lg {
+  line-height: 40px;
+}
+.adress-model .ant-modal .ant-modal-footer {
+  text-align: center;
+  padding: 20px 18px 20px 10px
+}

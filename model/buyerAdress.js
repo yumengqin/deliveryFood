@@ -10,3 +10,6 @@ exports.modelAdress= AdressSchema;
 // latAndLon: Array,
 // status: Boolean,
 // id: Number,
+// connectUser: String,
+// connectPhone: Number,
+// connectSex: String,
