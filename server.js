@@ -27,6 +27,8 @@ var StoreSchema = require('./model/store').modleStore;
 var AllMenuSchema = require('./model/allMenu').modelAllMenu;
 var CollectSchema = require('./model/collect').modelCollect;
 var AdressSchema = require('./model/buyerAdress').modelAdress;
+var OrderSchema = require('./model/order').modelOrder;
+var RemarkSchema = require('./model/remark').modelRemark;
 
 db.on('error', function(error) {
     console.log('连接失败', error);
@@ -41,6 +43,8 @@ var StoreModel = db.model('store',StoreSchema);
 var AllMenuModel = db.model('food', AllMenuSchema);
 var CollectModel = db.model('collect', CollectSchema);
 var AdressModel = db.model('adr', AdressSchema);
+var OrderModel = db.model('order', OrderSchema);
+var RemarkModel = db.model('remark', RemarkSchema);
 // var login = require('./db/login').login;
 
 var render = views('./src', {
@@ -583,6 +587,81 @@ router.post('/api/menu/delete', koaBody, function*(next) {
     data: result,
   }
 });
+
+
+// 生成订单
+router.post('/api/order/create', koaBody, function*(next){
+  const data = JSON.parse(this.request.body);
+  OrderModel.create(data);
+  this.body = {
+    success: true,
+    data: data,
+  }
+});
+
+// 查询买家订单
+router.post('/api/buyer/order', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const result = yield OrderModel.find({ userName: data.userName });
+  this.body = {
+    success: true,
+    data: result,
+  }
+});
+
+// 查询卖家订单
+router.post('/api/seller/order', koaBody, function*(){
+  const data = JSON.parse(this.request.body);
+  const result = yield OrderModel.find({ seller: data.owner });
+  this.body = {
+    success: true,
+    data: result,
+  }
+});
+
+// 更改订单状态
+router.post('/api/order/update', koaBody, function*(next) {
+  const data = JSON.parse(this.request.body);
+  OrderModel.update({ _id: data._id }, { status: data.status }, function(err){
+    console.log(err);
+  });
+  this.body = {
+    success: true,
+  }
+});
+
+// 查询订单
+router.post('/api/order/show', koaBody, function*(next) {
+  const data = JSON.parse(this.request.body);
+  const result = yield OrderModel.findOne({ _id: data._id });
+  this.body = {
+    success: true,
+    data: result,
+  }
+});
+
+// 评价
+router.post('/api/remark/create', koaBody, function*(next) {
+  const data = JSON.parse(this.request.body);
+  console.log(data);
+  RemarkModel.create(data);
+  const idArr = data.menuIdArr;
+  for (var i = 0; i < idArr.length; i ++) {
+    let num = (yield AllMenuModel.findOne({ id: idArr[i] })).score || 0;
+    num = num + data.score / 2;
+    AllMenuModel.update({ id: idArr[i] }, { score: num }, function(error) {
+      console.log(error);
+    });
+  }
+  const storeStar = (yield StoreModel.findOne({ owner: data.store })).star || 0;
+  StoreModel.update({ owner: data.store }, { star: (storeStar + data.score) / 2 }, function*(next) {
+    console.log(error);
+  });
+  this.body = {
+    success: true,
+  };
+});
+
 app.use(router.routes());
 
 server.listen(process.env.PORT || 5000, function() {

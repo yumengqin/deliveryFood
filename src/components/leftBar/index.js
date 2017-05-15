@@ -123,8 +123,11 @@ class leftBar extends React.Component {
                 <Menu.Item key="store">
                   <Link to='/setStore'>店铺设置</Link>
                 </Menu.Item>
-                <Menu.Item key="order">
+                <Menu.Item key="food">
                   <Link to='/setMenu'>菜品设置</Link>
+                </Menu.Item>
+                <Menu.Item key="order">
+                  <Link to='/setOrder'>订单设置</Link>
                 </Menu.Item>
               </SubMenu>
             </Menu>

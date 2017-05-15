@@ -232,9 +232,9 @@ class IndexPage extends React.Component {
   }
   rederShopList() {
     const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
-    return cart.map((item) => {
+    return cart.map((item, index) => {
       return (
-        <li>
+        <li key={index}>
           <i>{item.menuName}</i>
           <div className={this.shopHave(item.id) ? 'inputNumber' : 'none'}>
             <span onClick={e => this.changeNumber(e, item.id, 'add')}>+</span>
@@ -331,7 +331,7 @@ class IndexPage extends React.Component {
           <div className="carBtn">
             <Badge count={this.state.shopNum} style={{ backgroundColor: '#87d068' }} className={this.state.shopNum ? '' : 'none'}/>
             <button onClick={() => this.showShop()}><Icon type="shopping-cart" /><span>{this.getAllPrice()}</span>配送费 ¥{this.state.data.sendPrice}元</button>
-            <Link to={this.state.shopNum ? '' : '/settle'} className={this.state.shopNum ? 'btn settle' : 'btn'}>
+            <Link to={this.state.shopNum ? `/settle/${this.props.params.id}` : ''} className={this.state.shopNum ? 'btn settle' : 'btn'}>
               { this.state.shopNum ? '去结算 > ' : '购物车是空的' }
             </Link>
           </div>

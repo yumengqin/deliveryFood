@@ -98,7 +98,7 @@ class leftBar extends React.Component {
                   <Link to='/collection'><Icon type="heart-o" />我的收藏</Link>
                 </Menu.Item>
                 <Menu.Item key="order">
-                  <Link to='/setMenu'><Icon type="file-text" />我的订单</Link>
+                  <Link to='/buyer/order'><Icon type="file-text" />我的订单</Link>
                 </Menu.Item>
                 <Menu.Item key="adress">
                   <Link to='/setAdress'><Icon type="environment-o" />我的地址</Link>

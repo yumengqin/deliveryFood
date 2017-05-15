@@ -14,10 +14,14 @@ import setStoreContainer from './pages/seller/storeSet.js'
 import setMenuContainer from './pages/seller/menuSet.js'
 import addMenuContainer from './pages/seller/addMenu.js'
 import MenuInfoContainer from './pages/seller/editMenu.js'
+import setSellerOrder from './pages/seller/orderSet.js'
 import setBuyerContainer from './pages/buyer/buyerSet.js'
 import setAdressContainer from './pages/buyer/adress.js'
 import storeContainer from './pages/store/index.js'
+import orderContainer from './pages/order/order.js'
+import remarkContainer from './pages/order/remark.js'
 import collectionContainer from './pages/buyer/collection.js'
+import BuyerOrderContainer from './pages/buyer/order.js'
 import createSocketMiddleware from './redux_middleware'
 import io from 'socket.io-client'
 import reducers from './reducer'
@@ -44,8 +48,12 @@ render(
       <Route path='/setMenu/:id' component={MenuInfoContainer} />
       <Route path='/setBuyer' component={setBuyerContainer} />
       <Route path='/setAdress' component={setAdressContainer} />
+      <Route path='/setOrder' component={setSellerOrder} />
       <Route path='/collection' component={collectionContainer} />
       <Route path='/store/:id' component={storeContainer} />
+      <Route path='/settle/:id' component={orderContainer} />
+      <Route path='/remark/:id' component={remarkContainer} />
+      <Route path='/buyer/order' component={BuyerOrderContainer} />
     </Router>
   </Provider>
   ,

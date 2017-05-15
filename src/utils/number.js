@@ -20,9 +20,9 @@ export function toPercent(value, withSign = true) {
  */
 export function toDecimal(value, withSign = true) {
   if (withSign) {
-    return numeral(value).format('0,0.[000]');
+    return numeral(value).format('0,0.00');
   }
-  return numeral(value).format('0,0.000');
+  return numeral(value).format('0,0.00');
 }
 
 export function toString(value) {
@@ -107,9 +107,11 @@ export function getPosition(app) {
   function onComplete(data) {
     console.log('经度：' + data.position.getLng(), '纬度：' + data.position.getLat());
      app.setState({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] });
+     localStorage.setItem('adress', JSON.stringify({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] }));
   }
   //解析定位错误信息
   function onError(data) {
+      alert('定位失败')
      console.log(data);
   }
 }
@@ -138,6 +140,7 @@ export function getLatAndLon(str, app, callback) {
         //拼接输出html
         resultStr.push(geocode[i].location.getLng(), geocode[i].location.getLat());
       }
+      console.log(data);
       app.setState({ latAndLon: resultStr });
   }
 }
