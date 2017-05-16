@@ -95,7 +95,9 @@ class OrderPage extends React.Component {
       return res.json();
     }).then(function(res) {
       if (res.success) {
+        console.log(_this.state.data);
         message.success('下单成功');
+        localStorage.removeItem('cart'+_this.state.data.owner);
         hashHistory.push('/buyer/order');
       }
     });

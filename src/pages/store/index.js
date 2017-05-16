@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
-import { Carousel, Icon, message, InputNumber, Badge } from 'antd'
+import { Carousel, Icon, message, InputNumber, Badge, Rate } from 'antd'
 import { without } from 'underscore'
 import { message_update, guest_update, nickname_get } from '../../action'
 import { hashHistory, Link } from 'react-router'
 import Home from '../../components/header'
-import { getDistance, getPosition } from '../../utils/number'
+import { getDistance, getPosition, toTime } from '../../utils/number'
 
 require('./index.less');
 
@@ -20,7 +20,9 @@ class IndexPage extends React.Component {
     super(props, context);
     this.state = {
       shopVisible: false,
+      remarkFlag: false,
       data: '',
+      remark: '',
       shop: [],
       showIndex: 0,
       sortIndex: 0,
@@ -31,6 +33,7 @@ class IndexPage extends React.Component {
   componentWillMount() {
     this.getAdress();
     this.getCart();
+    this.getRemark();
     var _this = this;
     fetch('/api/store', {
       method: 'post',
@@ -78,7 +81,6 @@ class IndexPage extends React.Component {
       shop: cart,
       shopNum: cart.length,
     });
-    console.log(cart, cart.length);
   }
   getAdress() {
     const _this = this;
@@ -104,8 +106,25 @@ class IndexPage extends React.Component {
       });
     }
   }
+  getRemark() {
+    const _this = this;
+    fetch('/api/remark/show', {
+      method: 'post',
+      body: JSON.stringify({
+        owner : _this.props.params.id,
+      }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      _this.setState({ remark: res.data });
+    });
+  }
   show(e, index) {
-    this.setState({ showIndex: index });
+    this.setState({ showIndex: index, remarkFlag: false });
+  }
+  showRemark(e, index) {
+    this.setState({ showIndex: index, remarkFlag: true });
   }
   sort(e, index, key) {
     const _this = this;
@@ -119,7 +138,7 @@ class IndexPage extends React.Component {
     }).then(function(res) {
       return res.json();
     }).then(function(res) {
-      _this.setState({ menu: res.menu, sortIndex: index });
+      _this.setState({ menu: res.menu, sortIndex: index, remarkFlag: false });
     });
   }
   type(e, index, type) {
@@ -181,11 +200,9 @@ class IndexPage extends React.Component {
     const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
     cart.map(item => {
       if(item.id === id) {
-        console.log(item);
         res = item.number;
       };
     });
-    console.log(res);
     return res;
   }
   showShop() {
@@ -209,12 +226,12 @@ class IndexPage extends React.Component {
   }
   renderList() {
     return (this.state.menu).map((item, index) => {
-      return (<li key={index}>
+      return (<li key={index} className="menuItem">
         <img src={item.img} />
         <div className="menuInfo">
           <h2>{item.menuName}</h2>
           <p>{item.intro || '...'}</p>
-          <p>出售{item.orderNum || 0}份</p>
+          <p>出售{item.orderNum || 0}份<Rate disabled value={item.score} /></p>
           <strong>¥{item.price}元 <span>餐盒费：{item.boxPrice || 0}元</span></strong>
           <button onClick={e => this.addCar(e, item)} className={this.shopHave(item.id) ? 'none' : ''}>加入购物车</button>
           <div className={this.shopHave(item.id) ? 'inputNumber' : 'none'}>
@@ -279,7 +296,8 @@ class IndexPage extends React.Component {
               <img src={this.state.data && this.state.data.selfImg ? this.state.data.selfImg : ''}/>
               <h1>
                 {this.state.data && this.state.data.storeName ? this.state.data.storeName : <span>店铺暂时没有店名</span>}
-                <span>已售出{this.state.data && this.state.data.orderNum ? this.state.data.orderNum : 0}单</span>
+                <Rate disabled value={this.state.data.star || 0} />
+                <span className="dealed">已售出{this.state.data && this.state.data.orderNum ? this.state.data.orderNum : 0}单</span>
               </h1>
             </div>
             <ul>
@@ -299,7 +317,7 @@ class IndexPage extends React.Component {
           <ul className="header-left">
             <li key="0" className={this.state.showIndex === 0 ? 'active' : ''} onClick={e => this.show(e, 0)}>所有商品</li>
             <span></span>
-            <li key="1" className={this.state.showIndex === 1 ? 'active' : ''} onClick={e => this.show(e, 1)}>评价</li>
+            <li key="1" className={this.state.showIndex === 1 ? 'active' : ''} onClick={e => this.showRemark(e, 1)}>评价</li>
           </ul>
           <ul className="header-right">
             {
@@ -313,12 +331,30 @@ class IndexPage extends React.Component {
             }
           </ul>
         </div>
-        <div className="main">
+        <div className={this.state.remarkFlag ? 'main none' : 'main'}>
           <ul className="typeMenu">
             { this.state.data && this.state.data.typeMenu ? this.renderTypeMenu() : ''}
           </ul>
           <ul className="listMenu">
             { this.state.menu ? this.renderList() : '暂无匹配菜品'}
+          </ul>
+        </div>
+        <div className={this.state.remarkFlag ? 'remark main' : 'remark none'}>
+          <ul className="remarkList">
+            {
+              (this.state.remark || []).map((item, index) => {
+                return (
+                  <li key={index} className="remarkItem">
+                    <p><span>用户</span>{item.userName}</p>
+                    <div>
+                      <Rate disabled value={item.score} />
+                      <span className="text">{item.intro || '暂无评价'}</span>
+                      <h4>{toTime(item.createDate)}</h4>
+                    </div>
+                  </li>
+                );
+              })
+            }
           </ul>
         </div>
         <div className="shopCar">

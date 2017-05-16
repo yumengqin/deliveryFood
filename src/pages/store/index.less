@@ -1,6 +1,6 @@
 .storeShow h1 {
   text-align: center;
-  margin: 20px 0px;
+  margin: 10px 0px;
 }
 .storeBanner {
   position: relative;
@@ -30,11 +30,19 @@
   text-align: left;
   color: #fff;
 }
-.storeBanner .storeInfo div h1 span {
+.storeBanner .storeInfo div h1 .dealed {
   display: block;
-  margin-top: 15px;
+  margin-top: 10px;
   font-size: 16px;
   color: #fff;
+}
+.storeBanner .storeInfo .ant-rate {
+  float: none;
+  height: 32px;
+}
+.storeBanner .storeInfo .ant-rate li {
+  margin-right: 10px;
+  line-height: 32px;
 }
 .storeBanner .storeInfo ul {
   float: right;
@@ -178,7 +186,14 @@
   width: 980px;
   margin: 0 auto;
 }
-.listMenu li {
+.listMenu .ant-rate {
+  margin: -2px 0px 0px 10px;
+  font-size: 12px;
+}
+.listMenu .ant-rate .ant-rate-star {
+  margin-right: 2px;
+}
+.listMenu .menuItem {
   width: 32%;
   height: 105px;
   margin-right: 18px;
@@ -186,25 +201,25 @@
   border: 1px solid #ddd;
   display: flex;
 }
-.listMenu li:nth-child(3n) {
+.listMenu .menuItem:nth-child(3n) {
   margin-right: 0px;
 }
-.listMenu li img {
+.listMenu .menuItem img {
   width: 100px;
   height: 100px;
 }
-.listMenu li .menuInfo {
+.listMenu .menuItem .menuInfo {
   flex: 1;
   position: relative;
   padding: 10px 5px;
 }
-.listMenu li .menuInfo h2 {
+.listMenu .menuItem .menuInfo h2 {
   font-size: 14px;
   font-weight: 700;
   margin: 0px;
   color: #333;
 }
-.listMenu li .menuInfo p {
+.listMenu .menuItem .menuInfo p {
   width: 100%;
   line-height: 20px;
   overflow: hidden;
@@ -212,17 +227,17 @@
   text-overflow: ellipsis;
   color: #999;
 }
-.listMenu li .menuInfo strong {
+.listMenu .menuItem .menuInfo strong {
   display: block;
   margin-top: 5px;
   color: #f74342;
 }
-.listMenu li .menuInfo strong span {
+.listMenu .menuItem .menuInfo strong span {
   color: #666;
   font-size: 12px;
   font-weight: normal;
 }
-.listMenu li .menuInfo button {
+.listMenu .menuItem .menuInfo button {
   position: absolute;
   bottom: 10px;
   right: 5px;
@@ -265,7 +280,7 @@
   color: #000;
   background: #fff;
 }
-.listMenu li .menuInfo button:active {
+.listMenu .menuItem .menuInfo button:active {
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
 }
 .shopCar {
@@ -365,4 +380,38 @@
   position: absolute;
   top: 2px;
   left: 38px;
+}
+
+
+.remark .remarkList{
+  width: 960px;
+  margin: 0 auto;
+}
+
+.remark .remarkList .remarkItem {
+  height: 150px;
+  margin: 10px auto;
+  padding: 10px 15px;
+  background: #fff;
+  display: flex;
+}
+.remark .remarkList .remarkItem  p {
+  margin-right: 20px;
+  padding-top: 10px;
+  line-height: 20px;
+  font-weight: bold;
+  color: #333;
+}
+.remark .remarkList .remarkItem  p span {
+  display: block;
+  text-align: center;
+}
+.remark .remarkList .remarkItem .text {
+  display: block;
+  margin-top: 5px;
+  height: 80px;
+  color: #999;
+}
+.remark .remarkList .remarkItem h4 {
+  color: #f7b84f;
 }

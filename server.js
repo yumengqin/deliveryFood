@@ -593,6 +593,10 @@ router.post('/api/menu/delete', koaBody, function*(next) {
 router.post('/api/order/create', koaBody, function*(next){
   const data = JSON.parse(this.request.body);
   OrderModel.create(data);
+  const num = (yield StoreModel.findOne({ owner: data.orderStore })).orderNum;
+  StoreModel.update({ owner: data.orderStore }, { orderNum: num + 1 }, function(error) {
+    console.log(error);
+  });
   this.body = {
     success: true,
     data: data,
@@ -662,6 +666,15 @@ router.post('/api/remark/create', koaBody, function*(next) {
   };
 });
 
+// 评价查询
+router.post('/api/remark/show', koaBody, function*(next){
+  const data = JSON.parse(this.request.body);
+  const result = yield RemarkModel.find({ store: data.owner });
+  this.body = {
+    success: true,
+    data: result,
+  }
+});
 app.use(router.routes());
 
 server.listen(process.env.PORT || 5000, function() {

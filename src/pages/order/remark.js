@@ -51,6 +51,7 @@ class RemarkPage extends React.Component{
     }).then(function(res) {
       if (res.success) {
         message.success('提交成功');
+        hashHistory.push('/indexBuyer');
       } else {
         message.error('提交失败');
       }
