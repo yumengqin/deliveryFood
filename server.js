@@ -616,6 +616,13 @@ router.post('/api/order/create', koaBody, function*(next){
   StoreModel.update({ owner: data.orderStore }, { orderNum: num + 1 }, function(error) {
     console.log(error);
   });
+  for (var i = 0; i < data.menuArr.length; i ++) {
+    let num = (yield AllMenuModel.findOne({ id: data.menuArr[i].id })).orderNum || 0;
+    num = num + data.menuArr[i].number;
+    AllMenuModel.update({ id: data.menuArr[i].id }, { orderNum: num }, function(error) {
+      console.log(error);
+    });
+  }
   this.body = {
     success: true,
     data: data,

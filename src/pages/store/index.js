@@ -345,10 +345,10 @@ class IndexPage extends React.Component {
               (this.state.remark || []).map((item, index) => {
                 return (
                   <li key={index} className="remarkItem">
-                    <p><span>用户</span>{item.userName}</p>
+                    <p><span>用户</span>{item.name}</p>
                     <div>
                       <Rate disabled value={item.score} />
-                      <span className="text">{item.intro || '暂无评价'}</span>
+                      <span className="text">{item.text || '暂无评价'}</span>
                       <h4>{toTime(item.createDate)}</h4>
                     </div>
                   </li>
