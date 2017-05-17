@@ -27,7 +27,7 @@ class IndexPage extends React.Component {
     fetch('/api/user', {
       method: 'post',
       body: JSON.stringify({
-        userName : localStorage.getItem('userName'),
+        userName : sessionStorage.getItem('userName'),
       }),
       credentials: 'include'
     }).then(function(res) {

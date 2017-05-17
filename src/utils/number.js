@@ -107,7 +107,7 @@ export function getPosition(app) {
   function onComplete(data) {
     console.log('经度：' + data.position.getLng(), '纬度：' + data.position.getLat());
      app.setState({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] });
-     localStorage.setItem('adress', JSON.stringify({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] }));
+     sessionStorage.setItem('adress', JSON.stringify({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] }));
   }
   //解析定位错误信息
   function onError(data) {

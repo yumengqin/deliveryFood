@@ -21,8 +21,8 @@ class OrderPage extends React.Component {
     this.getOrder();
   }
   getOrder() {
-    if (localStorage.getItem('cart'+this.props.params.id)){
-      this.setState({ order: JSON.parse(localStorage.getItem('cart'+this.props.params.id)) });
+    if (sessionStorage.getItem('cart'+this.props.params.id)){
+      this.setState({ order: JSON.parse(sessionStorage.getItem('cart'+this.props.params.id)) });
     } else {
       hashHistory.push('/indexBuyer');
     }
@@ -50,7 +50,7 @@ class OrderPage extends React.Component {
   }
   changeNumber (e, val, type) {
     let number = val.number;
-    const cart = JSON.parse(localStorage.getItem('cart'+this.props.params.id));
+    const cart = JSON.parse(sessionStorage.getItem('cart'+this.props.params.id));
     let res = cart;
     if (type === 'add') {
       number ++;
@@ -67,7 +67,7 @@ class OrderPage extends React.Component {
         return 0;
       }
     });
-    localStorage.setItem('cart'+this.props.params.id, JSON.stringify(res));
+    sessionStorage.setItem('cart'+this.props.params.id, JSON.stringify(res));
     this.getOrder();
   }
   change(e) {
@@ -76,8 +76,8 @@ class OrderPage extends React.Component {
   sureOrder() {
     const _this = this;
     var obj = {
-      userName: localStorage.getItem('userName'),
-      menuArr: JSON.parse(localStorage.getItem('cart'+this.props.params.id)),
+      userName: sessionStorage.getItem('userName'),
+      menuArr: JSON.parse(sessionStorage.getItem('cart'+this.props.params.id)),
       allPrice: this.getAllPrice(),
       remark: this.state.remark || '',
       createDate: new Date().getTime(),
@@ -97,7 +97,7 @@ class OrderPage extends React.Component {
       if (res.success) {
         console.log(_this.state.data);
         message.success('下单成功');
-        localStorage.removeItem('cart'+_this.state.data.owner);
+        sessionStorage.removeItem('cart'+_this.state.data.owner);
         hashHistory.push('/buyer/order');
       }
     });
@@ -157,10 +157,10 @@ class OrderPage extends React.Component {
           <div className="orderCheck">
             <h2>收货地址</h2>
             <p>
-              <span>{JSON.parse(localStorage.getItem('adress')).connectUser || localStorage.getItem('name')}
-                  &emsp;{JSON.parse(localStorage.getItem('adress')).connectPhone || localStorage.getItem('userName')}
+              <span>{JSON.parse(sessionStorage.getItem('adress')).connectUser || sessionStorage.getItem('name')}
+                  &emsp;{JSON.parse(sessionStorage.getItem('adress')).connectPhone || sessionStorage.getItem('userName')}
               </span>
-              <strong>{JSON.parse(localStorage.getItem('adress')).adress}</strong>
+              <strong>{JSON.parse(sessionStorage.getItem('adress')).adress}</strong>
             </p>
             <h2>其他信息</h2>
             <p>

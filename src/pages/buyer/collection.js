@@ -32,7 +32,7 @@ class IndexPage extends React.Component {
     fetch('/api/user', {
       method: 'post',
       body: JSON.stringify({
-        userName : localStorage.getItem('userName'),
+        userName : sessionStorage.getItem('userName'),
       }),
       credentials: 'include'
     }).then(function(res) {
@@ -51,7 +51,7 @@ class IndexPage extends React.Component {
     fetch('/api/user/collect/show', {
       method: 'post',
       body: JSON.stringify({
-        userName : localStorage.getItem('userName'),
+        userName : sessionStorage.getItem('userName'),
       }),
       credentials: 'include'
     }).then(function(res) {
@@ -119,7 +119,7 @@ class IndexPage extends React.Component {
     const res = without(arr, owner);
     fetch('/api/user/setCollect', {
       method: 'post',
-      body: JSON.stringify({ userName: localStorage.getItem('userName'), collectArr: res }),
+      body: JSON.stringify({ userName: sessionStorage.getItem('userName'), collectArr: res }),
       credentials: 'include'
     }).then(function(res) {
       return res.json();

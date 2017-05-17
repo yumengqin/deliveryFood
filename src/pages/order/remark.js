@@ -40,7 +40,7 @@ class RemarkPage extends React.Component{
       body: JSON.stringify({
         menuIdArr: this.state.idArr,
         score: this.state.rate,
-        userName: localStorage.getItem('userName'),
+        userName: sessionStorage.getItem('userName'),
         store: this.state.store,
         createDate: new Date().getTime(),
         text: this.state.val,

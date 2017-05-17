@@ -41,7 +41,7 @@ class IndexPage extends React.Component {
     fetch('/api/store', {
       method: 'post',
       body: JSON.stringify({
-        userName : localStorage.getItem('userName'),
+        userName : sessionStorage.getItem('userName'),
       }),
       credentials: 'include'
     }).then(function(res) {
@@ -62,7 +62,7 @@ class IndexPage extends React.Component {
       const _id = new Date().getTime() + this.state.data.owner;
       const menu = {
           id: _id,
-          owner: localStorage.getItem('userName'),
+          owner: sessionStorage.getItem('userName'),
           menuName: data.menuName,
           type: data.type,
           intro: data.intro,

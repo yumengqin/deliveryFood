@@ -30,7 +30,7 @@ class AdressPage extends React.Component {
     const _this = this;
     fetch('/api/user/adress', {
       method: 'post',
-      body: JSON.stringify({ userName: localStorage.getItem('userName') }),
+      body: JSON.stringify({ userName: sessionStorage.getItem('userName') }),
       credentials: 'include'
     }).then(function(res) {
       return res.json()
@@ -73,7 +73,7 @@ class AdressPage extends React.Component {
     const arr = filter(this.state.adressArr, function(val) { return val.id !== item.id });
     fetch('/api/user/adress/update', {
       method: 'post',
-      body: JSON.stringify({ userName: localStorage.getItem('userName'), adressArr: arr}),
+      body: JSON.stringify({ userName: sessionStorage.getItem('userName'), adressArr: arr}),
       credentials: 'include'
     }).then(function(res) {
       return res.json()
@@ -122,7 +122,7 @@ class AdressPage extends React.Component {
           }
           fetch('/api/user/adress/update', {
             method: 'post',
-            body: JSON.stringify({ userName: localStorage.getItem('userName'), adressArr: arr}),
+            body: JSON.stringify({ userName: sessionStorage.getItem('userName'), adressArr: arr}),
             credentials: 'include'
           }).then(function(res) {
             return res.json()

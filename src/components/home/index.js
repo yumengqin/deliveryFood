@@ -1,6 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router';
-// import { hashHistory } from 'react-router'
+import { Link, hashHistory } from 'react-router';
 
 const card = ([
   { title: '快捷便当', key: 'quick', word: '&#xe61f;' },
@@ -14,6 +13,9 @@ require('./index.less');
 class Home extends React.Component {
   constructor(props, context) {
     super(props, context);
+    this.state = {
+      type: '',
+    };
   }
   componentWillMount() {
     this.props.checkLogin();
@@ -33,9 +35,19 @@ class Home extends React.Component {
     })
   }
   hover(key){
-    let str = '';
-    if (key == 'food') {str = 'food';}
-    console.log(str);
+    this.setState({ type: key });
+  }
+  out () {
+    this.setState({ type: '' });
+  }
+  click(type) {
+    hashHistory.push({ pathname: '/indexBuyer', query: { type: type }});
+  }
+  search() {
+    hashHistory.push({ pathname: '/indexBuyer', query: { text: this.state.text || '' }});
+  }
+  changeInput(e) {
+    this.setState({ text: e.target.value });
   }
   render() {
     if (this.props.nickName !== '') {
@@ -49,16 +61,16 @@ class Home extends React.Component {
             <Link to='/open' className='open'>我要开店</Link>
           </div>
           <div className="search">
-            <h2>DeliveryFood.com</h2>
+            <h2>{this.state.type ? this.state.type : 'DeliveryFood.com'}</h2>
             <ul>
-              <li key='food' onMouseOver={this.hover.bind(this, 'food')}><i className="iconfont">&#xe61f;</i></li>
-              <li key='westfood' onMouseOver={this.hover.bind('westfood')}><i className="iconfont">&#xe61a;</i></li>
-              <li key='flower_cake' onMouseOver={this.hover.bind('flower_cake')}><i className="iconfont">&#xe621;</i></li>
-              <li key='fruits' onMouseOver={this.hover.bind('fruits')}><i className="iconfont">&#xe622;</i></li>
+              <li key='quick' onMouseOver={() => this.hover('快捷便当')} onMouseOut={() => this.out()} onClick={() => this.click('quick')}><i className="iconfont">&#xe61f;</i></li>
+              <li key='supper' onMouseOver={() => this.hover('小吃夜宵')} onMouseOut={() => this.out()} onClick={() => this.click('supper')}><i className="iconfont">&#xe61a;</i></li>
+              <li key='flower_cake' onMouseOver={() => this.hover('鲜花蛋糕')} onMouseOut={() => this.out()} onClick={() => this.click('flower_cake')}><i className="iconfont">&#xe621;</i></li>
+              <li key='fruit' onMouseOver={() => this.hover('水果蔬菜')} onMouseOut={() => this.out()} onClick={() => this.click('fruit')}><i className="iconfont">&#xe622;</i></li>
             </ul>
             <div className="searchbtn">
-              <input />
-              <button onClick={this.click}>SEARCH</button>
+              <input onChange={e => this.changeInput(e)}/>
+              <button onClick={() => this.search()}>SEARCH</button>
             </div>
           </div>
         </div>

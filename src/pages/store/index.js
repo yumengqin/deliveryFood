@@ -48,7 +48,7 @@ class IndexPage extends React.Component {
     });
     fetch('/api/user/collect', {
       method: 'post',
-      body: JSON.stringify({ userName: localStorage.getItem('userName') }),
+      body: JSON.stringify({ userName: sessionStorage.getItem('userName') }),
       credentials: 'include'
     }).then(function(res) {
       return res.json();
@@ -59,7 +59,7 @@ class IndexPage extends React.Component {
     // 查询用户收藏店铺
     // fetch('/api/user/collect/show', {
     //   method: 'post',
-    //   body: JSON.stringify({ userName: localStorage.getItem('userName') }),
+    //   body: JSON.stringify({ userName: sessionStorage.getItem('userName') }),
     //   credentials: 'include'
     // }).then(function(res) {
     //   return res.json();
@@ -76,7 +76,7 @@ class IndexPage extends React.Component {
     return <div className="default"></div>
   }
   getCart() {
-    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    const cart = sessionStorage.getItem('cart'+this.props.params.id) ? JSON.parse(sessionStorage.getItem('cart'+this.props.params.id)) : [];
     this.setState({
       shop: cart,
       shopNum: cart.length,
@@ -84,13 +84,13 @@ class IndexPage extends React.Component {
   }
   getAdress() {
     const _this = this;
-    if (localStorage.getItem('adress')) {
-      const adr = JSON.parse(localStorage.getItem('adress'));
+    if (sessionStorage.getItem('adress')) {
+      const adr = JSON.parse(sessionStorage.getItem('adress'));
       this.setState({ adress: adr.adress, latAndLon: adr.latAndLon });
     } else {
       fetch('/api/user/adress', {
         method: 'post',
-        body: JSON.stringify({ userName: localStorage.getItem('userName') }),
+        body: JSON.stringify({ userName: sessionStorage.getItem('userName') }),
         credentials: 'include'
       }).then(function(res) {
         return res.json()
@@ -158,14 +158,14 @@ class IndexPage extends React.Component {
   addCar(e, item) {
     const test = item;
     test.number = 1;
-    const userCart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    const userCart = sessionStorage.getItem('cart'+this.props.params.id) ? JSON.parse(sessionStorage.getItem('cart'+this.props.params.id)) : [];
     userCart.push(test);
-    localStorage.setItem('cart'+this.props.params.id, JSON.stringify(userCart));
+    sessionStorage.setItem('cart'+this.props.params.id, JSON.stringify(userCart));
     this.getCart();
   }
   changeNumber (e, id, type) {
     let number = this.shopNum(id);
-    const cart = JSON.parse(localStorage.getItem('cart'+this.props.params.id));
+    const cart = JSON.parse(sessionStorage.getItem('cart'+this.props.params.id));
     let res = cart;
     if (type === 'add') {
       number ++;
@@ -182,12 +182,12 @@ class IndexPage extends React.Component {
         return 0;
       }
     });
-    localStorage.setItem('cart'+this.props.params.id, JSON.stringify(res));
+    sessionStorage.setItem('cart'+this.props.params.id, JSON.stringify(res));
     this.getCart();
   }
   shopHave(id) {
     let res = false;
-    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    const cart = sessionStorage.getItem('cart'+this.props.params.id) ? JSON.parse(sessionStorage.getItem('cart'+this.props.params.id)) : [];
     cart.map(item => {
       if(item.id === id && item.number !== 0) {
         res = true;
@@ -197,7 +197,7 @@ class IndexPage extends React.Component {
   }
   shopNum(id) {
     let res = 1;
-    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    const cart = sessionStorage.getItem('cart'+this.props.params.id) ? JSON.parse(sessionStorage.getItem('cart'+this.props.params.id)) : [];
     cart.map(item => {
       if(item.id === id) {
         res = item.number;
@@ -209,7 +209,7 @@ class IndexPage extends React.Component {
     this.setState({ shopVisible: !this.state.shopVisible });
   }
   getAllPrice() {
-    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    const cart = sessionStorage.getItem('cart'+this.props.params.id) ? JSON.parse(sessionStorage.getItem('cart'+this.props.params.id)) : [];
     let res = 0;
     cart.map(item => {
       res += (item.price + item.boxPrice) * item.number;
@@ -244,11 +244,11 @@ class IndexPage extends React.Component {
     })
   }
   clearShop() {
-    localStorage.removeItem('cart'+this.props.params.id);
+    sessionStorage.removeItem('cart'+this.props.params.id);
     this.getCart();
   }
   rederShopList() {
-    const cart = localStorage.getItem('cart'+this.props.params.id) ? JSON.parse(localStorage.getItem('cart'+this.props.params.id)) : [];
+    const cart = sessionStorage.getItem('cart'+this.props.params.id) ? JSON.parse(sessionStorage.getItem('cart'+this.props.params.id)) : [];
     return cart.map((item, index) => {
       return (
         <li key={index}>
@@ -273,7 +273,7 @@ class IndexPage extends React.Component {
     }
     fetch('/api/user/setCollect', {
       method: 'post',
-      body: JSON.stringify({ userName: localStorage.getItem('userName'), collectArr: arr }),
+      body: JSON.stringify({ userName: sessionStorage.getItem('userName'), collectArr: arr }),
       credentials: 'include'
     }).then(function(res) {
       return res.json();

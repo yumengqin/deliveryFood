@@ -520,6 +520,25 @@ router.post('/api/store/filter', koaBody, function*(){
   }
 });
 
+// 搜索店铺
+router.post('/api/store/search', koaBody, function*(next){
+  const data = JSON.parse(this.request.body);
+  const result = data.type ? yield StoreModel.find({ $or: [
+    { keyWord: {'$regex': data.text , $options: '$i'} },
+    { storeName: {'$regex': data.text , $options: '$i'} },
+    { introduction: {'$regex': data.text , $options: '$i'} }
+  ], type: data.type , status: true }) : yield StoreModel.find({ $or: [
+    { keyWord: {'$regex': data.text , $options: '$i'} },
+    { storeName: {'$regex': data.text , $options: '$i'} },
+    { introduction: {'$regex': data.text , $options: '$i'} }
+  ] });
+  console.log(data, result);
+  this.body = {
+    success: true,
+    data: result,
+  }
+});
+
 // 创建菜品
 router.post('/api/menu/create', koaBody, function*(next) {
   const data = JSON.parse(this.request.body);

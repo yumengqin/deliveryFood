@@ -25,7 +25,7 @@ class Header extends React.Component {
             ))
           }
           <li key="login-signup">
-            <Link to={ localStorage.getItem('name') ? '/setBuyer' : '/login'}>{localStorage.getItem('name') ? localStorage.getItem('name') : '登录'}</Link>
+            <Link to={ sessionStorage.getItem('name') ? '/setBuyer' : '/login'}>{sessionStorage.getItem('name') ? sessionStorage.getItem('name') : '登录'}</Link>
           </li>
         </ul>
       </div>

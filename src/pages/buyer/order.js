@@ -24,7 +24,7 @@ class BuyerOrder extends React.Component {
     fetch('/api/buyer/order', {
       method: 'post',
       body: JSON.stringify({
-        userName : localStorage.getItem('userName'),
+        userName : sessionStorage.getItem('userName'),
       }),
       credentials: 'include'
     }).then(function(res) {

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import LazyLoad from 'react-lazyload';
-import { Input } from 'antd';
+import { Input, Rate } from 'antd';
 import { connect } from 'react-redux'
 import { findWhere } from 'underscore'
 import { message_update, guest_update, nickname_get } from '../../action'
@@ -28,21 +28,24 @@ class IndexPage extends React.Component {
     super(props, context)
     this.state = {
       adress: '',
-      benchmark: benchmark[0].key,
+      benchmark: this.props.location.query.type || benchmark[0].key,
       activeIndex: 0,
       data: '',
       flag: false,
     };
   }
   componentWillMount() {
-    this.getData();
+    this.getData(this.props.location.query.type || '');
     this.getAdress();
+  }
+  componentWillReceiveProps() {
+    this.getData(this.props.location.query.type || '');
   }
   getAdress() {
     const _this = this;
     fetch('/api/user/adress', {
       method: 'post',
-      body: JSON.stringify({ userName: localStorage.getItem('userName') }),
+      body: JSON.stringify({ userName: sessionStorage.getItem('userName') }),
       credentials: 'include'
     }).then(function(res) {
       return res.json()
@@ -53,7 +56,7 @@ class IndexPage extends React.Component {
       if (findWhere(this.state.adressArr, { status: true })) {
         const adr = findWhere(this.state.adressArr, { status: true });
         this.setState({ adress: adr.adress, latAndLon: adr.latAndLon });
-        localStorage.setItem('adress', JSON.stringify(adr));
+        sessionStorage.setItem('adress', JSON.stringify(adr));
       } else {
         getPosition(_this);
       }
@@ -61,17 +64,19 @@ class IndexPage extends React.Component {
   }
   setAdress(e, item) {
     this.setState({ adress: item.adress, latAndLon: item.latAndLon });
-    localStorage.setItem('adress', JSON.stringify(item));
+    sessionStorage.setItem('adress', JSON.stringify(item));
   }
   showAdressList() {
     this.setState({ flag: !this.state.flag });
   }
-  getData(type) {
+  getData(type, text = this.props.location.query.text || '') {
     // 查询店铺
+    const url = text ? '/api/store/search' : '/api/store/filter';
+    const obj = text ? { type: type, text: text } : { type: type };
     const _this = this;
-    fetch('/api/store/filter', {
+    fetch(url, {
       method: 'post',
-      body: JSON.stringify({ type: type }),
+      body: JSON.stringify(obj),
       credentials: 'include'
     }).then(function(res) {
       return res.json()
@@ -79,8 +84,11 @@ class IndexPage extends React.Component {
       _this.setState({ data: res.data });
     })
   }
+  search(value) {
+    hashHistory.push({ pathname: '/indexBuyer', query: { text: value || '' }});
+  }
   handleBench(e, index, type) {
-    this.setState({ activeIndex: index });
+    this.setState({ benchmark: type });
     this.getData(type);
   }
   toStore(e, owner) {
@@ -109,7 +117,7 @@ class IndexPage extends React.Component {
             <Search
               placeholder="搜索商家，美食..."
               style={{ width: '100%' }}
-              onSearch={value => console.log(value)}
+              onSearch={value => this.search(value)}
             />
           </div>
           <p className="banner"><strong></strong></p>
@@ -117,7 +125,7 @@ class IndexPage extends React.Component {
             <h4>全部分类：</h4>
             {
               benchmark.map((item, index) => {
-                return <li key={item.key} onClick={e => this.handleBench(e, index, item.key)} className={this.state.activeIndex === index ? 'active' : ''}>{item.title}</li>
+                return <li key={item.key} onClick={e => this.handleBench(e, index, item.key)} className={this.state.benchmark === item.key ? 'active' : ''}>{item.title}</li>
               })
             }
           </ul>
@@ -141,7 +149,10 @@ class IndexPage extends React.Component {
                       </div>
                       <div className="positionItem">
                         <div className="popover-arrow"></div>
-                        <h1>{item.storeName}</h1>
+                        <h1>
+                          {item.storeName}
+                          <Rate disabled value={item.star || 0} />
+                        </h1>
                         <ul>
                           { item.option && item.option.indexOf('onTime') !== -1 ? <p className="pospover-activitys"><span>准</span> 准时必达，超时秒赔</p> : '' }
                           { item.option && item.option.indexOf('safe') !== -1 ? <p className="pospover-activitys"><span>保</span> 已加入“外卖保”计划，食品安全有保障</p> : '' }
@@ -161,5 +172,9 @@ class IndexPage extends React.Component {
     );
   }
 }
+
+IndexPage.propTypes = {
+  location: PropTypes.shape(),
+};
 
 export default IndexPage;
