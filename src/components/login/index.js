@@ -30,6 +30,7 @@ class LoginPage extends React.Component {
     this.setState({ url: `http://127.0.0.1:5000/api/code?${new Date().getTime()}` });
   }
   login (data, app) {
+    const _this = this;
     app.setState({ codeExtra: '', userExtra: '', passExtra: '' });
     fetch('/api/login', {
       method: 'POST',
@@ -58,7 +59,9 @@ class LoginPage extends React.Component {
         sessionStorage.setItem('role', res.data.role);
         if (res.data.role == 'buyer') {
           hashHistory.push('/indexBuyer');
-          // app.props.buyer();
+          if (_this.props.location.query && _this.props.location.query.to) {
+            hashHistory.push(_this.props.location.query.to);
+          }
         } else {
           hashHistory.push('/setSeller');
         }
@@ -129,6 +132,7 @@ class LoginPage extends React.Component {
 
 LoginPage.propTypes = {
   form: PropTypes.shape(),
+  location: PropTypes.shape(),
   buyer: PropTypes.func, // eslint-disable-line
   seller: PropTypes.func, // eslint-disable-line
 };

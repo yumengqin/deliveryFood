@@ -367,7 +367,7 @@ class IndexPage extends React.Component {
           <div className="carBtn">
             <Badge count={this.state.shopNum} style={{ backgroundColor: '#87d068' }} className={this.state.shopNum ? '' : 'none'}/>
             <button onClick={() => this.showShop()}><Icon type="shopping-cart" /><span>{this.getAllPrice()}</span>配送费 ¥{this.state.data.sendPrice}元</button>
-            <Link to={this.state.shopNum ? `/settle/${this.props.params.id}` : ''} className={this.state.shopNum ? 'btn settle' : 'btn'}>
+            <Link to={this.state.shopNum ? (sessionStorage.getItem('userName') ? `/settle/${this.props.params.id}` : {pathname: '/login', query: { to: `/store/${this.props.params.id}`}}) : ''} className={this.state.shopNum ? 'btn settle' : 'btn'}>
               { this.state.shopNum ? '去结算 > ' : '购物车是空的' }
             </Link>
           </div>
