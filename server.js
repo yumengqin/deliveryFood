@@ -71,6 +71,17 @@ var sessionFresh = setInterval(function() {
   }
 }, 10000);
 
+io.on('connection', function(socket) {
+  socket.on('checkOrder', function(obj){
+    var result = [];
+    for(var i = 0; i < obj.length; i ++) {
+      if (obj[i].status === 'place' && (obj[i].createDate + 300000) < new Date().getTime()) {
+        result.push({ _id : obj[i]._id, status: 'outtime' });
+      }
+    }
+    socket.emit('checkOrder', result);
+	});
+});
 // io.on('connection', function(socket) {
 //   socket.on('msg from client', function(data) {
 //     if (!cache.nameListActive.has(data.nickName)) {

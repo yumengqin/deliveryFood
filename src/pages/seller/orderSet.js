@@ -31,15 +31,17 @@ class SellerOrder extends React.Component {
       return res.json();
     }).then(function(res) {
       _this.setState({ data: res.data });
+    }).then(() => {
+        _this.interval();
     });
   }
-  sureFood(e, id) {
+  sureFood(e, id, status) {
     const _this = this;
     fetch('/api/order/update', {
       method: 'post',
       body: JSON.stringify({
         _id: id,
-        status: 'delivery',
+        status: status,
       }),
       credentials: 'include'
     }).then(function(res) {
@@ -47,6 +49,19 @@ class SellerOrder extends React.Component {
     }).then(function(res) {
       _this.getData();
     });
+  }
+  interval() {
+    const _this = this;
+    setInterval(function() {
+      socket.emit('checkOrder', _this.state.data);
+      socket.on('checkOrder', function(data) {
+        if (data && data.length > 0) {
+          data.map(item => {
+            _this.sureFood('', item._id, item.status);
+          });
+        }
+      });
+    }, 5000);
   }
   render() {
     return(
@@ -83,7 +98,9 @@ class SellerOrder extends React.Component {
                     <span>{toDecimal(item.allPrice)}</span>
                     <span className={item.status === 'over' ? 'green' : 'red'}>
                       {item.status === 'over' ? '已完成' :
-                        (item.status === 'place' ? <strong><span onClick={e => this.sureFood(e, item._id)} style={{ cursor: 'pointer' }}>设置送出</span></strong> : '派送中')
+                        (item.status === 'place' ? <strong><span onClick={e => this.sureFood(e, item._id, 'received')} style={{ cursor: 'pointer' }}>接单</span></strong> :
+                          (item.status === 'received' ? <strong><span onClick={e => this.sureFood(e, item._id, 'delivery')} style={{ cursor: 'pointer' }}>设置配送</span></strong> : '订单已失效')
+                        )
                       }
                     </span>
                   </li>

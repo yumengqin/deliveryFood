@@ -1,4 +1,5 @@
 import React from 'react';
+import io from 'socket.io-client'
 import { Form, Button, DatePicker, message, Spin, Input, Icon, Radio } from 'antd';
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -7,6 +8,7 @@ import { hashHistory } from 'react-router'
 import LeftBar from '../../components/leftBar/buyerLeft'
 import { toDate, toTime, toDecimal } from '../../utils/number'
 
+const socket = io('http://localhost:5000');
 require('./order.less');
 
 class BuyerOrder extends React.Component {
@@ -31,25 +33,43 @@ class BuyerOrder extends React.Component {
       return res.json();
     }).then(function(res) {
       _this.setState({ data: res.data });
+    }).then(() => {
+      _this.interval();
     });
+  }
+  interval() {
+    const _this = this;
+    setInterval(function() {
+      socket.emit('checkOrder', _this.state.data);
+      socket.on('checkOrder', function(data) {
+        if (data && data.length > 0) {
+          data.map(item => {
+            _this.sureFood('', item._id, item.status);
+          });
+        }
+      });
+    }, 5000);
   }
   goStore(e, store) {
     hashHistory.push(`/store/${store}`);
   }
-  sureFood(e, id) {
+  sureFood(e, id, status) {
+    console.log('修改');
     const _this = this;
     fetch('/api/order/update', {
       method: 'post',
       body: JSON.stringify({
         _id: id,
-        status: 'over'
+        status: status
       }),
       credentials: 'include'
     }).then(function(res) {
       return res.json();
     }).then(function(res) {
       _this.getData();
-      hashHistory.push(`/remark/${id}`);
+      if (status === 'over') {
+        hashHistory.push(`/remark/${id}`);
+      }
     });
   }
   render() {
@@ -87,7 +107,9 @@ class BuyerOrder extends React.Component {
                     <span>{toDecimal(item.allPrice)}</span>
                     <span className={item.status === 'over' ? 'green' : 'red'}>
                       { item.status === 'place' ? '已提交订单' :
-                        (item.status === 'delivery' ? <strong style={{ cursor: 'pointer' }}>派送中<i onClick={e => this.sureFood(e, item._id)}>确认收货</i></strong> : '已完成')
+                        (item.status === 'delivery' ? <strong style={{ cursor: 'pointer' }}>派送中<i onClick={e => this.sureFood(e, item._id, 'over')}>确认收货</i></strong> :
+                         (item.status === 'received' ? '商家已接单' : (item.status === 'outtime' ? '订单已失效' :  '已完成'))
+                        )
                       }
                     </span>
                   </li>

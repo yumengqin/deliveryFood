@@ -6,7 +6,7 @@ var OrderSchema = new mongoose.Schema({
   createDate: Number,// 订单创建时间
   remark: String, // 订单备注
   userName: String,
-  status: String,  // place 已下单， delivery  派送中， over  已结束
+  status: String,  // place 已下单，received已接单， delivery  派送中， over  已结束
   seller: String,
   orderStore: String,
   orderStoreName: String,

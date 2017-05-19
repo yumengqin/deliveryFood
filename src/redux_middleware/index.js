@@ -10,7 +10,8 @@ function createSocketMiddleware(socket) {
         next(guest_update(data));
       });
       socket.on('msg from server', function(data) {
-        next(message_update(data));
+        console.log(data);
+        // next(message_update(data));
       });
       socket.on('self logout', function() {
         window.location.reload();
