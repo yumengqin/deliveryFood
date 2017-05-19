@@ -1,4 +1,5 @@
 import React from 'react';
+import io from 'socket.io-client'
 import { Form, Button, DatePicker, message, Spin, Input, Icon, Radio } from 'antd';
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -7,6 +8,7 @@ import { hashHistory } from 'react-router'
 import LeftBar from '../../components/leftBar/index'
 import { toDate, toTime, toDecimal } from '../../utils/number'
 
+const socket = io('http://localhost:5000');
 require('./orderSet.less');
 
 class SellerOrder extends React.Component {
