@@ -74,7 +74,7 @@ io.on('connection', function(socket) {
   socket.on('checkOrder', function(obj){
     var result = [];
     for(var i = 0; i < obj.length; i ++) {
-      if (obj[i].status === 'place' && (obj[i].createDate + 300000) < new Date().getTime()) {
+      if (obj[i].status === 'place' && (obj[i].createDate + 600000) < new Date().getTime()) {
         result.push({ _id : obj[i]._id, status: 'outtime' });
       }
     }
@@ -91,9 +91,6 @@ app.use(webpackDev(compiler, {
 app.use(serve('./dist'));
 
 app.use(route.get('/', function*() {
-  // var tank = {name: 'something'};
-  // PersonModel.create(tank);
-  // console.log(personEntity.name); //Krouky
   this.body = yield render('index', {});
 }));
 
@@ -124,6 +121,25 @@ router.use('/api', store.routes(), store.allowedMethods());
 router.use('/api', menu.routes(), menu.allowedMethods());
 router.use('/api', order.routes(), order.allowedMethods());
 router.use('/api', remark.routes(), remark.allowedMethods());
+
+// 显示图片
+router.get('/show', function(){
+  var url = this.request.url;
+  var path = url.split('?')[1];
+  var img = fs.createReadStream(path);
+  this.body = img;
+});
+
+app.use(router.routes());
+
+server.listen(process.env.PORT || 5000, function() {
+  console.log('listening');
+});
+
+server.on('error', err => {
+  console.log('error --> ', err.message);
+  process.exit(1);
+});
 
 // // 登录
 // router.post('/api/login', koaBody, function*() {
@@ -300,14 +316,6 @@ router.use('/api', remark.routes(), remark.allowedMethods());
 //     imgUrl: 'http://localhost:5000/show?' + newpath,
 //   };
 // });
-
-// 显示图片
-router.get('/show', function(){
-  var url = this.request.url;
-  var path = url.split('?')[1];
-  var img = fs.createReadStream(path);
-  this.body = img;
-});
 
 // // 查询用户信息
 // router.post('/api/user', koaBody, function*(){
@@ -660,13 +668,3 @@ router.get('/show', function(){
 //     data: result,
 //   }
 // });
-app.use(router.routes());
-
-server.listen(process.env.PORT || 5000, function() {
-  console.log('listening');
-});
-
-server.on('error', err => {
-  console.log('error --> ', err.message);
-  process.exit(1);
-});

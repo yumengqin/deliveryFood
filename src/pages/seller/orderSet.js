@@ -101,7 +101,8 @@ class SellerOrder extends React.Component {
                     <span className={item.status === 'over' ? 'green' : 'red'}>
                       {item.status === 'over' ? '已完成' :
                         (item.status === 'place' ? <strong><span onClick={e => this.sureFood(e, item._id, 'received')} style={{ cursor: 'pointer' }}>接单</span></strong> :
-                          (item.status === 'received' ? <strong><span onClick={e => this.sureFood(e, item._id, 'delivery')} style={{ cursor: 'pointer' }}>设置配送</span></strong> : '订单已失效')
+                          (item.status === 'received' ? <strong><span onClick={e => this.sureFood(e, item._id, 'delivery')} style={{ cursor: 'pointer' }}>设置配送</span></strong> :
+                          (item.status === 'delivery' ? <strong>配送中</strong> : '订单已失效'))
                         )
                       }
                     </span>

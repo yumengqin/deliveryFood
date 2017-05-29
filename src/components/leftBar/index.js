@@ -12,7 +12,7 @@ const menu = [
 
 const upImgProps = app => ({
   name: 'uploadFile',
-  action: 'http://localhost:5000/api/storeImg/upload',
+  action: 'http://localhost:5000/api/sellerImg/upload',
   listType: 'picture',
   data: { owner: sessionStorage.getItem('userName') },
   beforeUpload(file) {
