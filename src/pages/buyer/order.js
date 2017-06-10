@@ -11,6 +11,7 @@ import { toDate, toTime, toDecimal } from '../../utils/number'
 const socket = io('http://localhost:5000');
 require('./order.less');
 
+var inter = '';
 class BuyerOrder extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -41,8 +42,9 @@ class BuyerOrder extends React.Component {
     });
   }
   interval() {
+    clearInterval(inter);
     const _this = this;
-    setInterval(function() {
+    inter = setInterval(function() {
       socket.emit('checkOrder', _this.state.data);
       socket.on('checkOrder', function(data) {
         if (data && data.length > 0) {
