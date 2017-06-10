@@ -24,7 +24,7 @@ var AdressModel = db.model('adr', AdressSchema);
 var OrderModel = db.model('order', OrderSchema);
 
 // // 上传店铺头像
-router.post('/storeImg/upload', koaBody, function*(next) {
+router.post('/sellerImg/upload', koaBody, function*(next) {
   var part = this.request.body.files.uploadFile;
   var fileName = part.name;
   var tmpath = part.path;

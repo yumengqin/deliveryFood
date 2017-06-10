@@ -7,6 +7,7 @@ var koaBody = require('koa-body')({
 var ccap = require('ccap')();
 var db = require('../db/db').db;
 var mongoose = require('mongoose');
+var fs = require('fs');
 
 var PersonSchema = require('../model/user').modleUser;
 var StoreSchema = require('../model/store').modleStore;

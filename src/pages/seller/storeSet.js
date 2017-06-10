@@ -31,6 +31,9 @@ class IndexPage extends React.Component {
   }
   componentWillMount() {
     this.getData();
+    if (localStorage.getItem('role') !== 'seller') {
+      hashHistory.push('/');
+    }
     var map, geolocation;
   }
   setAdress() {

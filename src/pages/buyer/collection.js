@@ -26,6 +26,9 @@ class IndexPage extends React.Component {
   componentWillMount() {
     this.getData();
     this.getAdress();
+    if (localStorage.getItem('role') !== 'buyer') {
+      hashHistory.push('/');
+    }
   }
   getData() {
     const _this = this;

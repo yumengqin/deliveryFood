@@ -5,7 +5,7 @@ require('./index.less');
 
 const menu = [
   { title: '首页', url: '/indexBuyer' },
-  { title: '我的订单', url: '/collection' },
+  { title: '我的订单', url: '/buyer/order' },
   { title: '我的收藏', url: '/collection' },
 ]
 
