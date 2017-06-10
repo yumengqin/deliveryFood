@@ -19,7 +19,7 @@ class BuyerOrder extends React.Component {
     };
   }
   componentWillMount() {
-    if (localStorage.getItem('role') !== 'buyer') {
+    if (sessionStorage.getItem('role') !== 'buyer') {
       hashHistory.push('/');
     }
     this.getData();

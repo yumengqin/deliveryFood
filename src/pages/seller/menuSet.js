@@ -44,7 +44,7 @@ class IndexPage extends React.Component {
     };
   }
   componentWillMount() {
-    if (localStorage.getItem('role') !== 'seller') {
+    if (sessionStorage.getItem('role') !== 'seller') {
       hashHistory.push('/');
     }
     var _this = this;

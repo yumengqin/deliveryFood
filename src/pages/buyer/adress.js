@@ -25,7 +25,7 @@ class AdressPage extends React.Component {
   }
   componentWillMount() {
     this.getData();
-    if (localStorage.getItem('role') !== 'buyer') {
+    if (sessionStorage.getItem('role') !== 'buyer') {
       hashHistory.push('/');
     }
   }

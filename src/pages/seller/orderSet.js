@@ -20,7 +20,7 @@ class SellerOrder extends React.Component {
   }
   componentWillMount() {
     this.getData();
-    if (localStorage.getItem('role') !== 'seller') {
+    if (sessionStorage.getItem('role') !== 'seller') {
       hashHistory.push('/');
     }
   }
