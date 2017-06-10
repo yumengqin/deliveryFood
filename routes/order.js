@@ -22,6 +22,26 @@ var CollectModel = db.model('collect', CollectSchema);
 var AdressModel = db.model('adr', AdressSchema);
 var OrderModel = db.model('order', OrderSchema);
 
+router.post('/order/create', koaBody, function*(next){
+  const data = JSON.parse(this.request.body);
+  OrderModel.create(data);
+  const num = (yield StoreModel.findOne({ owner: data.orderStore })).orderNum;
+  StoreModel.update({ owner: data.orderStore }, { orderNum: num + 1 }, function(error) {
+    console.log(error);
+  });
+  for (var i = 0; i < data.menuArr.length; i ++) {
+    let num = (yield AllMenuModel.findOne({ id: data.menuArr[i].id })).orderNum || 0;
+    num = num + data.menuArr[i].number;
+    AllMenuModel.update({ id: data.menuArr[i].id }, { orderNum: num }, function(error) {
+      console.log(error);
+    });
+  }
+  this.body = {
+    success: true,
+    data: data,
+  }
+});
+
 // 查询买家订单
 router.post('/buyer/order', koaBody, function*(){
   const data = JSON.parse(this.request.body);
