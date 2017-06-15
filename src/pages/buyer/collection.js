@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
 import { Form, Button, DatePicker, message, Spin, Input, Icon, Radio } from 'antd';
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -97,15 +98,17 @@ class IndexPage extends React.Component {
     return (this.state.store || []).map((item, index) => {
       return (
         <li key={index}>
-          <p className="cover">
-            { item.album && item.album.length !== 0 ? <img src={item.album[0]} /> : '暂未上传图片'}
-            <span>{item.storeName}</span>
-          </p>
-          { item.selfImg ? <img src={item.selfImg} className="selfImg" /> : <span className="selfImg">无</span>}
-          <div className="content">
-            <p className="content-item"><i>起送价</i><span>{item.sendPrice}</span></p>
-            <p className="content-item"><i>送餐时间</i><span>{getDistance(this.state.latAndLon, item.latAndLon)}</span></p>
-          </div>
+          <Link to={`/store/${item.owner}`}>
+            <p className="cover">
+              { item.album && item.album.length !== 0 ? <img src={item.album[0]} /> : '暂未上传图片'}
+              <span>{item.storeName}</span>
+            </p>
+            { item.selfImg ? <img src={item.selfImg} className="selfImg" /> : <span className="selfImg">无</span>}
+            <div className="content">
+              <p className="content-item"><i>起送价</i><span>{item.sendPrice}</span></p>
+              <p className="content-item"><i>送餐时间</i><span>{getDistance(this.state.latAndLon, item.latAndLon)}</span></p>
+            </div>
+          </Link>
           <div className="activity">
             { item.option && item.option.indexOf('onTime') ? <i className="activity-icon">准</i> : '' }
             { item.option && item.option.indexOf('safe') ? <i className="activity-icon">保</i> : '' }

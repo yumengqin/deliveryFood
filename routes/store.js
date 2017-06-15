@@ -137,5 +137,18 @@ router.post('/store/search', koaBody, function*(next){
   }
 });
 
+// 店铺提问
+router.post('/store/ask/put', koaBody, function*(next){
+  const data = JSON.parse(this.request.body);
+  const item = yield StoreModel.findOne({ owner: data.owner }, { 'question': 1 });
+  const question = item.question;
+  question.push({ user: data.asker, name: data.name, text: data.text });
+  StoreModel.update({ owner: data.owner }, { question: question }, function(error, res){
+    console.log(data, error, res);
+  });
+  this.body = {
+    success: true,
+  }
+});
 
 module.exports = router;

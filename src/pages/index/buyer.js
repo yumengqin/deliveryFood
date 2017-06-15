@@ -28,7 +28,7 @@ class IndexPage extends React.Component {
     super(props, context)
     this.state = {
       adress: '',
-      benchmark: this.props.location.query.type || benchmark[0].key,
+      benchmark: this.props.location.query.text ? 'text' : this.props.location.query.type || benchmark[0].key,
       activeIndex: 0,
       data: '',
       flag: false,
@@ -38,11 +38,12 @@ class IndexPage extends React.Component {
     this.getData(this.props.location.query.type || '');
     this.getAdress();
     console.log(sessionStorage.getItem('role'));
-    if (sessionStorage.getItem('role') !== 'buyer') {
+    if (sessionStorage.getItem('role') === 'seller') {
       hashHistory.push('/');
     }
   }
   componentWillReceiveProps() {
+    this.setState({ benchmark: this.props.location.query.text ? 'text' : this.props.location.query.type || benchmark[0].key })
     this.getData(this.props.location.query.type || '');
   }
   getAdress() {
@@ -75,8 +76,9 @@ class IndexPage extends React.Component {
   }
   getData(type, text = this.props.location.query.text || '') {
     // 查询店铺
+    console.log(text);
     const url = text ? '/api/store/search' : '/api/store/filter';
-    const obj = text ? { type: type, text: text } : { type: type };
+    const obj = text ? { text: text } : { type: type };
     const _this = this;
     fetch(url, {
       method: 'post',
@@ -92,8 +94,9 @@ class IndexPage extends React.Component {
     hashHistory.push({ pathname: '/indexBuyer', query: { text: value || '' }});
   }
   handleBench(e, index, type) {
-    this.setState({ benchmark: type });
-    this.getData(type);
+    hashHistory.push({ pathname: '/indexBuyer', query: { type: type }});
+    // this.setState({ benchmark: type });
+    // this.getData(type, '');
   }
   toStore(e, owner) {
     hashHistory.push(`/store/${owner}`);

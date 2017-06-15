@@ -20,6 +20,7 @@ var StoreSchema = new mongoose.Schema({
   option: Array,
   selfImg: String,
   status: Boolean,
+  question: Array,
 });
 
 exports.modleStore= StoreSchema;

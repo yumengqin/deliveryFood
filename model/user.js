@@ -11,6 +11,7 @@ var PersonSchema = new mongoose.Schema({
   date: Number,
   like: String,
   sex: String,
+  question: Array,
 });
 
 exports.modleUser= PersonSchema;

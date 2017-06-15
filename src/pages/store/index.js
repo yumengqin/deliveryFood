@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
-import { Carousel, Icon, message, InputNumber, Badge, Rate } from 'antd'
+import { Carousel, Icon, message, InputNumber, Badge, Rate, Input, Button } from 'antd'
 import { without } from 'underscore'
 import { message_update, guest_update, nickname_get } from '../../action'
 import { hashHistory, Link } from 'react-router'
@@ -20,8 +20,9 @@ class IndexPage extends React.Component {
     super(props, context);
     this.state = {
       shopVisible: false,
-      remarkFlag: false,
+      remarkFlag: 0,
       data: '',
+      askNo: '',
       remark: '',
       shop: [],
       showIndex: 0,
@@ -34,18 +35,8 @@ class IndexPage extends React.Component {
     this.getAdress();
     this.getCart();
     this.getRemark();
+    this.getStore();
     var _this = this;
-    fetch('/api/store', {
-      method: 'post',
-      body: JSON.stringify({
-        userName : _this.props.params.id,
-      }),
-      credentials: 'include'
-    }).then(function(res) {
-      return res.json();
-    }).then(function(res) {
-      _this.setState({ data: res.data, menu: res.menu });
-    });
     fetch('/api/user/collect', {
       method: 'post',
       body: JSON.stringify({ userName: sessionStorage.getItem('userName') }),
@@ -74,6 +65,20 @@ class IndexPage extends React.Component {
       });
     }
     return <div className="default"></div>
+  }
+  getStore() {
+    var _this = this;
+    fetch('/api/store', {
+      method: 'post',
+      body: JSON.stringify({
+        userName : _this.props.params.id,
+      }),
+      credentials: 'include'
+    }).then(function(res) {
+      return res.json();
+    }).then(function(res) {
+      _this.setState({ data: res.data, menu: res.menu, question: res.data.question });
+    });
   }
   getCart() {
     const cart = sessionStorage.getItem('cart'+this.props.params.id) ? JSON.parse(sessionStorage.getItem('cart'+this.props.params.id)) : [];
@@ -121,10 +126,13 @@ class IndexPage extends React.Component {
     });
   }
   show(e, index) {
-    this.setState({ showIndex: index, remarkFlag: false });
+    this.setState({ showIndex: index, remarkFlag: 0 });
   }
   showRemark(e, index) {
-    this.setState({ showIndex: index, remarkFlag: true });
+    this.setState({ showIndex: index, remarkFlag: 1 });
+  }
+  showQuestion(e, index) {
+    this.setState({ showIndex: index, remarkFlag: 2 });
   }
   sort(e, index, key) {
     const _this = this;
@@ -138,7 +146,7 @@ class IndexPage extends React.Component {
     }).then(function(res) {
       return res.json();
     }).then(function(res) {
-      _this.setState({ menu: res.menu, sortIndex: index, remarkFlag: false });
+      _this.setState({ menu: res.menu, sortIndex: index, remarkFlag: 0 });
     });
   }
   type(e, index, type) {
@@ -273,7 +281,7 @@ class IndexPage extends React.Component {
     }
     fetch('/api/user/setCollect', {
       method: 'post',
-      body: JSON.stringify({ userName: sessionStorage.getItem('userName'), collectArr: arr }),
+      body: JSON.stringify({ userName: sessionStorage.getItem('userName'), collectArr: arr, name: sessionStorage.getItem('name') }),
       credentials: 'include'
     }).then(function(res) {
       return res.json();
@@ -285,6 +293,24 @@ class IndexPage extends React.Component {
       }
       _this.setState({ collectArr: res.data, collect: !_this.state.collect });
     });
+  }
+  // 发起提问
+  setAsk (e) {
+    this.setState({ askNo: '', askText: e.target.value });
+  }
+  sendAsk(){
+    if (this.state.askText) {
+      fetch('/api/store/ask/put', {
+        method: 'post',
+        body: JSON.stringify({ asker: sessionStorage.getItem('userName'), name: sessionStorage.getItem('name'), owner: this.props.params.id, text: this.state.askText }),
+        credentials: 'include'
+      }).then(function(res) {
+        return res.json();
+        this.getStore();
+      })
+    } else {
+      this.setState({ askNo: '请输入提问内容' });
+    }
   }
   render() {
     return (
@@ -318,6 +344,8 @@ class IndexPage extends React.Component {
             <li key="0" className={this.state.showIndex === 0 ? 'active' : ''} onClick={e => this.show(e, 0)}>所有商品</li>
             <span></span>
             <li key="1" className={this.state.showIndex === 1 ? 'active' : ''} onClick={e => this.showRemark(e, 1)}>评价</li>
+            <span></span>
+            <li key="2" className={this.state.showIndex === 2 ? 'active' : ''} onClick={e => this.showQuestion(e, 2)}>问答</li>
           </ul>
           <ul className="header-right">
             {
@@ -331,7 +359,7 @@ class IndexPage extends React.Component {
             }
           </ul>
         </div>
-        <div className={this.state.remarkFlag ? 'main none' : 'main'}>
+        <div className={this.state.remarkFlag === 0 ? 'main' : 'main none'}>
           <ul className="typeMenu">
             { this.state.data && this.state.data.typeMenu ? this.renderTypeMenu() : ''}
           </ul>
@@ -339,7 +367,7 @@ class IndexPage extends React.Component {
             { this.state.menu ? this.renderList() : '暂无匹配菜品'}
           </ul>
         </div>
-        <div className={this.state.remarkFlag ? 'remark main' : 'remark none'}>
+        <div className={this.state.remarkFlag === 1 ? 'remark main' : 'remark none'}>
           <ul className="remarkList">
             {
               (this.state.remark || []).map((item, index) => {
@@ -356,6 +384,32 @@ class IndexPage extends React.Component {
               })
             }
           </ul>
+        </div>
+        <div className={this.state.remarkFlag === 2 ? 'remark main' : 'remark none'}>
+          <ul className="remarkList">
+            {
+              (this.state.question || []).map((item, index) => {
+                return (
+                  <li key={index} className="remarkItem">
+                    <p><span>用户</span>{item.name}</p>
+                    <div>
+                      <span className="text">提问：&nbsp;&nbsp;{item.text}</span>
+                      <p>
+                        {
+                          (item.response || []).map((v, index) => (
+                            <i key={index}>{v.responseName}：{v.text}</i>
+                          ))
+                        }
+                      </p>
+                    </div>
+                  </li>
+                );
+              })
+            }
+          </ul>
+          <Input type="textarea" rows={5} className="question" onChange={e => this.setAsk(e)}/>
+          <span className="askNo">{ this.state.askNo ? this.state.askNo : ''}</span>
+          <Button onClick={() => this.sendAsk()}>向已买的用户提问</Button>
         </div>
         <div className="shopCar">
           <div className={this.state.shopVisible ? 'shopList' : 'shopList none'}>

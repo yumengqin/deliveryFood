@@ -76,6 +76,8 @@ io.on('connection', function(socket) {
     for(var i = 0; i < obj.length; i ++) {
       if (obj[i].status === 'place' && (obj[i].createDate + 600000) < new Date().getTime()) {
         result.push({ _id : obj[i]._id, status: 'outtime' });
+      } else if (obj[i].status === delivery && (obj[i].createDate + 604800000) < new Date().getTime()) {
+        result.push({ _id : obj[i]._id, status: 'over' });
       }
     }
     socket.emit('checkOrder', result);
@@ -572,7 +574,7 @@ server.on('error', err => {
 //     success: true,
 //     data: result,
 //   }
-// });   //  
+// });   //
 //
 //
 // // 生成订单
