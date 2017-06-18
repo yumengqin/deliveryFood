@@ -109,16 +109,9 @@ class LoginPage extends React.Component {
               })(
                 <Input prefix={<Icon type="lock" style={{ fontSize: 16 }} />} type="text" className="code-input" placeholder="验证码" onFocus={e => this.onFocus(e, 'code')}/>
               )}
-              <img src={this.state.url} className="code-img"/>
+              <img src={this.state.url} className="code-img" onClick={() => this.url()}/>
             </FormItem>
             <FormItem>
-              {getFieldDecorator('remember', {
-                valuePropName: 'checked',
-                initialValue: true,
-              })(
-                <Checkbox>记住密码</Checkbox>
-              )}
-              <a className="login-form-forgot" href="">忘记密码</a>
               <Button type="primary" htmlType="submit" className="login-form-button">
                 登录
               </Button>

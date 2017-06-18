@@ -9,7 +9,7 @@ require('./index.less');
 const FormItem = Form.Item;
 const createForm = Form.create;
 
-class LoginPage extends React.Component {
+class SignupPage extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state={
@@ -118,15 +118,9 @@ class LoginPage extends React.Component {
               })(
                 <Input prefix={<Icon type="lock" style={{ fontSize: 16 }} />} type="text" className="code-input" placeholder="验证码" onFocus={e => this.onFocus(e, 'code')}/>
               )}
-              <img src={this.state.url} className="code-img"/>
+              <img src={this.state.url} className="code-img" onClick={() => this.url()}/>
             </FormItem>
             <FormItem>
-              {getFieldDecorator('remember', {
-                valuePropName: 'checked',
-                initialValue: true,
-              })(
-                <Checkbox>记住密码</Checkbox>
-              )}
               <Link className="login-form-forgot" to="/login">去登录</Link>
               <Button type="primary" htmlType="submit" className="login-form-button">
                 注册
@@ -138,10 +132,10 @@ class LoginPage extends React.Component {
   }
 }
 
-LoginPage.propTypes = {
+SignupPage.propTypes = {
   form: PropTypes.shape(),
   buyer: PropTypes.func, // eslint-disable-line
   seller: PropTypes.func, // eslint-disable-line
 };
 
-export default connect()(createForm()(LoginPage))
+export default connect()(createForm()(SignupPage))
