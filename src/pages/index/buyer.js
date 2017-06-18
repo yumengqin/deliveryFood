@@ -98,8 +98,10 @@ class IndexPage extends React.Component {
     // this.setState({ benchmark: type });
     // this.getData(type, '');
   }
-  toStore(e, owner) {
-    hashHistory.push(`/store/${owner}`);
+  toStore(e, owner, status) {
+    if (status) {
+      hashHistory.push(`/store/${owner}`);
+    }
   }
   render() {
     return (
@@ -142,7 +144,7 @@ class IndexPage extends React.Component {
               (this.state.data).map((item, index) => {
                 return (
                   <LazyLoad once key={index} className={getDistance(this.state.latAndLon, item.latAndLon) ? '' : 'none'}>
-                    <div className="storeItem" onClick={e => this.toStore(e, item.owner)}>
+                    <div className={ item.status ? 'storeItem' : 'storeItem mask'} onClick={e => this.toStore(e, item.owner, item.status)}>
                       <p className="storeImg"><img src={item.selfImg ? item.selfImg : ''} /></p>
                       <div className="storeInfo">
                         <h2>{item.storeName}</h2>

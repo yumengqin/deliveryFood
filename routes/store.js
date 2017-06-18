@@ -110,7 +110,7 @@ router.post('/store/status', koaBody, function*(){
 // 按类型查询店铺
 router.post('/store/filter', koaBody, function*(){
   const data = JSON.parse(this.request.body);
-  const filter = data.type ? {type: data.type, status: true } : {status: true} ;
+  const filter = data.type ? {type: data.type} : {} ;
   const result = yield StoreModel.find(filter);
   this.body = {
     success: true,
@@ -125,7 +125,7 @@ router.post('/store/search', koaBody, function*(next){
     { keyWord: {'$regex': data.text , $options: '$i'} },
     { storeName: {'$regex': data.text , $options: '$i'} },
     { introduction: {'$regex': data.text , $options: '$i'} }
-  ], type: data.type , status: true }) : yield StoreModel.find({ $or: [
+  ], type: data.type }) : yield StoreModel.find({ $or: [
     { keyWord: {'$regex': data.text , $options: '$i'} },
     { storeName: {'$regex': data.text , $options: '$i'} },
     { introduction: {'$regex': data.text , $options: '$i'} }

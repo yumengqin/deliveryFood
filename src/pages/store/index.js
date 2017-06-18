@@ -328,7 +328,7 @@ class IndexPage extends React.Component {
             </div>
             <ul>
               <li key="0">配送费 <span>¥{this.state.data && this.state.data.sendPrice ? this.state.data.sendPrice : 0}元</span></li>
-              <li key="1">送达时间 <span>{this.state.data && this.state.data.latAndLon && this.state.data.latAndLon.length !== 0 ? getDistance(this.state.data.latAndLon, this.state.latAndLon) : '未知'}</span></li>
+              <li key="1">送达时间 <span>{this.state.latAndLon && this.state.data && this.state.data.latAndLon && this.state.data.latAndLon.length !== 0 ? getDistance(this.state.data.latAndLon, this.state.latAndLon) : '未知'}</span></li>
             </ul>
             <p className="collect" onClick={() => this.collect()}>
               {this.state.collect ? <Icon type="heart" /> : <Icon type="heart-o" />}

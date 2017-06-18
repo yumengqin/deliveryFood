@@ -6,9 +6,12 @@
   h1 {
     width: 100%;
     display: block;
-    margin: 10px 0px;
+    padding: 20px 0px;
+    margin: 0px;
     line-height: 30px;
     text-align: center;
+    background: #555;
+    color: #fff;
   }
 }
 .menu {
@@ -45,7 +48,7 @@
 }
 .menu .menuList {
   flex: 1;
-  height: 100%;
+  height: auto;
   min-height: 400px;
   border: 1px solid #e2e2e2;
   box-sizing: border-box;
@@ -161,6 +164,8 @@
 }
 .newMenu h1{
   margin: 50px auto;
+  background: none;
+  color: #1F5EA9;
 }
 .newMenu .ant-form .ant-row:nth-child(3) {
   width: 100%;
@@ -185,4 +190,10 @@
   margin-right: 30px;
   background: #e04742;
   color: #fff;
+}
+.rightMenu .ant-carousel .slick-dots li {
+  width: 70px;
+}
+.rightMenu .ant-carousel .slick-dots li button {
+  width: 60px;
 }

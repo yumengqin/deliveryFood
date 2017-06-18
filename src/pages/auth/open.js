@@ -122,12 +122,6 @@ class OpenPage extends React.Component {
               <img src={this.state.url} className="code-img"/>
             </FormItem>
             <FormItem>
-              {getFieldDecorator('remember', {
-                valuePropName: 'checked',
-                initialValue: true,
-              })(
-                <Checkbox>记住密码</Checkbox>
-              )}
               <Link className="login-form-forgot" to="/login">去登录</Link>
               <Button type="primary" htmlType="submit" className="login-form-button">
                 加入

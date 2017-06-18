@@ -58,13 +58,15 @@ class IndexPage extends React.Component {
       return res.json();
     }).then(function(res) {
       _this.setState({ data: res.data, menu: res.menu });
+    }).then(function(res) {
+      _this.getHeight();
     })
   }
-  componentDidMount() {
-    const list = this.refs.menuList;
-    const type = this.refs.menuType;
-    this.setState({ menuHeight: Math.min(list.offsetHeight, type.offsetHeight)});
-    console.log(list.offsetHeight);
+  getHeight() {
+    const t = this.state;
+    const menuNum = (t.menu || []).length;
+    const typeNum = (t.data.typeMenu || []).length;
+    this.setState({ menuHeight: Math.max(Math.ceil(menuNum / 3) * 170 + 40, typeNum * 40) });
   }
   renderCarousel() {
     if(this.state.data && this.state.data.album.length !== 0) {
@@ -75,7 +77,6 @@ class IndexPage extends React.Component {
     return <div className="default"></div>
   }
   renderMenu() {
-    console.log(this);
     if(this.state.menu && this.state.menu.length !== 0) {
       return this.state.menu.map((item, index) => {
         return (
@@ -146,6 +147,7 @@ class IndexPage extends React.Component {
     }).then(function(res) {
       if(res.success) {
         _this.setState({ menu: res.data, activeIndex: index });
+        _this.getHeight();
       }
     })
   }

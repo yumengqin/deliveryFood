@@ -105,7 +105,7 @@ export function getPosition(app) {
   });
   //解析定位结果
   function onComplete(data) {
-    console.log('经度：' + data.position.getLng(), '纬度：' + data.position.getLat());
+    console.log(data.formattedAddress, '经度：' + data.position.getLng(), '纬度：' + data.position.getLat());
      app.setState({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] });
      sessionStorage.setItem('adress', JSON.stringify({ adress: data.formattedAddress, latAndLon: [data.position.getLng(), data.position.getLat()] }));
   }

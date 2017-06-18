@@ -6,7 +6,7 @@ import { message_update, guest_update, nickname_get } from '../../action'
 import { hashHistory } from 'react-router'
 import LeftBar from '../../components/leftBar'
 import PicturesWall from '../../container/picturesWall'
-import { toDate, toTime } from '../../utils/number'
+import { toDate, toTime, getPosition, getLatAndLon } from '../../utils/number'
 
 require('./sellerSet.less');
 require('./storeSet.less');
@@ -69,10 +69,8 @@ class IndexPage extends React.Component {
     }
   }
   changeAdress(e) {
-    const test = this.state.data;
-    test.adress = e.target.value;
-    test.latAndLon = [data.position.getLng(), data.position.getLat()];
-    this.setState({ data: test });
+    getLatAndLon(e.target.value, this);
+    this.setState({ adress: e.target.value });
   }
   getData() {
     const _this = this;
@@ -88,15 +86,16 @@ class IndexPage extends React.Component {
       _this.props.form.setFieldsValue({
         ...res.data,
       });
-      _this.setState({ data: res.data, fileList: res.data.album, option: res.data.option || []});
+      _this.setState({ data: res.data, adress: res.data.adress || '', latAndLon: res.data.latAndLon, fileList: res.data.album, option: res.data.option || []});
     })
   }
   handleSubmit(e){
     var _this = this;
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, data) => {
-      if (!this.state.data.adress) {
-        this.setState({ errorAdress: '请输入店铺地址或者点击图标进行定位'})
+      if (!this.state.adress) {
+        this.setState({ errorAdress: '请输入店铺地址或者点击图标进行定位'});
+        return 0;
       }
       if (err) {
         console.log(err);
@@ -104,8 +103,8 @@ class IndexPage extends React.Component {
       }
       data.userName = this.state.data.owner;
       data.album = this.getAlbum(this.state.fileList);
-      data.adress = this.state.data.adress;
-      data.latAndLon = this.state.data.latAndLon;
+      data.adress = this.state.adress;
+      data.latAndLon = this.state.latAndLon;
       data.option = this.state.option,
       fetch('/api/store/update', {
         method: 'post',
@@ -145,7 +144,7 @@ class IndexPage extends React.Component {
     return result;
   }
   render() {
-    // console.log(this.state);
+    console.log(this.state);
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="setSeller storeSet">
@@ -185,8 +184,8 @@ class IndexPage extends React.Component {
             </FormItem>
             <FormItem label="店铺地址" extra={this.state && this.state.errorAdress ? this.state.errorAdress : ''}>
               <Input
-                value={this.state && this.state.data && this.state.data.adress ? this.state.data.adress : ''}
-                prefix={<Icon type="environment-o" style={{ fontSize: 16 }} onClick={() => this.setAdress()}/>}
+                value={this.state && this.state.adress ? this.state.adress : ''}
+                prefix={<Icon type="environment-o" style={{ fontSize: 16 }} onClick={() => getPosition(this)}/>}
                 onChange={e => this.changeAdress(e)}
               />
             </FormItem>

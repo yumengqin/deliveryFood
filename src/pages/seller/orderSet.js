@@ -86,7 +86,7 @@ class SellerOrder extends React.Component {
                 return (
                   <li key={index} className="orderItem">
                     <span>{toTime(item.createDate)}</span>
-                    <span onClick={e => this.goStore(e, item.orderStore)}>
+                    <span>
                       <img src={item.orderStoreImg} alt="暂无图片" title="商家图片" />
                       <p>
                         <strong>{item.orderStoreName}</strong>
