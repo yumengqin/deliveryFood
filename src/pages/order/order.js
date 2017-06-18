@@ -44,7 +44,7 @@ class OrderPage extends React.Component {
   getAllPrice() {
     var price = this.state.data.sendPrice || 0;
     (this.state.order).map((item) => {
-      price += item.number + (item.price + item.boxPrice);
+      price += item.number * (item.price + item.boxPrice);
     });
     return price;
   }
@@ -140,7 +140,7 @@ class OrderPage extends React.Component {
                               <span onClick={e => this.changeNumber(e, item, 'sub')}>-</span>
                             </div>
                           </td>
-                          <td>{item.number} * ({item.price} + {item.boxPrice}) = {item.number + (item.price + item.boxPrice)}元</td>
+                          <td>{item.number} * ({item.price} + {item.boxPrice}) = {item.number * (item.price + item.boxPrice)}元</td>
                         </tr>
                       );
                     })
