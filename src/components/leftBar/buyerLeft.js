@@ -103,6 +103,9 @@ class leftBar extends React.Component {
                 <Menu.Item key="adress">
                   <Link to='/setAdress'><Icon type="environment-o" />我的地址</Link>
                 </Menu.Item>
+                <Menu.Item key="request">
+                  <Link to='/setRequest'><Icon type="environment-o" />请回答</Link>
+                </Menu.Item>
               </SubMenu>
             </Menu>
             <Link to="indexBuyer" className="goShop"><Icon type="arrow-right" />逛一逛</Link>

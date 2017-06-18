@@ -446,3 +446,45 @@
 .remark .remarkList .remarkItem h4 {
   color: #f7b84f;
 }
+
+.remark .remarkList .questionItem {
+  display: block;
+  height: auto;
+  min-height: 100px;
+}
+.remark .remarkList .questionItem p {
+  line-height: 20px;
+  height: 20px;
+  min-width: 100%;
+  margin: 5px 0px;
+  text-align: left;
+}
+
+.remark .remarkList .questionItem p span {
+  display: inline-block;
+  width: 70px;
+  text-align: left;
+}
+
+.remark .remarkList .remarkItem .text {
+  display: inline-block;;
+  margin-top: 5px;
+  margin-left: 10px;
+  font-style: normal;
+  color: #999;
+  &:before {
+    content: '问';
+    float: left;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    line-height: 20px;
+    text-align: center;
+    background: #f7b84f;
+  }
+}
+.remark .remarkList .remarkItem .response:before {
+  content: '答';
+  background: #e04742;
+}

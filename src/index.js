@@ -17,6 +17,7 @@ import MenuInfoContainer from './pages/seller/editMenu.js'
 import setSellerOrder from './pages/seller/orderSet.js'
 import setBuyerContainer from './pages/buyer/buyerSet.js'
 import setAdressContainer from './pages/buyer/adress.js'
+import setRequest from './pages/buyer/setRequest.js'
 import storeContainer from './pages/store/index.js'
 import orderContainer from './pages/order/order.js'
 import remarkContainer from './pages/order/remark.js'
@@ -49,6 +50,7 @@ render(
       <Route path='/setBuyer' component={setBuyerContainer} />
       <Route path='/setAdress' component={setAdressContainer} />
       <Route path='/setOrder' component={setSellerOrder} />
+      <Route path='/setRequest' component={setRequest} />
       <Route path='/collection' component={collectionContainer} />
       <Route path='/store/:id' component={storeContainer} />
       <Route path='/settle/:id' component={orderContainer} />

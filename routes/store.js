@@ -142,10 +142,23 @@ router.post('/store/ask/put', koaBody, function*(next){
   const data = JSON.parse(this.request.body);
   const item = yield StoreModel.findOne({ owner: data.owner }, { 'question': 1 });
   const question = item.question;
-  question.push({ user: data.asker, name: data.name, text: data.text });
+  const time = new Date().getTime();
+  question.push({ user: data.asker, name: data.name, text: data.text, time: time });
   StoreModel.update({ owner: data.owner }, { question: question }, function(error, res){
     console.log(data, error, res);
   });
+  const userArr = yield OrderModel.find({ orderStore: data.owner }, { 'userName': 1 });
+
+  for(var i = 0; i < userArr.length ; i++) {
+    if (userArr[i].userName !== data.asker) {
+      const ask = yield PersonModel.findOne({ userName: userArr[i].userName }, { 'question': 1 });
+      const askQusetArr = ask.question;
+      askQusetArr.push({ asker: data.asker, askText: data.text, askStore: data.owner, time: time });
+      PersonModel.update({ userName: userArr[i].userName }, { question: askQusetArr }, function(error){
+        console.log(error);
+      });
+    }
+  }
   this.body = {
     success: true,
   }

@@ -8,6 +8,7 @@ var ccap = require('ccap')();
 var db = require('../db/db').db;
 var mongoose = require('mongoose');
 var fs = require('fs');
+var { isEqual } = require('underscore');
 
 var PersonSchema = require('../model/user').modleUser;
 var StoreSchema = require('../model/store').modleStore;
@@ -285,6 +286,28 @@ router.post('/user/adress/update', koaBody, function*() {
     AdressModel.update({ userName: data.userName }, { adressArr: data.adressArr }, function(error) {
       console.log(error);
     });
+  }
+  this.body = {
+    success: true,
+  }
+});
+
+router.post('/user/question/update', koaBody, function*() {
+  const data = JSON.parse(this.request.body);
+  PersonModel.update({ userName: data.userName }, { question: data.question }, function(error) {
+    console.log(error);
+  });
+  const storeQuestion = yield StoreModel.findOne({ owner: data.owner }, { 'question' : 1 });
+  for(var i = 0; i < storeQuestion.question.length ; i++) {
+    if (storeQuestion.question[i].user === data.questInfo.asker && storeQuestion.question[i].time === data.questInfo.time) {
+      const arr = storeQuestion.question[i].response || [];
+      arr.push({ responser: data.userName, responseName: data.name, response: data.text });
+      console.log(arr);
+      storeQuestion.question[i].response = JSON.parse(JSON.stringify(arr));
+      StoreModel.update({ owner: data.owner }, { question: storeQuestion.question }, function(error) {
+        console.log(error);
+      });
+    }
   }
   this.body = {
     success: true,

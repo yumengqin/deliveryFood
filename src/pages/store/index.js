@@ -299,17 +299,17 @@ class IndexPage extends React.Component {
     this.setState({ askNo: '', askText: e.target.value });
   }
   sendAsk(){
+    const _this = this;
     if (this.state.askText) {
       fetch('/api/store/ask/put', {
         method: 'post',
         body: JSON.stringify({ asker: sessionStorage.getItem('userName'), name: sessionStorage.getItem('name'), owner: this.props.params.id, text: this.state.askText }),
         credentials: 'include'
       }).then(function(res) {
-        return res.json();
-        this.getStore();
+        _this.getStore();
       })
     } else {
-      this.setState({ askNo: '请输入提问内容' });
+      _this.setState({ askNo: '请输入提问内容' });
     }
   }
   render() {
@@ -390,17 +390,14 @@ class IndexPage extends React.Component {
             {
               (this.state.question || []).map((item, index) => {
                 return (
-                  <li key={index} className="remarkItem">
-                    <p><span>用户</span>{item.name}</p>
+                  <li key={index} className="remarkItem questionItem">
+                    <p><span>用户{item.name}</span><i className="text">{item.text}</i></p>
                     <div>
-                      <span className="text">提问：&nbsp;&nbsp;{item.text}</span>
-                      <p>
-                        {
-                          (item.response || []).map((v, index) => (
-                            <i key={index}>{v.responseName}：{v.text}</i>
-                          ))
-                        }
-                      </p>
+                      {
+                        (item.response || []).map((v, index) => (
+                          <p><span>用户{v.responseName}</span><i className="text response">{v.response}</i></p>
+                        ))
+                      }
                     </div>
                   </li>
                 );
