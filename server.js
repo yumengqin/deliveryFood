@@ -96,21 +96,6 @@ app.use(route.get('/', function*() {
   this.body = yield render('index', {});
 }));
 
-app.use(route.get('/api/auth', function*() {
-  if (this.cookies.get('name') == undefined) {
-    this.body = JSON.stringify({
-      permit: false
-    });
-  } else {
-    var nick = this.cookies.get('name');
-    nick = new Buffer(nick, 'base64').toString();
-    this.body = JSON.stringify({
-      permit: true,
-      nickname: nick
-    });
-  }
-}));
-
 const index = require('./routes/index');
 const user = require('./routes/user');
 const store = require('./routes/store');
