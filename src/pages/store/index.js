@@ -37,15 +37,17 @@ class IndexPage extends React.Component {
     this.getRemark();
     this.getStore();
     var _this = this;
-    fetch('/api/user/collect', {
-      method: 'post',
-      body: JSON.stringify({ userName: sessionStorage.getItem('userName') }),
-      credentials: 'include'
-    }).then(function(res) {
-      return res.json();
-    }).then(function(res) {
-      _this.setState({ collect: res.data.collectArr ? res.data.collectArr.indexOf(_this.props.params.id) !== -1 : false, collectArr: res.data.collectArr || []});
-    });
+    if (sessionStorage.getItem('role') === 'buyer') {
+      fetch('/api/user/collect', {
+        method: 'post',
+        body: JSON.stringify({ userName: sessionStorage.getItem('userName') }),
+        credentials: 'include'
+      }).then(function(res) {
+        return res.json();
+      }).then(function(res) {
+        _this.setState({ collect: res.data.collectArr ? res.data.collectArr.indexOf(_this.props.params.id) !== -1 : false, collectArr: res.data.collectArr || []});
+      });
+    }
 
     // 查询用户收藏店铺
     // fetch('/api/user/collect/show', {
@@ -279,20 +281,25 @@ class IndexPage extends React.Component {
     } else {
       arr.push(_this.props.params.id);
     }
-    fetch('/api/user/setCollect', {
-      method: 'post',
-      body: JSON.stringify({ userName: sessionStorage.getItem('userName'), collectArr: arr, name: sessionStorage.getItem('name') }),
-      credentials: 'include'
-    }).then(function(res) {
-      return res.json();
-    }).then(function(res) {
-      if (_this.state.collect) {
-        message.success('已取消收藏')
-      } else {
-        message.success('收藏成功')
-      }
-      _this.setState({ collectArr: res.data, collect: !_this.state.collect });
-    });
+    if (sessionStorage.getItem('role') === 'buyer') {
+      fetch('/api/user/setCollect', {
+        method: 'post',
+        body: JSON.stringify({ userName: sessionStorage.getItem('userName'), collectArr: arr, name: sessionStorage.getItem('name') }),
+        credentials: 'include'
+      }).then(function(res) {
+        return res.json();
+      }).then(function(res) {
+        if (_this.state.collect) {
+          message.success('已取消收藏')
+        } else {
+          message.success('收藏成功')
+        }
+        _this.setState({ collectArr: res.data, collect: !_this.state.collect });
+      });
+    } else if (!sessionStorage.getItem('role')) {
+      sessionStorage.setItem('collectArr', JSON.stringify(arr));
+      _this.setState({ collectArr: arr, collect: !_this.state.collect });
+    }
   }
   // 发起提问
   setAsk (e) {

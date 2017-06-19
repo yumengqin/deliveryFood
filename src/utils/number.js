@@ -73,7 +73,7 @@ export function getDistance(arr1, arr2) {
     var lnglat = new AMap.LngLat(arr1[0], arr1[1]);
     console.log(lnglat.distance(arr2));
     if (lnglat.distance(arr2) / 1000 > 120) {
-      return '';
+      return '太远了';
     }
     if (lnglat.distance(arr2) / 1000 < 60) { // 60km/h
       return parseInt(lnglat.distance(arr2) / 1000) + 20 + '分钟';

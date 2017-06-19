@@ -17,6 +17,9 @@ class LoginPage extends React.Component {
       passExtra: '',
     }
   }
+  componentWillMount() {
+    console.log(this.props);
+  }
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, data) => {
@@ -57,7 +60,17 @@ class LoginPage extends React.Component {
         sessionStorage.setItem('name', res.data.name);
         sessionStorage.setItem('userName', res.data.userName);
         sessionStorage.setItem('role', res.data.role);
-        if (res.data.role == 'buyer') {
+        if (_this.props.location.query && _this.props.location.query.to && sessionStorage.getItem('collectArr')) {
+          fetch('/api/user/setCollect', {
+            method: 'post',
+            body: JSON.stringify({ userName: res.data.userName, collectArr: JSON.parse(sessionStorage.getItem('collectArr')), name: res.data.name }),
+            credentials: 'include'
+          }).then(function(res) {
+            return res.json();
+          }).then(function(res) {
+            hashHistory.push(_this.props.location.query.to);
+          });
+        } else if (res.data.role == 'buyer') {
           hashHistory.push('/indexBuyer');
           if (_this.props.location.query && _this.props.location.query.to) {
             hashHistory.push(_this.props.location.query.to);
