@@ -11,6 +11,7 @@ import { toDate, toTime, toDecimal } from '../../utils/number'
 const socket = io('http://localhost:5000');
 require('./orderSet.less');
 
+var inter = '';
 class SellerOrder extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -20,16 +21,19 @@ class SellerOrder extends React.Component {
   }
   componentWillMount() {
     this.getData();
-    if (sessionStorage.getItem('role') !== 'seller') {
+    if (!sessionStorage.getItem('userNameSeller')) {
       hashHistory.push('/');
     }
+  }
+  componentWillUnmount() {
+    clearInterval(inter);
   }
   getData() {
     const _this = this;
     fetch('/api/seller/order', {
       method: 'post',
       body: JSON.stringify({
-        owner : sessionStorage.getItem('userName'),
+        owner : sessionStorage.getItem('userNameSeller'),
       }),
       credentials: 'include'
     }).then(function(res) {
@@ -37,7 +41,7 @@ class SellerOrder extends React.Component {
     }).then(function(res) {
       _this.setState({ data: res.data });
     }).then(() => {
-        _this.interval();
+      _this.interval();
     });
   }
   sureFood(e, id, status) {
@@ -56,8 +60,9 @@ class SellerOrder extends React.Component {
     });
   }
   interval() {
+    clearInterval(inter);
     const _this = this;
-    setInterval(function() {
+    inter = setInterval(function() {
       socket.emit('checkOrder', _this.state.data);
       socket.on('checkOrder', function(data) {
         if (data && data.length > 0) {
@@ -66,6 +71,7 @@ class SellerOrder extends React.Component {
           });
         }
       });
+      _this.getData();
     }, 5000);
   }
   render() {

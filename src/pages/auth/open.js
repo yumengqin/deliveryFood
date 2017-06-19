@@ -56,13 +56,10 @@ class OpenPage extends React.Component {
         }
         app.url();
       } else {
-        if (res.data.remember) {
-          sessionStorage.setItem('name', res.data.name);
-          sessionStorage.setItem('userName', res.data.userName);
-          sessionStorage.setItem('role', res.data.role);
-        }
+        sessionStorage.setItem('nameSeller', res.data.name);
+        sessionStorage.setItem('userNameSeller', res.data.userName);
         if (res.data.role == 'buyer') {
-          hashHistory.push('/indexBuyer');
+          hashHistory.push('/');
         } else {
           hashHistory.push('/setSeller');
         }

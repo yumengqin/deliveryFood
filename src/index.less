@@ -81,3 +81,41 @@ ul,li {
   visibility: hidden;
   clear: both;
 }
+
+.maskWrapper {
+  position: absolute;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background: rgba(0, 0, 0, 0.5);
+}
+.maskWrapper .maskBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 150px;
+  padding: 50px 30px;
+  border-radius: 4px;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+.maskWrapper .maskBox p {
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 25px;
+}
+.maskWrapper .maskBox a {
+  display: block;
+  margin: 0 auto;
+  /* color: #e04742; */
+  text-align: center;
+  width: 60px;
+  height: 26px;
+  background: #e04742;
+  color: #fff;
+  line-height: 26px;
+  border-radius: 5px;
+}

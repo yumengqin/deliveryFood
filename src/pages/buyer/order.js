@@ -25,6 +25,9 @@ class BuyerOrder extends React.Component {
     }
     this.getData();
   }
+  componentWillUnmount() {
+    clearInterval(inter);
+  }
   getData() {
     const _this = this;
     fetch('/api/buyer/order', {
@@ -53,6 +56,7 @@ class BuyerOrder extends React.Component {
           });
         }
       });
+      _this.getData();
     }, 5000);
   }
   goStore(e, store) {

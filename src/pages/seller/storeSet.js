@@ -31,7 +31,7 @@ class IndexPage extends React.Component {
   }
   componentWillMount() {
     this.getData();
-    if (sessionStorage.getItem('role') !== 'seller') {
+    if (!sessionStorage.getItem('userNameSeller')) {
       hashHistory.push('/');
     }
     var map, geolocation;
@@ -77,7 +77,7 @@ class IndexPage extends React.Component {
     fetch('/api/store', {
       method: 'post',
       body: JSON.stringify({
-        userName : sessionStorage.getItem('userName'),
+        userName : sessionStorage.getItem('userNameSeller'),
       }),
       credentials: 'include'
     }).then(function(res) {

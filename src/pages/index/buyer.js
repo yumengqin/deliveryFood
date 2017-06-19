@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import io from 'socket.io-client'
 import LazyLoad from 'react-lazyload';
 import { Input, Rate } from 'antd';
 import { connect } from 'react-redux'
@@ -9,6 +10,7 @@ import Home from '../../components/header'
 import { getDistance, getPosition } from '../../utils/number'
 
 require('./index.less');
+const socket = io('http://localhost:5000');
 
 const Search = Input.Search;
 
@@ -22,6 +24,8 @@ const benchmark = [
   { title: '鲜花蛋糕', key: 'flower_cake' },
   { title: '商店超市', key: 'market' },
 ];
+
+var inter = '';
 
 class IndexPage extends React.Component {
   constructor(props, context) {
@@ -45,6 +49,16 @@ class IndexPage extends React.Component {
   componentWillReceiveProps() {
     this.setState({ benchmark: this.props.location.query.text ? 'text' : this.props.location.query.type || benchmark[0].key })
     this.getData(this.props.location.query.type || '');
+  }
+  componentWillUnmount() {
+    clearInterval(inter);
+  }
+  interval() {
+    clearInterval(inter);
+    const _this = this;
+    inter = setInterval(function() {
+      _this.getData();
+    }, 5000);
   }
   getAdress() {
     const _this = this;
@@ -88,7 +102,9 @@ class IndexPage extends React.Component {
       return res.json()
     }).then(function(res) {
       _this.setState({ data: res.data });
-    })
+    }).then(function(res) {
+      _this.interval();
+    });
   }
   search(value) {
     hashHistory.push({ pathname: '/indexBuyer', query: { text: value || '' }});

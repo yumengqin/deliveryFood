@@ -57,9 +57,9 @@ class LoginPage extends React.Component {
         }
         app.url();
       } else {
-        sessionStorage.setItem('name', res.data.name);
-        sessionStorage.setItem('userName', res.data.userName);
-        sessionStorage.setItem('role', res.data.role);
+        // sessionStorage.setItem('name', res.data.name);
+        // sessionStorage.setItem('userName', res.data.userName);
+        // sessionStorage.setItem('role', res.data.role);
         if (_this.props.location.query && _this.props.location.query.to && sessionStorage.getItem('collectArr')) {
           fetch('/api/user/setCollect', {
             method: 'post',
@@ -72,10 +72,15 @@ class LoginPage extends React.Component {
           });
         } else if (res.data.role == 'buyer') {
           hashHistory.push('/indexBuyer');
+          sessionStorage.setItem('name', res.data.name);
+          sessionStorage.setItem('userName', res.data.userName);
+          sessionStorage.setItem('role', res.data.role);
           if (_this.props.location.query && _this.props.location.query.to) {
             hashHistory.push(_this.props.location.query.to);
           }
         } else {
+          sessionStorage.setItem('nameSeller', res.data.name);
+          sessionStorage.setItem('userNameSeller', res.data.userName);
           hashHistory.push('/setSeller');
         }
       }

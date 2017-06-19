@@ -37,14 +37,14 @@ class IndexPage extends React.Component {
     }
   }
   componentWillMount() {
-    if (sessionStorage.getItem('role') !== 'seller') {
+    if (!sessionStorage.getItem('userNameSeller')) {
       hashHistory.push('/');
     }
     var _this = this;
     fetch('/api/store', {
       method: 'post',
       body: JSON.stringify({
-        userName : sessionStorage.getItem('userName'),
+        userName : sessionStorage.getItem('userNameSeller'),
       }),
       credentials: 'include'
     }).then(function(res) {
@@ -65,7 +65,7 @@ class IndexPage extends React.Component {
       const _id = new Date().getTime() + this.state.data.owner;
       const menu = {
           id: _id,
-          owner: sessionStorage.getItem('userName'),
+          owner: sessionStorage.getItem('userNameSeller'),
           menuName: data.menuName,
           type: data.type,
           intro: data.intro,

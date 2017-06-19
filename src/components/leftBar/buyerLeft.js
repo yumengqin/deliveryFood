@@ -71,7 +71,11 @@ class leftBar extends React.Component {
     }
   }
   logout() {
+    const userNameSeller = sessionStorage.getItem('userNameSeller');
+    const nameSeller = sessionStorage.getItem('nameSeller');
     sessionStorage.clear();
+    sessionStorage.setItem('userNameSeller', userNameSeller);
+    sessionStorage.setItem('nameSeller', nameSeller);
     hashHistory.push('/');
   }
   render() {

@@ -14,7 +14,7 @@ const upImgProps = app => ({
   name: 'uploadFile',
   action: 'http://localhost:5000/api/sellerImg/upload',
   listType: 'picture',
-  data: { owner: sessionStorage.getItem('userName') },
+  data: { owner: sessionStorage.getItem('userNameSeller') },
   beforeUpload(file) {
     const type = file.type;
     if (type !== 'image/jpeg' && type !== 'image/jpg' && type !== 'image/png') {
@@ -48,14 +48,14 @@ class leftBar extends React.Component {
     }
   }
   componentWillMount() {
-    if (!sessionStorage.getItem('userName')) {
+    if (!sessionStorage.getItem('userNameSeller')) {
       hashHistory.push('/');
     }
     const _this = this;
     fetch('/api/store', {
       method: 'post',
       body: JSON.stringify({
-        userName : sessionStorage.getItem('userName'),
+        userName : sessionStorage.getItem('userNameSeller'),
       }),
       credentials: 'include'
     }).then(function(res) {
@@ -74,7 +74,7 @@ class leftBar extends React.Component {
       fetch('/api/store/status', {
         method: 'post',
         body: JSON.stringify({
-          userName : sessionStorage.getItem('userName'),
+          userName : sessionStorage.getItem('userNameSeller'),
           status: e.key === 'open',
         }),
         credentials: 'include'
@@ -90,7 +90,8 @@ class leftBar extends React.Component {
     }
   }
   logout() {
-    sessionStorage.clear();
+    sessionStorage.removeItem('userNameSeller');
+    sessionStorage.removeItem('nameSeller');
     hashHistory.push('/');
   }
   render() {

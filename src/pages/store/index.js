@@ -15,6 +15,8 @@ const liItem = [
   { title: '销量', icon: true, key: 'orderNum' },
   { title: '价格', icon: true, key: 'price' },
 ];
+
+var inter = "";
 class IndexPage extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -29,6 +31,7 @@ class IndexPage extends React.Component {
       sortIndex: 0,
       typeIndex: 0,
       shopNum: 0,
+      mask: false,
     }
   }
   componentWillMount() {
@@ -60,6 +63,9 @@ class IndexPage extends React.Component {
     //   console.log(res);
     // });
   }
+  componentWillUnmount() {
+    clearInterval(inter);
+  }
   renderCarousel() {
     if(this.state.data && this.state.data.album.length !== 0) {
       return this.state.data.album.map((item, index) => {
@@ -67,6 +73,13 @@ class IndexPage extends React.Component {
       });
     }
     return <div className="default"></div>
+  }
+  interval() {
+    clearInterval(inter);
+    const _this = this;
+    inter = setInterval(function() {
+      _this.getStore();
+    }, 5000);
   }
   getStore() {
     var _this = this;
@@ -79,7 +92,12 @@ class IndexPage extends React.Component {
     }).then(function(res) {
       return res.json();
     }).then(function(res) {
-      _this.setState({ data: res.data, menu: res.menu, question: res.data.question });
+      if (!res.data.status) {
+        _this.setState({ mask: true });
+      } else {
+        _this.setState({ data: res.data, menu: res.menu, question: res.data.question });
+      }
+      _this.interval();
     });
   }
   getCart() {
@@ -322,6 +340,12 @@ class IndexPage extends React.Component {
   render() {
     return (
       <div className="storeShow">
+        <div className={ this.state.mask ? 'maskWrapper' : 'maskWrapper none'}>
+          <div className="maskBox">
+            <p>店铺正在休息中</p>
+            <Link to="/indexBuyer">点击返回</Link>
+          </div>
+        </div>
         <Home />
         <div className="storeBanner">
           <div className="storeInfo">

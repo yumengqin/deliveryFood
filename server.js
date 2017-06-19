@@ -61,15 +61,6 @@ var cache = {
   msgList: []
 };
 
-var sessionFresh = setInterval(function() {
-  for (var key in cache.nameList) {
-    cache.nameList[key] -= 10000;
-    if (cache.nameList[key] <= 0) {
-      delete cache.nameList[key];
-    }
-  }
-}, 10000);
-
 io.on('connection', function(socket) {
   socket.on('checkOrder', function(obj){
     var result = [];

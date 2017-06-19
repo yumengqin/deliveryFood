@@ -7,6 +7,7 @@ const Step = Steps.Step;
 
 require('./order.less');
 
+var inter = '';
 class OrderPage extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -14,11 +15,22 @@ class OrderPage extends React.Component {
       order: [],
       data: '',
       user: '',
+      mask: false,
     }
   }
   componentWillMount() {
     this.getStore();
     this.getOrder();
+  }
+  componentWillUnmount() {
+    clearInterval(inter);
+  }
+  interval() {
+    clearInterval(inter);
+    const _this = this;
+    inter = setInterval(function() {
+      _this.getStore();
+    }, 5000);
   }
   getOrder() {
     if (sessionStorage.getItem('cart'+this.props.params.id)){
@@ -38,7 +50,12 @@ class OrderPage extends React.Component {
     }).then(function(res) {
       return res.json();
     }).then(function(res) {
-      _this.setState({ data: res.data });
+      if (!res.data.status) {
+        _this.setState({ mask: true });
+      } else {
+        _this.setState({ data: res.data });
+      }
+      _this.interval();
     });
   }
   getAllPrice() {
@@ -106,6 +123,12 @@ class OrderPage extends React.Component {
     console.log(this.state);
     return (
       <div>
+        <div className={ this.state.mask ? 'maskWrapper' : 'maskWrapper none'}>
+          <div className="maskBox">
+            <p>店铺正在休息中</p>
+            <Link to="/indexBuyer">点击返回</Link>
+          </div>
+        </div>
         <Home />
         <div className="order-head clear">
           <div style={{ width: '960px', margin: '0 auto'}}>

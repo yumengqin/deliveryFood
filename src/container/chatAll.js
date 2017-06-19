@@ -33,19 +33,6 @@ var mapDispatchToProps = (dispatch, ownProps) => {
     },
     checkLogin: function() {
       // dispatch(nickname_get(''));
-      fetch('/api/auth', {
-        method: 'GET',
-        credentials: 'include'
-      }).then(function(res) {
-        return res.json()
-      }).then(function(data) {
-        //如果没有cookie，则证明没有登录过，重定向到昵称页面
-        if (!data.permit) {
-          hashHistory.push('/login');
-        } else {
-          dispatch(nickname_get(data.nickname));
-        }
-      })
     }
   }
 }
