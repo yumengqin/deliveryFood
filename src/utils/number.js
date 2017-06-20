@@ -71,7 +71,7 @@ export function toDateRange(startDate, endDate) {
 export function getDistance(arr1, arr2) {
   if (arr1 && arr2) {
     var lnglat = new AMap.LngLat(arr1[0], arr1[1]);
-    console.log(lnglat.distance(arr2));
+    // console.log(lnglat.distance(arr2));
     if (lnglat.distance(arr2) / 1000 > 120) {
       return '太远了';
     }

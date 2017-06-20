@@ -111,6 +111,7 @@ class IndexPage extends React.Component {
   }
   handleBench(e, index, type) {
     hashHistory.push({ pathname: '/indexBuyer', query: { type: type }});
+    document.getElementById('search').value = ''
     // this.setState({ benchmark: type });
     // this.getData(type, '');
   }
@@ -140,6 +141,7 @@ class IndexPage extends React.Component {
               </ul>
             </strong>
             <Search
+              id="search"
               placeholder="搜索商家，美食..."
               style={{ width: '100%' }}
               onSearch={value => this.search(value)}

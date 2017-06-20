@@ -332,6 +332,7 @@ class IndexPage extends React.Component {
         credentials: 'include'
       }).then(function(res) {
         _this.getStore();
+        document.getElementById('area').value = ''
       })
     } else {
       _this.setState({ askNo: '请输入提问内容' });
@@ -435,7 +436,7 @@ class IndexPage extends React.Component {
               })
             }
           </ul>
-          <Input type="textarea" rows={5} className="question" onChange={e => this.setAsk(e)}/>
+          <Input id="area" type="textarea" rows={5} className="question" onChange={e => this.setAsk(e)}/>
           <span className="askNo">{ this.state.askNo ? this.state.askNo : ''}</span>
           <Button onClick={() => this.sendAsk()}>向已买的用户提问</Button>
         </div>

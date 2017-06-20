@@ -25,11 +25,11 @@ class IndexPage extends React.Component {
     }
   }
   componentWillMount() {
-    this.getData();
-    this.getAdress();
     if (sessionStorage.getItem('role') !== 'buyer') {
       hashHistory.push('/');
     }
+    this.getData();
+    this.getAdress();
   }
   getData() {
     const _this = this;
