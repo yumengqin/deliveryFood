@@ -101,6 +101,7 @@ class AdressPage extends React.Component {
           if(_this.state.action === 'add') {
             obj.id = new Date().getTime();
             if(obj.status) {
+              sessionStorage.getItem("adress", JSON.stringify({ adress: data.adress, latAndLon: data.latAndLon }));
               arr.map((item) => {
                 item.status = false;
               });
@@ -108,6 +109,7 @@ class AdressPage extends React.Component {
             arr.push(obj);
           } else {
             if (obj.status) {
+              sessionStorage.setItem("adress", JSON.stringify({ adress: data.adress, latAndLon: data.latAndLon }));
               arr.map((item, index) => {
                 if (item.id === obj.id) {
                   arr[index] = obj
@@ -141,6 +143,7 @@ class AdressPage extends React.Component {
     });
   }
   render() {
+    console.log(this.props.form.getFieldValue('status'));
     const { getFieldDecorator } = this.props.form;
     return (
       <div className="setSeller collection">
@@ -210,7 +213,7 @@ class AdressPage extends React.Component {
           <FormItem label="设置为默认">
             {getFieldDecorator('status', {
             })(
-              <Switch />,
+              <Switch checked={this.props.form.getFieldValue('status')}/>,
             )}
           </FormItem>
         </Form>
