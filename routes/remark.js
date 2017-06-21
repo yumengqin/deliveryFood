@@ -32,13 +32,13 @@ router.post('/remark/create', koaBody, function*(next) {
   const idArr = data.menuIdArr;
   for (var i = 0; i < idArr.length; i ++) {
     let num = (yield AllMenuModel.findOne({ id: idArr[i] })).score || 0;
-    num = num + data.score / 2;
+    num = num === 0 ? num : (num + data.score) / 2;
     AllMenuModel.update({ id: idArr[i] }, { score: num }, function(error) {
       console.log(error);
     });
   }
   const storeStar = (yield StoreModel.findOne({ owner: data.store })).star || 0;
-  StoreModel.update({ owner: data.store }, { star: (storeStar + data.score) / 2 }, function*(next) {
+  StoreModel.update({ owner: data.store }, { star: (storeStar === 0 ? storeStar ? (storeStar + data.score) / 2 }, function*(next) {
     console.log(error);
   });
   this.body = {
